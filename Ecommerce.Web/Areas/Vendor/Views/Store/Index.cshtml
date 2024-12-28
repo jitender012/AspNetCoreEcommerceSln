@@ -1,0 +1,31 @@
+﻿@using eCommerce.Application.DTO
+@model List<WarehouseDTO>
+
+<div>
+    <table>
+        <thead>
+            <tr>
+                <th>Store Id</th>
+                <th>Store Name</th>
+                <th>Store Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.WarehouseId
+                    </td>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.Street
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

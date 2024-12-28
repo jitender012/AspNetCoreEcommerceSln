@@ -1,0 +1,35 @@
+---Migration Commands---
+
+-Remove table:
+
+1. Remove this line
+public class ApplicationDbContext : DbContext
+{
+    public DbSet<Product> Products { get; set; }
+    // Remove this line if you want to delete the Products table:
+    // public DbSet<OldTable> OldTables { get; set; }
+}
+
+2. Run the following command in the Package Manager Console:
+Add-Migration RemoveOldTable
+
+3. Check the Generated Migration File
+protected override void Up(MigrationBuilder migrationBuilder)
+{
+    migrationBuilder.DropTable(
+        name: "OldTable");
+}
+
+4. Apply the Migration
+Run the following command to update the database:
+Update-Database
+
+---Rollback table
+If you want to bring back the table, you can rollback the migration:
+
+Update-Database <PreviousMigrationName>
+
+
+ Create Repository Interfaces
+ Implement Repository Interfaces
+

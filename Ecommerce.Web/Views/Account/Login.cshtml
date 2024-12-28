@@ -1,0 +1,31 @@
+﻿@model eCommerce.Web.Models.LoginViewModel
+<div class="container d-flex justify-content-center">
+    <div class="card" style="width:31%">
+        <div class="card-header">
+            <center>
+                Login
+            </center>
+        </div>
+        <div class="card-body ">
+            <div asp-validation-summary="All" class="text-danger">
+            </div>
+            <form asp-action="Login" asp-controller="Account" method="post">
+                @if (ViewBag.Message != null)
+                {
+                    <span class="text-danger">@ViewBag.Message</span>
+                }
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" type="text" name="Email"/>
+
+                <label asp-for="Password" class="form-label">Password</label>
+                <input asp-for="Password" class="form-control" type="password" name="Password"/>
+                <br />
+                <input class="btn btn-success w-100" type="submit" value="Login" />
+            </form>
+        </div>
+        <div class="card-footer">
+            <p><a href="#" class="link-dark text-decoration-none">Register</a></p>
+        </div>
+    </div>
+
+</div>

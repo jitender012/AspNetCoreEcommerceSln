@@ -1,0 +1,37 @@
+﻿@using eCommerce.Application.DTO
+@model List<CreateBrandDTO>
+
+@{
+    ViewData["Title"] = "";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<div>   
+    @Html.ActionLink("Create Brand", "Create", "Brand")
+    <table>
+        <thead>
+            <tr>
+                <th>Brand Id</th>
+                <th>Brand Name</th>
+                <th>Brand Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.BrandId
+                    </td>
+                    <td>
+                        @item.BrandName
+                    </td>
+                    <td>
+                        @item.BrandImage
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+

@@ -1,0 +1,22 @@
+﻿@using eCommerce.Web.Areas.Admin.Models.Role
+@model AssignRoleViewModel
+
+@{
+    ViewData["Title"] = "Assign";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<h2>Assign Role</h2>
+
+<form asp-action="Assign" method="post">
+    <div class="form-group">
+        <label for="userEmail">User Email</label>
+        <input type="email" name="UserEmail" id="userEmail" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="roleName">Role Name</label>
+        <input type="text" name="RoleName" id="roleName" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Assign</button>
+</form>
