@@ -1,1 +1,123 @@
-﻿<h1>Default Home Page</h1>
+﻿<style>
+    /* Table becomes a flex container */
+    .t-body {
+        display: flex;
+        flex-direction: row; /* Align <tr> horizontally */
+        gap: 10px; /* Space between rows */
+        border: none;
+    }
+    #myTable{
+        width:800px;
+    }
+        /* Each <tr> is a flex column */
+        #myTable tr {
+        border: 1px solid #ccc;
+        width:250px;
+            display: flex;
+            flex-direction: column; /* Align <td> vertically */
+            gap: 10px; /* Space between cells */
+        }
+
+        /* Optional: Style <td> */
+        #myTable td {
+            /* border: 1px solid #ccc; */
+            border: none;
+            padding: 10px;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+</style>
+
+
+
+
+<h1>Default Home Page</h1>
+
+
+<table id="myTable">
+    <tbody class="t-body">
+        <tr>
+            <td>Data 1</td>
+            <td>Data 2</td>
+            <td>Data 3</td>
+            <td>Data 4</td>
+        </tr>
+        <tr>
+            <td>Data 5</td>
+            <td>Data 6</td>
+            <td>Data 7</td>
+            <td>Data 8</td>
+        </tr>
+        <tr>
+            <td>Data 1</td>
+            <td>Data 2</td>
+            <td>Data 3</td>
+            <td>Data 4</td>
+        </tr>
+        <tr>
+            <td>Data 5</td>
+            <td>Data 6</td>
+            <td>Data 7</td>
+            <td>Data 8</td>
+        </tr>
+        <tr>
+            <td>Data 1</td>
+            <td>Data 2</td>
+            <td>Data 3</td>
+            <td>Data 4</td>
+        </tr>
+        <tr>
+            <td>Data 5</td>
+            <td>Data 6</td>
+            <td>Data 7</td>
+            <td>Data 8</td>
+        </tr>
+        <tr>
+            <td>Data 1</td>
+            <td>Data 2</td>
+            <td>Data 3</td>
+            <td>Data 4</td>
+        </tr>
+        <tr>
+            <td>Data 5</td>
+            <td>Data 6</td>
+            <td>Data 7</td>
+            <td>Data 8</td>
+        </tr>
+        <tr>
+            <td>Data 1</td>
+            <td>Data 2</td>
+            <td>Data 3</td>
+            <td>Data 4</td>
+        </tr>
+        <tr>
+            <td>Data 5</td>
+            <td>Data 6</td>
+            <td>Data 7</td>
+            <td>Data 8</td>
+        <tr>
+            <td>Data 1</td>
+            <td>Data 2</td>
+            <td>Data 3</td>
+            <td>Data 4</td>
+        </tr>
+        <tr>
+            <td>Data 5</td>
+            <td>Data 6</td>
+            <td>Data 7</td>
+            <td>Data 8</td>
+        </tr>
+        </tr>
+    </tbody>
+   
+</table>
+
+
+
+<script>
+    // $(document).ready(
+    //     function () {
+    //         alert("Hi");
+    //     }
+    // )
+</script>

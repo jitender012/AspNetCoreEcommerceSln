@@ -19,7 +19,7 @@ namespace eCommerce.Application.Services
             var uploadedFiles = new List<string>();
 
             var fullFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folderPath);
-            Directory.CreateDirectory(fullFolderPath); // Ensure the folder exists
+            Directory.CreateDirectory(fullFolderPath);
 
             foreach (var file in files)
             {
@@ -36,7 +36,7 @@ namespace eCommerce.Application.Services
                     await file.CopyToAsync(stream); // Save file
                 }
 
-                uploadedFiles.Add(Path.Combine(folderPath, fileName).Replace("\\", "/")); // Store relative path
+                uploadedFiles.Add(Path.Combine("/",folderPath, fileName).Replace("\\", "/")); // Store relative path
             }
 
             return uploadedFiles;

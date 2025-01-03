@@ -16,7 +16,7 @@ namespace eCommerce.Infrastructure.Dapper
             _dbConnection = dbConnection;
         }
 
-        public async Task<T> GetTAsync<T>(string sql, object? parameters = null)
+        public async Task<T?> GetTAsync<T>(string sql, object? parameters = null)
         {
             return await _dbConnection.QuerySingleOrDefaultAsync<T>(sql, parameters);
         }

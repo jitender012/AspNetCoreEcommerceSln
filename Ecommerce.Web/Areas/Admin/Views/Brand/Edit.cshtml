@@ -1,0 +1,91 @@
+﻿@model eCommerce.Web.Areas.Admin.Models.Brand.UpdateBrandViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h4>Update Brand</h4>
+<hr />
+
+<div class="card py-4 px-5">
+
+    @using (Html.BeginForm("Edit", "Brand", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form row">
+            <div class="col-12 col-md-6 col-lg-6 mt-3">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.BrandId)
+
+                <div class="form-group mb-2">
+                    <label class="control-label">Brand Name</label>
+                    <div class="">
+                        @Html.EditorFor(model => model.BrandName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.BrandName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group mb-2">
+                    <label class="control-label">Brand Description</label>
+                    <div class="">
+                        @Html.TextAreaFor(model => model.BrandDescription, new  { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.BrandDescription, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group mb-2">
+                    <label class="control-label ">Image</label>
+                    <div class="">
+                        <input type="file" name="ImageFile" class="form-control" id="ImageFile" />
+                        @Html.ValidationMessageFor(model => model.ImageFile, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div>
+                    <div class="col-md-offset-2 my-4">
+                        <input type="submit" value="Update" class="btn btn-success w-100 bg-ad-primary" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6 mt-3" id="oldImage">
+                <div class="form-group">
+                    <div class="col-md-offset-2 d-flex justify-content-center">
+                        @Html.HiddenFor(model => model.BrandImage, new { htmlAttributes = new { @class = "form-control" } })
+                        @if (Model.BrandImage != null)
+                        {
+                            <img src="@Url.Content(Model.BrandImage)" alt="Image Preview" style="max-width: 200px; max-height:200px; " />
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6 mt-3">
+                <div class="form-group">
+                    <div class="col-md-offset-2 d-flex justify-content-center">
+                        <img id="imagePreview" src="#" alt="Image Preview" style="max-width: 200px; max-height:200px; display: none;" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    }
+
+    <div class="card-footer">
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $("#ImageFile").change(function () {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imagePreview').attr('src', e.target.result);
+                    $('#oldImage').hide();
+                    $('#imagePreview').show();
+                }
+                reader.readAsDataURL(this.files[0]);
+            });
+        });
+    </script>
+}

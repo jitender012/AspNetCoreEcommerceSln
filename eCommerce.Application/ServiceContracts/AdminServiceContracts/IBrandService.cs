@@ -14,16 +14,16 @@ namespace eCommerce.Application.ServiceContracts.AdminServiceContracts
         /// 
         /// </summary>
         /// <returns>List of Brands</returns>
-        Task<List<CreateBrandDTO>> GetAllBrands();
-        Task<CreateBrandDTO> GetBrandById(Guid id);
+        Task<List<BrandDTO>> GetAllBrands();
+        Task<BrandDTO> GetBrandByIdAsync(Guid id);
 
         /// <summary>
         /// Creates new brand
         /// </summary>
         /// <param name="data">Expects CreateBrandDTO object</param>
         /// <returns>Id of created brand</returns>
-        Task<Guid> AddBrand(CreateBrandDTO data);
-        bool UpdateBrand(CreateBrandDTO data);
-        bool DeleteBrand(Guid id);
+        Task<Guid> AddBrand(BrandDTO data);
+        Task<bool> UpdateBrand(BrandDTO data);
+        Task<bool> DeleteBrandAsync(Guid id);
     }
 }

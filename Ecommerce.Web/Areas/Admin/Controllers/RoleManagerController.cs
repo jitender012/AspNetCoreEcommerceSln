@@ -68,21 +68,28 @@ namespace eCommerce.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Assign(AssignRoleViewModel model)
         {
-            var user = await _userManager.FindByEmailAsync(model.UserEmail);
+            ApplicationUser? user = new ApplicationUser();
+
+            if (model.UserEmail != null)
+            {
+                user = await _userManager.FindByEmailAsync(model.UserEmail);
+            }
 
             if (user == null)
             {
                 ModelState.AddModelError("", "User not found.");
                 return View(model);
             }
-
-            if (!await _roleManager.RoleExistsAsync(model.RoleName))
+            IdentityResult? result = new IdentityResult();
+            if (model.RoleName != null)
             {
-                ModelState.AddModelError("", "Role does not exist.");
-                return View(model);
+                if (await _roleManager.RoleExistsAsync(model.RoleName))
+                {
+                    ModelState.AddModelError("", "Role does not exist.");
+                    return View(model);
+                }
+                result = await _userManager.AddToRoleAsync(user, model.RoleName);
             }
-
-            var result = await _userManager.AddToRoleAsync(user, model.RoleName);
 
             if (result.Succeeded)
             {

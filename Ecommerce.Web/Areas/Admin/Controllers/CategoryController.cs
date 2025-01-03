@@ -1,185 +1,216 @@
-﻿//using eShop.Business.Interfaces;
-//using Microsoft.AspNetCore.Authorization;
-//using Microsoft.AspNetCore.Mvc;
-//using System.Net;
+﻿using eCommerce.Application.DTO;
+using eCommerce.Application.ServiceContracts.AdminServiceContracts;
+using eCommerce.Application.ServiceContracts.UtilityServiceContracts;
+using eCommerce.Application.Services;
+using eCommerce.Core.DTO;
+using eCommerce.Web.Areas.Admin.Models.Category;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Net;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Security.Claims;
+using eCommerce.Domain.Entities;
 
-//namespace eCommerce.Web.Areas.Admin.Controllers
+namespace eCommerce.Web.Areas.Admin.Controllers
 
-//{
-//    [Authorize(Roles = "Admin, Employee")]
-//    public class CategoryController : Controller
-//    {
-       
-//        readonly ICategoryService categoryService;
-//        readonly IMainCategoryService mainCategoryService;
-//        public CategoryController(ICategoryService categoryService, IMainCategoryService mainCategoryService)
-//        {
-           
-//            this.categoryService = categoryService;
-//            this.mainCategoryService = mainCategoryService;
-//        }
+{
+    [Authorize(Roles = "Admin, Employee")]
+    public class CategoryController : Controller
+    {
 
-//        // GET: Category
-//        public ActionResult Index()
-//        {
-//            var categoryDomainModel = categoryService.GetAllCategories();
-//            var categoryViewModel = mapper.Map<List<CategoryViewModel>>(categoryDomainModel);
-//            return View(categoryViewModel);
-//        }
+        private readonly ICategoryService _categoryService;
+        private readonly IFileUploadService _fileUploadService;
+        public CategoryController(ICategoryService categoryService, IFileUploadService fileUploadService)
+        {
+            _categoryService = categoryService;
+            _fileUploadService = fileUploadService;
+        }
 
-//        // GET: Category/Create
-//        public ActionResult Create()
-//        {
-//            List<MainCategoryDomainModel> mainCategory = mainCategoryService.GetAllMainCategories();
-//            var mainCategoryViewModel = mapper.Map<List<MainCategoryViewModel>>(mainCategory);
-//            ViewBag.CategoryList = new SelectList(mainCategoryViewModel, "MainCategoryId", "MainCategoryName");
-//            return View();
-//        }
+        // GET: Category
+        public async Task<IActionResult> Index()
+        {
+            var categoryDomainModel = await _categoryService.GetAllCategoriesAsync();
+            JsonResult jsonResult = new JsonResult("s");
+            //return View(categoryDomainModel);
+            return jsonResult;
+        }
 
-//        // POST: Category/Create        
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public ActionResult Create(HttpPostedFileBase ImageFile, CategoryViewModel category)
-//        {
-//            List<MainCategoryDomainModel> mainCategory = mainCategoryService.GetAllMainCategories();
-//            var mainCategoryViewModel = mapper.Map<List<MainCategoryViewModel>>(mainCategory);
-//            ViewBag.CategoryList = new SelectList(mainCategoryViewModel, "MainCategoryId", "MainCategoryName");
+        // GET: Category/Create
+        public async Task<ActionResult> Create()
+        {
+            await PopulateMainCategoryDropdownAsync();
+            return View();
+        }
 
-//            string fileName = null;
+        // POST: Category/Create        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create(CategoryViewModel data)
+        {
+            await PopulateMainCategoryDropdownAsync();
 
-//            if (category.ImageFile != null)
-//            {
-//                fileName = Path.GetFileNameWithoutExtension(category.ImageFile.FileName);
-//                string extension = Path.GetExtension(category.ImageFile.FileName);
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = "Please correct the highlighted errors and try again.";
+                return View(data);
+            }
 
-//                //generate unique file name
-//                fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+            // Map ViewModel to DTO
+            var categoryDTO = new CategoryDTO
+            {
+                CategoryName = data.CategoryName,
+                ParentCategoryId = data.ParentCategoryId,
+            };
 
-//                //specify the path where you want to save the image
-//                category.category_img = "~/Images/CategoryImages/" + fileName;
-//                fileName = Path.Combine(Server.MapPath("~/Images/CategoryImages/"), fileName);
-//            }
+            // Handle image upload
+            if (data.ImageFile != null && data.ImageFile.Any())
+            {
+                try
+                {
+                    var folderPath = "Images/CategoryImages";
+                    var fileNames = await _fileUploadService.UploadFilesAsync(data.ImageFile, folderPath);
+                    categoryDTO.CategoryImage = fileNames.FirstOrDefault();
+                }
+                catch (InvalidOperationException ex)
+                {
+                    ModelState.AddModelError("CategoryImage", ex.Message);
+                    TempData["Error"] = "Invalid file format or size. Please try again.";
+                    return View(data);
+                }
+                catch (Exception)
+                {
+                    TempData["Error"] = "An unexpected error occurred during file upload. Please try again.";
+                    //_logger.LogError(ex, "File upload error in Create method.");
+                    return View(data);
+                }
+            }
 
-//            CategoryDomainModel categoryDomainModel = mapper.Map<CategoryDomainModel>(category);
+            // Save brand to the database
+            try
+            {
+                await _categoryService.AddCategoryAsync(categoryDTO);
+                TempData["Success"] = "Category created successfully!";
+                return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "An unexpected error occurred while creating the brand. Please try again.";
+                //_logger.LogError(ex, "Error in Create method while adding a brand.");
+                return View(data);
+            }
+        }
 
 
-//            if (ModelState.IsValid)
-//            {
-//                int id = categoryService.AddCategory(categoryDomainModel, fileName);
-//                if (id > 0)
-//                {
-//                    ModelState.Clear();
-//                    ViewBag.IsSuccess = "Category Added!";
-//                }
-//                return RedirectToAction("Index");
-//            }
-//            return View(category);
-//        }
 
+        // GET: Category/Details/5
+        public async Task<ActionResult> Details(int id)
+        {
+            if (id < 0)
+            {
+                TempData["ErrorMessage"] = "Invalid category Id.";
+                return View("Error");
+            }
+            var category = await _categoryService.GetCategoryByIdAsync(id);
+            if (category == null)
+            {
+                TempData["ErrorMessage"] = "Category not found.";
+                return View("Error");
+            }
+            return View(category);
+        }
 
+        // GET: Category/Edit/5
+        public async Task<ActionResult> Edit(int id)
+        {
+            await PopulateMainCategoryDropdownAsync();
 
-//        // GET: Category/Details/5
-//        public ActionResult Details(int id)
-//        {
-//            if (id < 0)
-//            {
-//                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-//            }
-//            var category = categoryService.GetCategoryById(id);
-//            if (category == null)
-//            {
-//                return HttpNotFound();
-//            }
-//            return View(category);
-//        }
+            if (id < 1)
+            {
 
-//        // GET: Category/Edit/5
-//        public ActionResult Edit(int id)
-//        {
-//            List<MainCategoryDomainModel> mainCategory = mainCategoryService.GetAllMainCategories();
-//            var mainCategoryViewModel = mapper.Map<List<MainCategoryViewModel>>(mainCategory);
-//            ViewBag.CategoryList = new SelectList(mainCategoryViewModel, "MainCategoryId", "MainCategoryName");
-//            if (id < 1)
-//            {
-//                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-//            }
-//            var bcategory = categoryService.GetCategoryById(id);
-//            var category = new UpdateCategoryViewModel()
-//            {
-//                category_id = bcategory.category_id,
-//                category_name = bcategory.category_name,
-//                category_img = bcategory.category_img,
-//                mainCategoryId = bcategory.mainCategoryId,
+                TempData["ErrorMessage"] = "Invalid category Id.";
+                return View("Error");
+            }
+            var category = await _categoryService.GetCategoryByIdAsync(id);
 
-//            };
+            if (category == null)
+            {
+                TempData["ErrorMessage"] = "Category not found with Id " + id + ".";
+                return View("Error");
+            }
+            return View(category);
+        }
 
-//            if (category == null)
-//            {
-//                return HttpNotFound();
-//            }
-//            return View(category);
-//        }
+        // POST: Category/Edit/5      
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(CategoryViewModel data)
+        {
+            await PopulateMainCategoryDropdownAsync();
 
-//        // POST: Category/Edit/5      
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public ActionResult Edit(UpdateCategoryViewModel category)
-//        {
-//            List<MainCategoryDomainModel> mainCategory = mainCategoryService.GetAllMainCategories();
-//            var mainCategoryViewModel = mapper.Map<List<MainCategoryViewModel>>(mainCategory);
-//            ViewBag.CategoryList = new SelectList(mainCategoryViewModel, "MainCategoryId", "MainCategoryName");
+            if (ModelState.IsValid)
+            {
+                return View(data);
+            }
 
-//            string fileName = null;
-//            if (category.ImageFile != null)
-//            {
-//                fileName = Path.GetFileNameWithoutExtension(category.ImageFile.FileName);
-//                string extension = Path.GetExtension(category.ImageFile.FileName);
+            if (data.ImageFile != null)
+            {
+                try
+                {
+                    var folderPath = "Images/CategoryImages";
+                    var fileNames = await _fileUploadService.UploadFilesAsync(data.ImageFile, folderPath);
+                    data.CategoryImage = fileNames.FirstOrDefault();
+                }
+                catch (InvalidOperationException ex)
+                {
+                    ModelState.AddModelError("CategoryImage", ex.Message);
+                    TempData["Error"] = "Invalid file format or size. Please try again.";
+                    return View(data);
+                }
+                catch (Exception)
+                {
+                    TempData["Error"] = "An unexpected error occurred during file upload. Please try again.";
+                    //_logger.LogError(ex, "File upload error in Create method.");
+                    return View(data);
+                }
+            }
+            return View(data);
+        }
 
-//                //generate unique file name
-//                fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+        // GET: Category/Delete/5
+        public async Task<ActionResult> Delete(int categoryId)
+        {
+            if (categoryId < 1)
+            {
+                return Json(new { success = false, message = "Invalid brand ID." });
+            }
+            var category = await _categoryService.GetCategoryByIdAsync(categoryId);
 
-//                //specify the path where you want to save the image
-//                category.category_img = "~/Images/CategoryImages/" + fileName;
-//                fileName = Path.Combine(Server.MapPath("~/Images/CategoryImages/"), fileName);
-//            }
-//            if (ModelState.IsValid)
-//            {
-//                var categoryDomain = mapper.Map<CategoryDomainModel>(category);
-//                categoryService.UpdateCategory(categoryDomain.category_id, categoryDomain, fileName);
-//                return RedirectToAction("Index");
-//            }
-//            return View(category);
+            if (category == null)
+            {
+                return Json(new { success = false, message = "Category not found." });
+            }
+            try
+            {
+                await _categoryService.DeleteCategoryAsync(categoryId);
+                return Json(new { success = true, message = "Categpry deleted successfully!" });
+            }
+            catch (Exception)
+            {
+                //_logger.LogError(ex, "Error occurred while deleting brand with ID: {BrandId}", id);
+                return Json(new { success = false, message = "An error occurred while deleting the Category. Please try again." });
+            }
+        }
+        private async Task PopulateMainCategoryDropdownAsync()
+        {
+            var mainCategory = await _categoryService.GetMainCategoriesAsync();
+            var mainCategoryViewModel = mainCategory.Select(x => new CategoryViewModel()
+            {
+                CategoryId = x.CategoryId,
+                CategoryName = x.CategoryName
+            });
+            ViewBag.CategoryList = new SelectList(mainCategoryViewModel, "CategoryId", "CategoryName");
+        }
 
-//        }
-
-//        // GET: Category/Delete/5
-//        public ActionResult Delete(int id)
-//        {
-//            if (id < 0)
-//            {
-//                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-//            }
-
-//            var category = categoryService.GetCategoryById(id);
-//            if (category == null)
-//            {
-//                return HttpNotFound();
-//            }
-//            return View(category);
-
-//        }
-
-//        // POST: Category/Delete/5
-//        [HttpPost, ActionName("Delete")]
-//        [ValidateAntiForgeryToken]
-//        public ActionResult DeleteConfirmed(int id)
-//        {
-//            var category = categoryService.DeleteCategory(id);
-//            if (category == false)
-//            {
-//                return HttpNotFound();
-//            }
-//            return RedirectToAction("Index");
-//        }
-//    }
-//}
+    }
+}

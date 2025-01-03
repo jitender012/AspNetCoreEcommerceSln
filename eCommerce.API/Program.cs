@@ -54,19 +54,19 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseExceptionHandler(errorApp =>
-{
-    errorApp.Run(async context =>
-    {
-        context.Response.ContentType = "application/json";
-        var error = context.Features.Get<IExceptionHandlerFeature>()?.Error;
-        if (error is ValidationException)
-        {
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            await context.Response.WriteAsync(new { Error = error.Message }.ToString());
-        }
-    });
-});
+//app.UseExceptionHandler(errorApp =>
+//{
+//    errorApp.Run(async context =>
+//    {
+//        context.Response.ContentType = "application/json";
+//        var error = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+//        if (error is ValidationException)
+//        {
+//            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+//            await context.Response.WriteAsync(new { Error = error.Message }.ToString());
+//        }
+//    });
+//});
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

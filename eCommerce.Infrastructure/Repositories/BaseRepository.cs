@@ -25,7 +25,7 @@ namespace eCommerce.Infrastructure.Repositories
             var dbResult = await _dbSet.Where(whereCondition).FirstOrDefaultAsync();
             return dbResult;
         }
-        public async Task<T> GetByIdAsync(Guid id)
+        public async Task<T?> GetByIdAsync<Tid>(Tid id)
         {
             return await _dbSet.FindAsync(id);
         }
@@ -75,6 +75,7 @@ namespace eCommerce.Infrastructure.Repositories
                 throw new KeyNotFoundException($"Entity with ID {whereCondition} not found.");
 
             _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
         }
         public Task<bool> ExistsAsync(Expression<Func<T, bool>> whereCondition)
         {

@@ -14,14 +14,17 @@ namespace eCommerce.Web.StartupExtensions
         {
 
             //Services dependency injection
+            services.AddScoped<IFileUploadService, FileUploadService>();
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<IWarehouseService, WarehouseService>();
-            services.AddScoped<IFileUploadService, FileUploadService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+
 
             //Services dependency resolve
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddScoped<IBrandRepository, BrandRepository>();
             services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>(); 
         }
     }
 }

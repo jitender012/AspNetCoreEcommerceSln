@@ -23,7 +23,7 @@ namespace eCommerce.API.Controllers
 
 
         [HttpPost]
-        public IActionResult AddBrand(CreateBrandDTO brandDto)
+        public IActionResult AddBrand(BrandDTO brandDto)
         {
             var brand = _brandService.AddBrand(brandDto);
             return CreatedAtAction(nameof(GetAllBrands), new { id = brand.Id }, brand);

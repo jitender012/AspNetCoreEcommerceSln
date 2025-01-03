@@ -10,8 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\eCommerce.Core\eCommerce.Domain.csproj" />
+  <ItemGroup>    
+    <ProjectReference Include="..\eCommerce.Domain\eCommerce.Domain.csproj" />
   </ItemGroup>
 
 </Project>
