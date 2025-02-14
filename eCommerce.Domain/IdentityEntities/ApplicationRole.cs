@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace eCommerce.Domain.IdentityEntities
 {
-    public class ApplicationRole : IdentityRole<Guid>
+    public class ApplicationRole  :IdentityRole<Guid>
     {
     }
 }

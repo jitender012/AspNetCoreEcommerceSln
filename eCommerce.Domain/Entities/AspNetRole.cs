@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 
 namespace eCommerce.Domain.Entities;
 
-public partial class AspNetRole
+public partial class AspNetRole 
 {
     public Guid Id { get; set; }
 

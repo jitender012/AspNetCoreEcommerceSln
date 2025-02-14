@@ -7,9 +7,13 @@ public partial class ProductFeature
 {
     public int ProductFeaturesId { get; set; }
 
-    public string Name { get; set; } = null!;
+    public string Name { get; set; } = null!;  
+
+    public bool? IsManadatory { get; set; }
+
+    public string CreatedBy { get; set; } = null!;    
 
     public virtual ICollection<FeatureOption> FeatureOptions { get; set; } = new List<FeatureOption>();
 
-    public virtual ICollection<VariationCategory> VariationCategories { get; set; } = new List<VariationCategory>();
+    public virtual ICollection<ProductCategoryFeature> ProductCategoryFeatures { get; set; } = new List<ProductCategoryFeature>();
 }

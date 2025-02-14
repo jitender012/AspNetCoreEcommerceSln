@@ -1,0 +1,99 @@
+﻿@model CategoryViewModel
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+@if (ViewBag.IsSuccess != null)
+{
+    <h4 style="color:green">@ViewBag.IsSuccess</h4>
+}
+
+<div class="container ">
+
+    @using (Html.BeginForm("Edit", "Category", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal justify-content-center">
+            <div class="d-flex">
+                <h4>Edit Category</h4>
+            </div>
+            <hr />
+            <div class="row">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="col-md-6 align-content-around">
+                    <div class="form-group mb-2">
+                        <label class="control-label">Category Name</label>
+                        <div class="col-md-12">
+
+                            @Html.EditorFor(model => model.CategoryName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" })
+
+                        </div>
+                    </div>
+
+                    <div class="form-group  mb-2">
+                        <label class="control-label">Parent Category Name</label>
+                        <div class="col-md-12">
+                            @Html.DropDownListFor(
+                                     model => model.ParentCategoryId,
+                                     (IEnumerable<SelectListItem>)ViewBag.Categories,
+                                     Model.ParentCategoryName != null ? Model.ParentCategoryName : "--Select Main Category--",
+                                     new { @class = "form-control" }
+                                     )
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label class="control-label">Category Image</label>
+                        <div class="col-md-12">
+                            <input type="file" name="ImageFile" class="form-control" id="formFile" />
+                            @Html.ValidationMessageFor(model => model.CategoryImage, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 align-content-around">
+                    <div class="justify-content-center d-flex">
+                        <img id="imagePreview" src="#" alt="Image Preview" style="max-width: 200px; max-height:200px; display: none;" />
+                        <div id="oldImage">
+                            @if (Model.CategoryImage != null)
+                            { 
+                                <img src="@Url.Content(Model.CategoryImage)" class="" style=" max-height:250px" />
+                            }
+                            <img src="~/images/utitlity/no-image-placeholder.svg.png" class="" style=" max-height:250px" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Update" class="btn btn-success" />
+                </div>
+            </div>
+        </div>
+    }
+    <br />
+    <div>
+        @Html.ActionLink("Back to List", "Index", "Category")
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $("#formFile").change(function () {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imagePreview').attr('src', e.target.result);
+                    $('#oldImage').hide();
+                    $('#imagePreview').show();
+                }
+                reader.readAsDataURL(this.files[0]);
+            });
+        });</script>
+}

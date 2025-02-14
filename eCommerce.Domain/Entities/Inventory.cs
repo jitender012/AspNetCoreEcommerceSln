@@ -21,7 +21,7 @@ public partial class Inventory
 
     public DateTime? UpdatedOn { get; set; }
 
-    public virtual ProductVarient ProductVariant { get; set; } = null!;
+    public virtual ProductVariant ProductVariant { get; set; } = null!;
 
     public virtual Warehouse Warehouse { get; set; } = null!;
 }

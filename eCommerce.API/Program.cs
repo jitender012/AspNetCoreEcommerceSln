@@ -1,18 +1,18 @@
-using eCommerce.Application.Services;
 using eCommerce.Application.ServiceContracts.AdminServiceContracts;
-using eCommerce.Infrastructure.Models;
-using Microsoft.EntityFrameworkCore;
-using eCommerce.Domain.IdentityEntities;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using eCommerce.Domain.RepositoryContracts;
-using eCommerce.Infrastructure.Repositories;
-using eCommerce.Infrastructure.Dapper;
-using Microsoft.Data.SqlClient;
-using System.Data;
 using eCommerce.Application.ServiceContracts.VendorServiceContracts;
-using Microsoft.AspNetCore.Diagnostics;
-using System.ComponentModel.DataAnnotations;
+using eCommerce.Application.Services.AdminServices;
+using eCommerce.Application.Services.VendorServices;
+using eCommerce.Domain.Entities;
+using eCommerce.Domain.IdentityEntities;
+using eCommerce.Domain.RepositoryContracts;
+using eCommerce.Infrastructure.Dapper;
+using eCommerce.Infrastructure.Data;
+using eCommerce.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +34,7 @@ builder.Services.AddScoped<IWarehouseService, WarehouseService>();
 
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
-    .AddEntityFrameworkStores<eCommerce.Infrastructure.Models.eCommerceDbContext>()
+    .AddEntityFrameworkStores<eCommerce.Infrastructure.Data.eCommerceDbContext>()
     .AddDefaultTokenProviders()
     .AddRoleStore<RoleStore<ApplicationRole, eCommerceDbContext, Guid>>();
 

@@ -1,5 +1,4 @@
 ﻿using eCommerce.Domain.IdentityEntities;
-using eCommerce.Infrastructure.Models;
 using eCommerce.Web.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -68,6 +67,50 @@ namespace eCommerce.Web.Controllers
                 return View(data);
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> RegisterAsSeller(RegisterViewModel data)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(data);
+            }
+
+            ApplicationUser applicationUser = new ApplicationUser()
+            {
+                Email = data.Email,
+                UserName = data.Name
+            };
+
+            var result = await _userManager.CreateAsync(applicationUser, data.Password);
+            var roleResult = await _userManager.AddToRoleAsync(applicationUser, "Seller");
+
+            if (!roleResult.Succeeded)
+            {
+                foreach (var error in roleResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                // deleting the user if the role assignment fails
+                await _userManager.DeleteAsync(applicationUser);
+                return View(data);
+            }
+
+            if (result.Succeeded)
+            {
+                await _signInManager.SignInAsync(applicationUser, false);
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                foreach (IdentityError error in result.Errors)
+                {
+                    ModelState.AddModelError("Register", error.Description);
+                }
+                return View(data);
+            }
+        }
         #endregion
 
         #region LoginActions
@@ -95,7 +138,7 @@ namespace eCommerce.Web.Controllers
             if (result.Succeeded)
             {
                 string area = applicationUser != null && await _userManager.IsInRoleAsync(applicationUser, "Admin") ? "Admin" :
-                                          applicationUser != null && await _userManager.IsInRoleAsync(applicationUser, "Vendor") ? "Vendor" : "";
+                                          applicationUser != null && await _userManager.IsInRoleAsync(applicationUser, "Seller") ? "Vendor" : "";
 
                 if (!string.IsNullOrEmpty(area))
                 {

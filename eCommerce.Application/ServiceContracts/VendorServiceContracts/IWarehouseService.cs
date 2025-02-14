@@ -1,4 +1,5 @@
 ﻿using eCommerce.Application.DTO;
+using eCommerce.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,13 @@ namespace eCommerce.Application.ServiceContracts.VendorServiceContracts
     {
         Task<List<WarehouseDTO>> GetAllStores();
         Task<WarehouseDTO> GetStoreById(int id);
-        Task<WarehouseDTO> GetStoreByVendorId(int id);
+        Task<List<WarehouseDTO>> GetStoresByVendorId(Guid id);
         Task<int> AddStore(WarehouseDTO data);
-        bool UpdateStore(WarehouseDTO data);
-        bool DeleteStore(int id);
+        Task<bool> UpdateWarehouse(WarehouseDTO data);
+        Task<bool> DeleteStore(int id);
+
+        Task<IEnumerable<Product>> GetOutOfStockProductsAsync();
+
+        Task<IEnumerable<Product>> GetLowStockProductsAsync(int threshold);
     }
 }

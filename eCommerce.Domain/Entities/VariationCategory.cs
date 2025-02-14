@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using eCommerce.Domain.Entities;
 
 namespace eCommerce.Domain.Entities;
 
@@ -11,7 +10,7 @@ public partial class VariationCategory
 
     public int CategoryId { get; set; }
 
-    public virtual Category Category { get; set; } = null!;
+    public virtual ProductCategory Category { get; set; } = null!;
 
     public virtual ProductFeature ProductFeatures { get; set; } = null!;
 }

@@ -1,5 +1,4 @@
 ﻿using eCommerce.Application.DTO;
-using eCommerce.Core.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +13,10 @@ namespace eCommerce.Application.ServiceContracts.AdminServiceContracts
         /// 
         /// </summary>
         /// <returns>List of categories</returns>
-        Task<List<CategoryDTO>> GetAllCategoriesAsync();
+        Task<List<CategoryDTO>> GetAllAsync();
         Task<List<CategoryDTO>> GetMainCategoriesAsync();
         Task<List<CategoryDTO>> GetSubCategoriesAsync();
+        Task<List<CategoryDTO>> GetAllCategoriesHierarchicalAsync();
         Task<CategoryDTO> GetCategoryByIdAsync(int id);
 
         /// <summary>

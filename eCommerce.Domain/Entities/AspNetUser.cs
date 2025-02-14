@@ -47,6 +47,8 @@ public partial class AspNetUser
 
     public virtual ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
 
+    public virtual ICollection<Brand> Brands { get; set; } = new List<Brand>();
+
     public virtual Cart? Cart { get; set; }
 
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();

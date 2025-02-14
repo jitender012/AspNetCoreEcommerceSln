@@ -7,15 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace eCommerce.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class RoleManagerController : Controller
+    public class RoleManagerController(RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userManager) : Controller
     {
-        private readonly RoleManager<ApplicationRole> _roleManager;
-        private readonly UserManager<ApplicationUser> _userManager;
-        public RoleManagerController(RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userManager)
-        {
-            _roleManager = roleManager;
-            _userManager = userManager;
-        }
+        private readonly RoleManager<ApplicationRole> _roleManager = roleManager;
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
+
         public IActionResult Index()
         {
             var roles = _roleManager.Roles.ToList();
@@ -68,7 +64,7 @@ namespace eCommerce.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Assign(AssignRoleViewModel model)
         {
-            ApplicationUser? user = new ApplicationUser();
+            ApplicationUser? user = new();
 
             if (model.UserEmail != null)
             {
@@ -80,7 +76,7 @@ namespace eCommerce.Web.Areas.Admin.Controllers
                 ModelState.AddModelError("", "User not found.");
                 return View(model);
             }
-            IdentityResult? result = new IdentityResult();
+            IdentityResult? result = new();
             if (model.RoleName != null)
             {
                 if (await _roleManager.RoleExistsAsync(model.RoleName))

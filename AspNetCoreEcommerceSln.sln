@@ -19,6 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eCommerce.UnitTest", "eComm
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Work Track", "Work Track", "{03D25054-28A7-4B44-807C-A3EACF9E2E3B}"
 	ProjectSection(SolutionItems) = preProject
+		abcs.txt = abcs.txt
 		NamingConvention.md = NamingConvention.md
 		Notes.txt = Notes.txt
 	EndProjectSection

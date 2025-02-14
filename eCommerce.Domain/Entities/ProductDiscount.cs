@@ -23,5 +23,5 @@ public partial class ProductDiscount
 
     public bool? IsActive { get; set; }
 
-    public virtual ProductVarient ProductVariant { get; set; } = null!;
+    public virtual ProductVariant ProductVariant { get; set; } = null!;
 }

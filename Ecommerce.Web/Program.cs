@@ -1,24 +1,23 @@
-using eCommerce.Application.ServiceContracts.VendorServiceContracts;
-using eCommerce.Application.Services;
-using eCommerce.Application.ServiceContracts.AdminServiceContracts;
 using eCommerce.Domain.IdentityEntities;
 using eCommerce.Domain.RepositoryContracts;
 using eCommerce.Infrastructure.Dapper;
-using eCommerce.Infrastructure.Models;
-using eCommerce.Infrastructure.Repositories;
+using eCommerce.Infrastructure.Data;
+using eCommerce.Web.StartupExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using System.Configuration;
 using System.Data;
-using eCommerce.Web.StartupExtensions;
-using eCommerce.Application.ServiceContracts.UtilityServiceContracts;
+using Serilog;
+using Microsoft.VisualBasic;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 
 
 builder.Services.AddHttpClient("ApiClient", client =>
@@ -38,9 +37,18 @@ builder.Services.AddScoped<IDapperRepository, DapperRepository>();
 builder.Services.AddScoped<IDbConnection>(sp => new SqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
-    .AddEntityFrameworkStores<eCommerce.Infrastructure.Models.eCommerceDbContext>()
+    .AddEntityFrameworkStores<eCommerce.Infrastructure.Data.eCommerceDbContext>()
     .AddDefaultTokenProviders()
     .AddRoleStore<RoleStore<ApplicationRole, eCommerceDbContext, Guid>>();
+
+builder.Services.AddHttpContextAccessor();
+
+//Add support to logging with SERILOG
+builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(services));
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 
@@ -56,6 +64,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
 
 app.MapControllerRoute(
     name: "default",

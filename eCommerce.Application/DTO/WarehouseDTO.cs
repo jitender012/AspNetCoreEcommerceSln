@@ -19,7 +19,7 @@ namespace eCommerce.Application.DTO
         public string? PostalCode { get; set; }
         public Guid? UserId { get; set; }
 
-        public Warehouse ToStore()
+        public Warehouse ToWarehouse()
         {
             return new Warehouse
             {
@@ -35,7 +35,7 @@ namespace eCommerce.Application.DTO
             };
         }
 
-        public static WarehouseDTO FromStore(Warehouse store)
+        public static WarehouseDTO FromWarehouse(Warehouse store)
         {
             return new WarehouseDTO
             {
@@ -51,9 +51,9 @@ namespace eCommerce.Application.DTO
             };
         }
 
-        public static List<WarehouseDTO> FromStores(IEnumerable<Warehouse> stores)
+        public static List<WarehouseDTO> FromWarehouseList(IEnumerable<Warehouse> stores)
         {
-            return stores.Select(s=> FromStore(s)).ToList();
+            return stores.Select(s=> FromWarehouse(s)).ToList();
         }
     }
 }

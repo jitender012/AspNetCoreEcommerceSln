@@ -23,7 +23,7 @@ public partial class ReturnRequest
 
     public virtual Order Order { get; set; } = null!;
 
-    public virtual ProductVarient ProductVariant { get; set; } = null!;
+    public virtual ProductVariant ProductVariant { get; set; } = null!;
 
     public virtual ICollection<Refund> Refunds { get; set; } = new List<Refund>();
 

@@ -17,5 +17,7 @@ public partial class ProductImage
 
     public DateTime? UpdatedAt { get; set; }
 
-    public virtual ProductVarient ProductVariant { get; set; } = null!;
+    public int? Order { get; set; }
+
+    public virtual ProductVariant ProductVariant { get; set; } = null!;
 }

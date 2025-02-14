@@ -21,5 +21,5 @@ public partial class CartItem
 
     public virtual Cart Cart { get; set; } = null!;
 
-    public virtual ProductVarient ProductIvariantdNavigation { get; set; } = null!;
+    public virtual ProductVariant ProductIvariantdNavigation { get; set; } = null!;
 }

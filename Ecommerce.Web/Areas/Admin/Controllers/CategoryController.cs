@@ -1,20 +1,15 @@
 ﻿using eCommerce.Application.DTO;
 using eCommerce.Application.ServiceContracts.AdminServiceContracts;
 using eCommerce.Application.ServiceContracts.UtilityServiceContracts;
-using eCommerce.Application.Services;
-using eCommerce.Core.DTO;
 using eCommerce.Web.Areas.Admin.Models.Category;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Net;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Security.Claims;
-using eCommerce.Domain.Entities;
 
 namespace eCommerce.Web.Areas.Admin.Controllers
 
 {
+    [Area("Admin")]
     [Authorize(Roles = "Admin, Employee")]
     public class CategoryController : Controller
     {
@@ -27,19 +22,35 @@ namespace eCommerce.Web.Areas.Admin.Controllers
             _fileUploadService = fileUploadService;
         }
 
-        // GET: Category
+        // GET: Categories
         public async Task<IActionResult> Index()
         {
-            var categoryDomainModel = await _categoryService.GetAllCategoriesAsync();
-            JsonResult jsonResult = new JsonResult("s");
-            //return View(categoryDomainModel);
-            return jsonResult;
+            var categoriesDto = await _categoryService.GetAllAsync();
+            var parentCategories = await _categoryService.GetMainCategoriesAsync();
+
+            var parentCategoryLookup = parentCategories.ToDictionary(pc=>pc.CategoryId, pc=>pc.CategoryName);
+
+            var categoryViewModels = categoriesDto.Select(x => new CategoryViewModel
+            {
+                CategoryId = x.CategoryId,
+                CategoryName = x.CategoryName,
+                CategoryImage = x.CategoryImage,
+                ParentCategoryId = x.ParentCategoryId,
+                ParentCategoryName = x.ParentCategoryId.HasValue && parentCategoryLookup.ContainsKey(x.ParentCategoryId.Value)
+                                         ? parentCategoryLookup[x.ParentCategoryId.Value]
+                                         : null
+            });
+            return View(categoryViewModels);
         }
 
         // GET: Category/Create
         public async Task<ActionResult> Create()
         {
-            await PopulateMainCategoryDropdownAsync();
+            var categories = await _categoryService.GetAllCategoriesHierarchicalAsync();
+            var dropdownItems = new List<SelectListItem>();
+            PopulateMainCategoryDropdown(categories, dropdownItems);
+            ViewBag.Categories = dropdownItems;
+         
             return View();
         }
 
@@ -48,8 +59,10 @@ namespace eCommerce.Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(CategoryViewModel data)
         {
-            await PopulateMainCategoryDropdownAsync();
-
+            var categories = await _categoryService.GetAllCategoriesHierarchicalAsync();
+            var dropdownItems = new List<SelectListItem>();
+            PopulateMainCategoryDropdown(categories, dropdownItems);
+            ViewBag.Categories = dropdownItems;
             if (!ModelState.IsValid)
             {
                 TempData["Error"] = "Please correct the highlighted errors and try again.";
@@ -102,7 +115,6 @@ namespace eCommerce.Web.Areas.Admin.Controllers
         }
 
 
-
         // GET: Category/Details/5
         public async Task<ActionResult> Details(int id)
         {
@@ -123,22 +135,33 @@ namespace eCommerce.Web.Areas.Admin.Controllers
         // GET: Category/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
-            await PopulateMainCategoryDropdownAsync();
+            var categories = await _categoryService.GetAllCategoriesHierarchicalAsync();
+            var dropdownItems = new List<SelectListItem>();
+            PopulateMainCategoryDropdown(categories, dropdownItems);
+            ViewBag.Categories = dropdownItems;
 
             if (id < 1)
             {
-
                 TempData["ErrorMessage"] = "Invalid category Id.";
                 return View("Error");
             }
-            var category = await _categoryService.GetCategoryByIdAsync(id);
 
+            var category = await _categoryService.GetCategoryByIdAsync(id);
             if (category == null)
             {
                 TempData["ErrorMessage"] = "Category not found with Id " + id + ".";
                 return View("Error");
             }
-            return View(category);
+            CategoryViewModel categoryVM = new()
+            {
+                CategoryId = category.CategoryId,
+                CategoryImage = category.CategoryImage,
+                CategoryName = category.CategoryName,
+                ParentCategoryId = category.ParentCategoryId,
+                ParentCategoryName = category.ParentCategoryName,
+                ParentCategoryImage = category.ParentCategoryImage,
+            };
+            return View(categoryVM);
         }
 
         // POST: Category/Edit/5      
@@ -146,7 +169,10 @@ namespace eCommerce.Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(CategoryViewModel data)
         {
-            await PopulateMainCategoryDropdownAsync();
+            var categories = await _categoryService.GetAllCategoriesHierarchicalAsync();
+            var dropdownItems = new List<SelectListItem>();
+            PopulateMainCategoryDropdown(categories, dropdownItems);
+            ViewBag.Categories = dropdownItems;
 
             if (ModelState.IsValid)
             {
@@ -201,16 +227,21 @@ namespace eCommerce.Web.Areas.Admin.Controllers
                 return Json(new { success = false, message = "An error occurred while deleting the Category. Please try again." });
             }
         }
-        private async Task PopulateMainCategoryDropdownAsync()
+        private void PopulateMainCategoryDropdown(List<CategoryDTO> categories, List<SelectListItem> dropdownItems, int level = 0)
         {
-            var mainCategory = await _categoryService.GetMainCategoriesAsync();
-            var mainCategoryViewModel = mainCategory.Select(x => new CategoryViewModel()
+            foreach (var category in categories)
             {
-                CategoryId = x.CategoryId,
-                CategoryName = x.CategoryName
-            });
-            ViewBag.CategoryList = new SelectList(mainCategoryViewModel, "CategoryId", "CategoryName");
-        }
+                dropdownItems.Add(new SelectListItem
+                {
+                    Value = category.CategoryId.ToString(),
+                    Text = new string('-', level * 2) + category.CategoryName 
+                });
+                if (category.ChildCategoris?.Any() == true)
+                {
+                    PopulateMainCategoryDropdown(category.ChildCategoris, dropdownItems, level + 1);
+                }
+            }
+        }      
 
     }
 }

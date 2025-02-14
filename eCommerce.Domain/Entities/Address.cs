@@ -1,5 +1,4 @@
-﻿using eCommerce.Domain.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace eCommerce.Domain.Entities;

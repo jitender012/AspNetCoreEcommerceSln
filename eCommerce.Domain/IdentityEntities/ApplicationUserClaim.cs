@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace eCommerce.Domain.IdentityEntities
 {
-    public class ApplicationUserClaim : IdentityUserClaim<Guid> 
+    public class ApplicationUserClaim : IdentityUserClaim<Guid>
     {
     }
 }

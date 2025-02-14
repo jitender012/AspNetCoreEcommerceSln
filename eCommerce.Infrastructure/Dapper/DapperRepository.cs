@@ -8,13 +8,9 @@ using Dapper;
 using eCommerce.Domain.RepositoryContracts;
 namespace eCommerce.Infrastructure.Dapper
 {
-    public class DapperRepository : IDapperRepository
+    public class DapperRepository(IDbConnection dbConnection) : IDapperRepository
     {
-        public readonly IDbConnection _dbConnection;
-        public DapperRepository(IDbConnection dbConnection)
-        {
-            _dbConnection = dbConnection;
-        }
+        public readonly IDbConnection _dbConnection = dbConnection;
 
         public async Task<T?> GetTAsync<T>(string sql, object? parameters = null)
         {

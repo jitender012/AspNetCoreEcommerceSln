@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace eCommerce.Domain.Entities;
 
@@ -9,13 +10,14 @@ public partial class Banner
 
     public string? BannerName { get; set; }
 
+    [StringLength(250)]
+    public string? BannerDescription { get; set; }
+
     public string? ImagePath { get; set; }
 
     public string? Link { get; set; }
 
     public bool? IsActive { get; set; }
-
-    public bool? IsDeleted { get; set; }
 
     public DateTime? StartDate { get; set; }
 
@@ -24,4 +26,6 @@ public partial class Banner
     public DateTime? CreatedDate { get; set; }
 
     public DateTime? ModifiedDate { get; set; }
+
+    public bool? IsDeleted { get; set; }
 }

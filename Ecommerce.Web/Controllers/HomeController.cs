@@ -1,25 +1,20 @@
-using eCommerce.Infrastructure.Models;
+using eCommerce.Infrastructure.Data;
 using eCommerce.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace Ecommerce.Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(ILogger<HomeController> logger, eCommerceDbContext context) : Controller
     {
-        private readonly eCommerceDbContext _context;
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger, eCommerceDbContext context)
-        {
-            _logger = logger;
-            _context = context;
-        }
+        private readonly eCommerceDbContext _context = context;
+        private readonly ILogger<HomeController> _logger = logger;
 
         public IActionResult Index()
         {
+            _logger.LogInformation("Inside Index of HomeController");
 
-            var categories = _context.Categories.ToList();
+            var categories = _context.ProductCategories.ToList();
             return View(categories);
 
         }

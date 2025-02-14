@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace eCommerce.Infrastructure.Models;
+namespace eCommerce.Infrastructure.Data;
 
 public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
 {
@@ -43,7 +43,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
 
     public virtual DbSet<CartItem> CartItems { get; set; }
 
-    public virtual DbSet<Category> Categories { get; set; }
+    public virtual DbSet<FeatureCategory> FeatureCategories { get; set; }
 
     public virtual DbSet<FeatureOption> FeatureOptions { get; set; }
 
@@ -65,6 +65,10 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
 
     public virtual DbSet<ProductAttribute> ProductAttributes { get; set; }
 
+    public virtual DbSet<ProductCategory> ProductCategories { get; set; }
+
+    public virtual DbSet<ProductCategoryFeature> ProductCategoryFeatures { get; set; }
+
     public virtual DbSet<ProductConfiguration> ProductConfigurations { get; set; }
 
     public virtual DbSet<ProductDiscount> ProductDiscounts { get; set; }
@@ -73,7 +77,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
 
     public virtual DbSet<ProductImage> ProductImages { get; set; }
 
-    public virtual DbSet<ProductVarient> ProductVarients { get; set; }
+    public virtual DbSet<ProductVariant> ProductVariants { get; set; }
 
     public virtual DbSet<PurchaseOrder> PurchaseOrders { get; set; }
 
@@ -91,25 +95,18 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
 
     public virtual DbSet<SupplierTransaction> SupplierTransactions { get; set; }
 
-    public virtual DbSet<VariationCategory> VariationCategories { get; set; }
-
     public virtual DbSet<Warehouse> Warehouses { get; set; }
 
     public virtual DbSet<Wishlist> Wishlists { get; set; }
 
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseSqlServer("Server=DESKTOP-O303CQ1\\SQLEXPRESS;Database=eCommerceDB;Integrated Security=True;TrustServerCertificate=True;");
+    //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+    //        => optionsBuilder.UseSqlServer("Server=DESKTOP-O303CQ1\\SQLEXPRESS;Database=eCommerceDB;Integrated Security=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        // Configure identity tables explicitly, if needed
-        modelBuilder.Entity<IdentityRoleClaim<Guid>>(entity =>
-        {
-            entity.ToTable("AspNetRoleClaims");
-        });
+        
         modelBuilder.Entity<Address>(entity =>
         {
             entity.ToTable("Address", "User");
@@ -139,6 +136,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
 
         modelBuilder.Entity<AspNetRole>(entity =>
         {
+
             entity.ToTable("AspNetRoles", "Identity");
 
             entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
@@ -183,7 +181,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                     j =>
                     {
                         j.HasKey("UserId", "RoleId");
-                        j.ToTable("AspNetUserRoles", "Identity");
+                        j.ToTable("AspNetUserRoles");
                         j.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
                     });
         });
@@ -201,7 +199,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
         {
             entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
 
-            entity.ToTable("AspNetUserLogins", "Identity");
+            entity.ToTable("AspNetUserLogin", "Identity");
 
             entity.HasIndex(e => e.UserId, "IX_AspNetUserLogins_UserId");
 
@@ -286,6 +284,11 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
             entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.IsDeleted).HasDefaultValue(false);
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.Brands)
+                .HasForeignKey(d => d.CreatedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Brands_AspNetUsers");
         });
 
         modelBuilder.Entity<Cart>(entity =>
@@ -332,31 +335,25 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasConstraintName("FK_CartItem_Products");
         });
 
-        modelBuilder.Entity<Category>(entity =>
+        modelBuilder.Entity<FeatureCategory>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK_MainCategory");
+            entity.ToTable("FeatureCategory");
 
-            entity.ToTable("Category", "Marketing");
-
-            entity.Property(e => e.CategoryImage).IsUnicode(false);
-            entity.Property(e => e.CategoryName)
-                .HasMaxLength(255)
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
                 .IsUnicode(false);
-
-            entity.HasOne(d => d.ParentCategory).WithMany(p => p.InverseParentCategory)
-                .HasForeignKey(d => d.ParentCategoryId)
-                .HasConstraintName("FK_Category_Category");
         });
 
         modelBuilder.Entity<FeatureOption>(entity =>
         {
             entity.ToTable("FeatureOption", "Product");
 
-            entity.Property(e => e.FeatureOptionId).ValueGeneratedNever();
+            entity.HasIndex(e => e.Value, "UQ_Value").IsUnique();
+
             entity.Property(e => e.Value).HasMaxLength(50);
 
-            entity.HasOne(d => d.Feature).WithMany(p => p.FeatureOptions)
-                .HasForeignKey(d => d.FeatureId)
+            entity.HasOne(d => d.ProductFeature).WithMany(p => p.FeatureOptions)
+                .HasForeignKey(d => d.ProductFeatureId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FeatureOption_ProductFeatures");
         });
@@ -559,7 +556,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Products_AspNetUsers");
 
-            entity.HasOne(d => d.ProductNavigation).WithOne(p => p.Product)
+            entity.HasOne(d => d.Brand).WithOne(p => p.Product)
                 .HasForeignKey<Product>(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Products_Brands");
@@ -586,18 +583,53 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<ProductCategory>(entity =>
+        {
+            entity.HasKey(e => e.ProductCategoryId).HasName("PK_MainCategory");
+
+            entity.ToTable("ProductCategory", "Marketing");
+
+            entity.Property(e => e.CategoryImage).IsUnicode(false);
+            entity.Property(e => e.CategoryName)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.ParentCategory).WithMany(p => p.InverseParentCategory)
+                .HasForeignKey(d => d.ParentCategoryId)
+                .HasConstraintName("FK_Category_Category");
+        });
+
+        modelBuilder.Entity<ProductCategoryFeature>(entity =>
+        {
+            entity.HasKey(e => e.ProductCategoryFeatureId).HasName("PK_VariationCategory");
+
+            entity.ToTable("ProductCategoryFeature", "Product");
+
+            entity.HasOne(d => d.FeatureCategory).WithMany(p => p.ProductCategoryFeatures)
+                .HasForeignKey(d => d.FeatureCategoryId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProductCategoryFeature_FeatureCategory");
+
+            entity.HasOne(d => d.ProductCategory).WithMany(p => p.ProductCategoryFeatures)
+                .HasForeignKey(d => d.ProductCategoryId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProductCategoryFeature_ProductCategory");
+
+            entity.HasOne(d => d.ProductFeatures).WithMany(p => p.ProductCategoryFeatures)
+                .HasForeignKey(d => d.ProductFeaturesId)
+                .HasConstraintName("FK_ProductCategoryFeature_ProductFeatures");
+        });
+
         modelBuilder.Entity<ProductConfiguration>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("ProductConfiguration", "Product");
+            entity.ToTable("ProductConfiguration", "Product");
 
-            entity.HasOne(d => d.FeatureOption).WithMany()
+            entity.HasOne(d => d.FeatureOption).WithMany(p => p.ProductConfigurations)
                 .HasForeignKey(d => d.FeatureOptionId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ProductConfiguration_ProductFeatures");
+                .HasConstraintName("FK_ProductConfiguration_FeatureOption");
 
-            entity.HasOne(d => d.ProductVarient).WithMany()
+            entity.HasOne(d => d.ProductVarient).WithMany(p => p.ProductConfigurations)
                 .HasForeignKey(d => d.ProductVarientId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ProductConfiguration_ProductVarient");
@@ -630,8 +662,8 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
 
             entity.ToTable("ProductFeatures", "Product");
 
-            entity.Property(e => e.ProductFeaturesId).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(50);
+            
         });
 
         modelBuilder.Entity<ProductImage>(entity =>
@@ -651,11 +683,11 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasConstraintName("FK_ProductImage_Products");
         });
 
-        modelBuilder.Entity<ProductVarient>(entity =>
+        modelBuilder.Entity<ProductVariant>(entity =>
         {
             entity.HasKey(e => e.ProductIvarientId).HasName("PK_ProductItems");
 
-            entity.ToTable("ProductVarient", "Product");
+            entity.ToTable("ProductVariant", "Product");
 
             entity.Property(e => e.ProductIvarientId)
                 .ValueGeneratedNever()
@@ -668,7 +700,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasMaxLength(10)
                 .IsFixedLength();
 
-            entity.HasOne(d => d.Product).WithMany(p => p.ProductVarients)
+            entity.HasOne(d => d.Product).WithMany(p => p.ProductVariants)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ProductItems_Products");
@@ -848,23 +880,6 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
             entity.HasOne(d => d.Supplier).WithMany(p => p.SupplierTransactions)
                 .HasForeignKey(d => d.SupplierId)
                 .HasConstraintName("FK_SupplierTransaction_Supplier");
-        });
-
-        modelBuilder.Entity<VariationCategory>(entity =>
-        {
-            entity.ToTable("VariationCategory", "Product");
-
-            entity.Property(e => e.VariationCategoryId).ValueGeneratedNever();
-
-            entity.HasOne(d => d.Category).WithMany(p => p.VariationCategories)
-                .HasForeignKey(d => d.CategoryId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_VariationCategory_Category");
-
-            entity.HasOne(d => d.ProductFeatures).WithMany(p => p.VariationCategories)
-                .HasForeignKey(d => d.ProductFeaturesId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_VariationCategory_VariationCategory");
         });
 
         modelBuilder.Entity<Warehouse>(entity =>

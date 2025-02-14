@@ -1,11 +1,6 @@
 ﻿using eCommerce.Domain.Entities;
 using eCommerce.Domain.RepositoryContracts;
-using eCommerce.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using eCommerce.Infrastructure.Data;
 
 namespace eCommerce.Infrastructure.Repositories
 {
@@ -17,7 +12,12 @@ namespace eCommerce.Infrastructure.Repositories
 
         }
 
-        public Task AddMultipleProducts(IEnumerable<Product> items)
+        public Task AddMultipleProducts(IEnumerable<ProductDiscount> items)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddMultipleProducts(IEnumerable<Domain.Entities.Product> items)
         {
             throw new NotImplementedException();
         }

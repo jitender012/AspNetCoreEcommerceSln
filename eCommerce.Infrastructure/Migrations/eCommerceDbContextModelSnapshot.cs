@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using eCommerce.Infrastructure.Models;
+using eCommerce.Infrastructure.Data;
 
 #nullable disable
 
@@ -339,7 +339,7 @@ namespace eCommerce.Infrastructure.Migrations
 
                     b.HasIndex(new[] { "UserId" }, "IX_AspNetUserLogins_UserId");
 
-                    b.ToTable("AspNetUserLogins", "Identity");
+                    b.ToTable("AspNetUserLogin", "Identity");
                 });
 
             modelBuilder.Entity("eCommerce.Domain.Entities.AspNetUserToken", b =>
@@ -411,6 +411,10 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Property<int>("BannerId")
                         .HasColumnType("int");
 
+                    b.Property<string>("BannerDescription")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
                     b.Property<string>("BannerName")
                         .HasMaxLength(255)
                         .IsUnicode(false)
@@ -472,7 +476,7 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime");
 
-                    b.Property<Guid?>("CreatedBy")
+                    b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool?>("IsActive")
@@ -492,6 +496,8 @@ namespace eCommerce.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("BrandId");
+
+                    b.HasIndex("CreatedBy");
 
                     b.ToTable("Brands", "Marketing");
                 });
@@ -564,59 +570,48 @@ namespace eCommerce.Infrastructure.Migrations
                     b.ToTable("CartItem", "User");
                 });
 
-            modelBuilder.Entity("eCommerce.Domain.Entities.Category", b =>
+            modelBuilder.Entity("eCommerce.Domain.Entities.FeatureCategory", b =>
                 {
-                    b.Property<int>("CategoryId")
+                    b.Property<int>("FeatureCategoryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FeatureCategoryId"));
 
-                    b.Property<string>("CategoryImage")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
-
-                    b.Property<string>("CategoryName")
+                    b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool?>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("ParentCategoryId")
+                    b.Property<int?>("DisplayOrder")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("UpdatedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<bool?>("IsMandatory")
+                        .HasColumnType("bit");
 
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
 
-                    b.HasKey("CategoryId")
-                        .HasName("PK_MainCategory");
+                    b.HasKey("FeatureCategoryId");
 
-                    b.HasIndex("ParentCategoryId");
-
-                    b.ToTable("Category", "Marketing");
+                    b.ToTable("FeatureCategory", (string)null);
                 });
 
             modelBuilder.Entity("eCommerce.Domain.Entities.FeatureOption", b =>
                 {
                     b.Property<int>("FeatureOptionId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("FeatureId")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FeatureOptionId"));
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductFeatureId")
                         .HasColumnType("int");
 
                     b.Property<string>("Value")
@@ -626,7 +621,10 @@ namespace eCommerce.Infrastructure.Migrations
 
                     b.HasKey("FeatureOptionId");
 
-                    b.HasIndex("FeatureId");
+                    b.HasIndex("ProductFeatureId");
+
+                    b.HasIndex(new[] { "Value" }, "UQ_Value")
+                        .IsUnique();
 
                     b.ToTable("FeatureOption", "Product");
                 });
@@ -1015,13 +1013,97 @@ namespace eCommerce.Infrastructure.Migrations
                     b.ToTable("ProductAttributes", "Product");
                 });
 
+            modelBuilder.Entity("eCommerce.Domain.Entities.ProductCategory", b =>
+                {
+                    b.Property<int>("ProductCategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductCategoryId"));
+
+                    b.Property<string>("CategoryImage")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)");
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("ParentCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ProductCategoryId")
+                        .HasName("PK_MainCategory");
+
+                    b.HasIndex("ParentCategoryId");
+
+                    b.ToTable("ProductCategory", "Marketing");
+                });
+
+            modelBuilder.Entity("eCommerce.Domain.Entities.ProductCategoryFeature", b =>
+                {
+                    b.Property<int>("ProductCategoryFeatureId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductCategoryFeatureId"));
+
+                    b.Property<int>("FeatureCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProductFeaturesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductCategoryFeatureId")
+                        .HasName("PK_VariationCategory");
+
+                    b.HasIndex("FeatureCategoryId");
+
+                    b.HasIndex("ProductCategoryId");
+
+                    b.HasIndex("ProductFeaturesId");
+
+                    b.ToTable("ProductCategoryFeature", "Product");
+                });
+
             modelBuilder.Entity("eCommerce.Domain.Entities.ProductConfiguration", b =>
                 {
+                    b.Property<int>("ProductConfigurationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductConfigurationId"));
+
                     b.Property<int>("FeatureOptionId")
                         .HasColumnType("int");
 
                     b.Property<Guid>("ProductVarientId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ProductConfigurationId");
 
                     b.HasIndex("FeatureOptionId");
 
@@ -1074,7 +1156,17 @@ namespace eCommerce.Infrastructure.Migrations
             modelBuilder.Entity("eCommerce.Domain.Entities.ProductFeature", b =>
                 {
                     b.Property<int>("ProductFeaturesId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductFeaturesId"));
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsManadatory")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -1103,6 +1195,9 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Property<bool>("IsPrimary")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("Order")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("ProductVariantId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1117,7 +1212,7 @@ namespace eCommerce.Infrastructure.Migrations
                     b.ToTable("ProductImage", "Product");
                 });
 
-            modelBuilder.Entity("eCommerce.Domain.Entities.ProductVarient", b =>
+            modelBuilder.Entity("eCommerce.Domain.Entities.ProductVariant", b =>
                 {
                     b.Property<Guid>("ProductIvarientId")
                         .HasColumnType("uniqueidentifier")
@@ -1151,7 +1246,7 @@ namespace eCommerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductVarient", "Product");
+                    b.ToTable("ProductVariant", "Product");
                 });
 
             modelBuilder.Entity("eCommerce.Domain.Entities.PurchaseOrder", b =>
@@ -1439,26 +1534,6 @@ namespace eCommerce.Infrastructure.Migrations
                     b.HasIndex("SupplierId");
 
                     b.ToTable("SupplierTransaction", "Transaction");
-                });
-
-            modelBuilder.Entity("eCommerce.Domain.Entities.VariationCategory", b =>
-                {
-                    b.Property<int>("VariationCategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductFeaturesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("VariationCategoryId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("ProductFeaturesId");
-
-                    b.ToTable("VariationCategory", "Product");
                 });
 
             modelBuilder.Entity("eCommerce.Domain.Entities.Warehouse", b =>
@@ -1774,6 +1849,17 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Navigation("ChangedByNavigation");
                 });
 
+            modelBuilder.Entity("eCommerce.Domain.Entities.Brand", b =>
+                {
+                    b.HasOne("eCommerce.Domain.Entities.AspNetUser", "CreatedByNavigation")
+                        .WithMany("Brands")
+                        .HasForeignKey("CreatedBy")
+                        .IsRequired()
+                        .HasConstraintName("FK_Brands_AspNetUsers");
+
+                    b.Navigation("CreatedByNavigation");
+                });
+
             modelBuilder.Entity("eCommerce.Domain.Entities.Cart", b =>
                 {
                     b.HasOne("eCommerce.Domain.Entities.AspNetUser", "CartNavigation")
@@ -1793,7 +1879,7 @@ namespace eCommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_CartItem_Cart");
 
-                    b.HasOne("eCommerce.Domain.Entities.ProductVarient", "ProductIvariantdNavigation")
+                    b.HasOne("eCommerce.Domain.Entities.ProductVariant", "ProductIvariantdNavigation")
                         .WithMany("CartItems")
                         .HasForeignKey("ProductIvariantd")
                         .IsRequired()
@@ -1804,25 +1890,15 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Navigation("ProductIvariantdNavigation");
                 });
 
-            modelBuilder.Entity("eCommerce.Domain.Entities.Category", b =>
-                {
-                    b.HasOne("eCommerce.Domain.Entities.Category", "ParentCategory")
-                        .WithMany("InverseParentCategory")
-                        .HasForeignKey("ParentCategoryId")
-                        .HasConstraintName("FK_Category_Category");
-
-                    b.Navigation("ParentCategory");
-                });
-
             modelBuilder.Entity("eCommerce.Domain.Entities.FeatureOption", b =>
                 {
-                    b.HasOne("eCommerce.Domain.Entities.ProductFeature", "Feature")
+                    b.HasOne("eCommerce.Domain.Entities.ProductFeature", "ProductFeature")
                         .WithMany("FeatureOptions")
-                        .HasForeignKey("FeatureId")
+                        .HasForeignKey("ProductFeatureId")
                         .IsRequired()
                         .HasConstraintName("FK_FeatureOption_ProductFeatures");
 
-                    b.Navigation("Feature");
+                    b.Navigation("ProductFeature");
                 });
 
             modelBuilder.Entity("eCommerce.Domain.Entities.Feedback", b =>
@@ -1833,7 +1909,7 @@ namespace eCommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Feedback_AspNetUsers");
 
-                    b.HasOne("eCommerce.Domain.Entities.ProductVarient", "ProductVariant")
+                    b.HasOne("eCommerce.Domain.Entities.ProductVariant", "ProductVariant")
                         .WithMany("Feedbacks")
                         .HasForeignKey("ProductVariantId")
                         .IsRequired()
@@ -1857,7 +1933,7 @@ namespace eCommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("eCommerce.Domain.Entities.Inventory", b =>
                 {
-                    b.HasOne("eCommerce.Domain.Entities.ProductVarient", "ProductVariant")
+                    b.HasOne("eCommerce.Domain.Entities.ProductVariant", "ProductVariant")
                         .WithMany("Inventories")
                         .HasForeignKey("ProductVariantId")
                         .IsRequired()
@@ -1912,7 +1988,7 @@ namespace eCommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_OrderItems_Orders");
 
-                    b.HasOne("eCommerce.Domain.Entities.ProductVarient", "ProductVariant")
+                    b.HasOne("eCommerce.Domain.Entities.ProductVariant", "ProductVariant")
                         .WithMany("OrderItems")
                         .HasForeignKey("ProductVariantId")
                         .IsRequired()
@@ -1936,7 +2012,7 @@ namespace eCommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("eCommerce.Domain.Entities.Product", b =>
                 {
-                    b.HasOne("eCommerce.Domain.Entities.Category", "Category")
+                    b.HasOne("eCommerce.Domain.Entities.ProductCategory", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .HasConstraintName("FK_Products_Category_Main");
@@ -1967,16 +2043,52 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Navigation("UpdatedByNavigation");
                 });
 
+            modelBuilder.Entity("eCommerce.Domain.Entities.ProductCategory", b =>
+                {
+                    b.HasOne("eCommerce.Domain.Entities.ProductCategory", "ParentCategory")
+                        .WithMany("InverseParentCategory")
+                        .HasForeignKey("ParentCategoryId")
+                        .HasConstraintName("FK_Category_Category");
+
+                    b.Navigation("ParentCategory");
+                });
+
+            modelBuilder.Entity("eCommerce.Domain.Entities.ProductCategoryFeature", b =>
+                {
+                    b.HasOne("eCommerce.Domain.Entities.FeatureCategory", "FeatureCategory")
+                        .WithMany("ProductCategoryFeatures")
+                        .HasForeignKey("FeatureCategoryId")
+                        .IsRequired()
+                        .HasConstraintName("FK_ProductCategoryFeature_FeatureCategory");
+
+                    b.HasOne("eCommerce.Domain.Entities.ProductCategory", "ProductCategory")
+                        .WithMany("ProductCategoryFeatures")
+                        .HasForeignKey("ProductCategoryId")
+                        .IsRequired()
+                        .HasConstraintName("FK_ProductCategoryFeature_ProductCategory");
+
+                    b.HasOne("eCommerce.Domain.Entities.ProductFeature", "ProductFeatures")
+                        .WithMany("ProductCategoryFeatures")
+                        .HasForeignKey("ProductFeaturesId")
+                        .HasConstraintName("FK_ProductCategoryFeature_ProductFeatures");
+
+                    b.Navigation("FeatureCategory");
+
+                    b.Navigation("ProductCategory");
+
+                    b.Navigation("ProductFeatures");
+                });
+
             modelBuilder.Entity("eCommerce.Domain.Entities.ProductConfiguration", b =>
                 {
-                    b.HasOne("eCommerce.Domain.Entities.ProductFeature", "FeatureOption")
-                        .WithMany()
+                    b.HasOne("eCommerce.Domain.Entities.FeatureOption", "FeatureOption")
+                        .WithMany("ProductConfigurations")
                         .HasForeignKey("FeatureOptionId")
                         .IsRequired()
-                        .HasConstraintName("FK_ProductConfiguration_ProductFeatures");
+                        .HasConstraintName("FK_ProductConfiguration_FeatureOption");
 
-                    b.HasOne("eCommerce.Domain.Entities.ProductVarient", "ProductVarient")
-                        .WithMany()
+                    b.HasOne("eCommerce.Domain.Entities.ProductVariant", "ProductVarient")
+                        .WithMany("ProductConfigurations")
                         .HasForeignKey("ProductVarientId")
                         .IsRequired()
                         .HasConstraintName("FK_ProductConfiguration_ProductVarient");
@@ -1988,7 +2100,7 @@ namespace eCommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("eCommerce.Domain.Entities.ProductDiscount", b =>
                 {
-                    b.HasOne("eCommerce.Domain.Entities.ProductVarient", "ProductVariant")
+                    b.HasOne("eCommerce.Domain.Entities.ProductVariant", "ProductVariant")
                         .WithMany("ProductDiscounts")
                         .HasForeignKey("ProductVariantId")
                         .IsRequired()
@@ -1999,7 +2111,7 @@ namespace eCommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("eCommerce.Domain.Entities.ProductImage", b =>
                 {
-                    b.HasOne("eCommerce.Domain.Entities.ProductVarient", "ProductVariant")
+                    b.HasOne("eCommerce.Domain.Entities.ProductVariant", "ProductVariant")
                         .WithMany("ProductImages")
                         .HasForeignKey("ProductVariantId")
                         .IsRequired()
@@ -2008,10 +2120,10 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Navigation("ProductVariant");
                 });
 
-            modelBuilder.Entity("eCommerce.Domain.Entities.ProductVarient", b =>
+            modelBuilder.Entity("eCommerce.Domain.Entities.ProductVariant", b =>
                 {
                     b.HasOne("eCommerce.Domain.Entities.Product", "Product")
-                        .WithMany("ProductVarients")
+                        .WithMany("ProductVariants")
                         .HasForeignKey("ProductId")
                         .IsRequired()
                         .HasConstraintName("FK_ProductItems_Products");
@@ -2052,7 +2164,7 @@ namespace eCommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Q&A_AspNetUsers_Customer");
 
-                    b.HasOne("eCommerce.Domain.Entities.ProductVarient", "ProductVariant")
+                    b.HasOne("eCommerce.Domain.Entities.ProductVariant", "ProductVariant")
                         .WithMany("QAs")
                         .HasForeignKey("ProductVariantId")
                         .IsRequired()
@@ -2090,7 +2202,7 @@ namespace eCommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_ReturnRequest_Orders");
 
-                    b.HasOne("eCommerce.Domain.Entities.ProductVarient", "ProductVariant")
+                    b.HasOne("eCommerce.Domain.Entities.ProductVariant", "ProductVariant")
                         .WithMany("ReturnRequests")
                         .HasForeignKey("ProductVariantId")
                         .IsRequired()
@@ -2111,7 +2223,7 @@ namespace eCommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("eCommerce.Domain.Entities.SupplierProduct", b =>
                 {
-                    b.HasOne("eCommerce.Domain.Entities.ProductVarient", "ProductVariant")
+                    b.HasOne("eCommerce.Domain.Entities.ProductVariant", "ProductVariant")
                         .WithMany()
                         .HasForeignKey("ProductVariantId")
                         .IsRequired()
@@ -2138,25 +2250,6 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Navigation("Supplier");
                 });
 
-            modelBuilder.Entity("eCommerce.Domain.Entities.VariationCategory", b =>
-                {
-                    b.HasOne("eCommerce.Domain.Entities.Category", "Category")
-                        .WithMany("VariationCategories")
-                        .HasForeignKey("CategoryId")
-                        .IsRequired()
-                        .HasConstraintName("FK_VariationCategory_Category");
-
-                    b.HasOne("eCommerce.Domain.Entities.ProductFeature", "ProductFeatures")
-                        .WithMany("VariationCategories")
-                        .HasForeignKey("ProductFeaturesId")
-                        .IsRequired()
-                        .HasConstraintName("FK_VariationCategory_VariationCategory");
-
-                    b.Navigation("Category");
-
-                    b.Navigation("ProductFeatures");
-                });
-
             modelBuilder.Entity("eCommerce.Domain.Entities.Warehouse", b =>
                 {
                     b.HasOne("eCommerce.Domain.Entities.AspNetUser", "User")
@@ -2175,7 +2268,7 @@ namespace eCommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Wishlist_AspNetUsers");
 
-                    b.HasOne("eCommerce.Domain.Entities.ProductVarient", "ProductVariant")
+                    b.HasOne("eCommerce.Domain.Entities.ProductVariant", "ProductVariant")
                         .WithMany("Wishlists")
                         .HasForeignKey("ProductVariantId")
                         .IsRequired()
@@ -2207,6 +2300,8 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Navigation("AspNetUserTokens");
 
                     b.Navigation("AuditLogs");
+
+                    b.Navigation("Brands");
 
                     b.Navigation("Cart");
 
@@ -2241,13 +2336,14 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Navigation("CartItems");
                 });
 
-            modelBuilder.Entity("eCommerce.Domain.Entities.Category", b =>
+            modelBuilder.Entity("eCommerce.Domain.Entities.FeatureCategory", b =>
                 {
-                    b.Navigation("InverseParentCategory");
+                    b.Navigation("ProductCategoryFeatures");
+                });
 
-                    b.Navigation("Products");
-
-                    b.Navigation("VariationCategories");
+            modelBuilder.Entity("eCommerce.Domain.Entities.FeatureOption", b =>
+                {
+                    b.Navigation("ProductConfigurations");
                 });
 
             modelBuilder.Entity("eCommerce.Domain.Entities.Feedback", b =>
@@ -2268,17 +2364,26 @@ namespace eCommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("eCommerce.Domain.Entities.Product", b =>
                 {
-                    b.Navigation("ProductVarients");
+                    b.Navigation("ProductVariants");
+                });
+
+            modelBuilder.Entity("eCommerce.Domain.Entities.ProductCategory", b =>
+                {
+                    b.Navigation("InverseParentCategory");
+
+                    b.Navigation("ProductCategoryFeatures");
+
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("eCommerce.Domain.Entities.ProductFeature", b =>
                 {
                     b.Navigation("FeatureOptions");
 
-                    b.Navigation("VariationCategories");
+                    b.Navigation("ProductCategoryFeatures");
                 });
 
-            modelBuilder.Entity("eCommerce.Domain.Entities.ProductVarient", b =>
+            modelBuilder.Entity("eCommerce.Domain.Entities.ProductVariant", b =>
                 {
                     b.Navigation("CartItems");
 
@@ -2287,6 +2392,8 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Navigation("Inventories");
 
                     b.Navigation("OrderItems");
+
+                    b.Navigation("ProductConfigurations");
 
                     b.Navigation("ProductDiscounts");
 

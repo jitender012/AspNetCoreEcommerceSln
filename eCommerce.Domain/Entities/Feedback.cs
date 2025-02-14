@@ -23,5 +23,5 @@ public partial class Feedback
 
     public virtual FeedbackImage? FeedbackImage { get; set; }
 
-    public virtual ProductVarient ProductVariant { get; set; } = null!;
+    public virtual ProductVariant ProductVariant { get; set; } = null!;
 }

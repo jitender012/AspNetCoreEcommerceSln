@@ -1,0 +1,138 @@
+﻿@model List<ProductVariantViewModel>
+
+@{
+    ViewData["Title"] = "";
+    Layout = "~/Areas/Admin/Views/Shared/_VendorLayout.cshtml";
+}
+<link href="~/lib/datatables.net-bs5/datatables.bootstrap5.min.css" rel="stylesheet" />
+
+<!-- Display TempData messages -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+@if (TempData["NotFound"] != null)
+{
+    <div class="alert alert-warning">
+        @TempData["NotFound"]
+    </div>
+}
+<div class="d-flex justify-content-between align-items-end mb-3">
+    <div>
+        <a href="@Url.Action("Dashboard","Dashboard")" style=" color: #6ebb4a; font-size: 14px; font-weight: 600;">
+            Home
+            <i class="fas fa-angle-right" style="color: #c1cdc2;"></i>
+
+        </a>
+        <h4>
+            Brands
+        </h4>
+    </div>
+    <div>
+        <a href="@Url.Action("Create", "Brand")" class="addNewBtn">
+            <i class="bi bi-plus-circle"></i>
+            Add New Brand
+        </a>
+    </div>
+</div>
+<div class="table-div">
+    <table class="table table-bordered table-hover w-100" id="myTable">
+        <thead>
+            <tr>
+                <th>
+                    Product Name
+                </th>
+                <th>
+                    SKU
+                </th>
+                <th>
+                   Price
+                </th>
+                <th>
+                    Active
+                </th>
+            </tr>
+        </thead>
+
+
+        @foreach (var item in Model)
+        {
+            <tr id="@item.ProductIvarientId">
+                <td>
+                    @Html.DisplayFor(modelItem => item.VarientName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sku)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsActive)
+                </td>
+               @*  <td class="text-center">
+                    @if (item.BrandImage != null)
+                    {
+                        <img src="@Url.Content(item.BrandImage)" alt="Alternate Text" style="height:60px; width:60px; border-radius:50%" />
+                    }
+                </td> *@
+                <td style="text-align:center;vertical-align:middle">
+                    <div class="btn-group">
+                        <a href="@Url.Action("Details", "Product", new {brandId= item.ProductIvarientId})" class=" btn btn-outline-info">@* <i class="bi bi-pencil-square"></i>&nbsp; *@ Edit</a>
+                        <a href="@Url.Action("Edit", "Product", new {brandId= item.ProductIvarientId})" class=" btn btn-outline-info">@* <i class="bi bi-pencil-square"></i>&nbsp; *@ Edit</a>
+                        <a href="#" class="delete-brand btn btn-outline-danger" name="brand_id" data-id="@item.ProductIvarientId">@* <i class="bi bi-trash"></i>&nbsp; *@ Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+
+    </table>
+
+</div>
+
+<script src="~/lib/datatables/js/datatables.js"></script>
+<script src="~/lib/datatables.net-bs5/datatables.bootstrap5.min.js"></script>
+
+<script>
+
+    $(document).ready(
+        function () {
+            $('#myTable').DataTable();
+        }
+    )
+    $(document).ready(function () {
+        $(".delete-brand").click(function (e) {
+            e.preventDefault();
+            var brandId = $(this).data("id");
+            var dataRow = $('#' + brandId);
+            if (confirm("Are you sure you want to delete this brand?")) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete", "Brand")',
+                    data: { brandId: brandId },
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            dataRow.remove();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert("An error occurred while deleting the brand. Please try again.");
+                    }
+                });
+            }
+        });
+    });
+        // $(document).ready(
+        // function () {
+        //     alert("Hi");
+        //     }
+        // )
+
+</script>
+
+

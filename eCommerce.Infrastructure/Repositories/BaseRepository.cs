@@ -1,12 +1,7 @@
 ﻿using eCommerce.Domain.RepositoryContracts;
-using eCommerce.Infrastructure.Models;
+using eCommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace eCommerce.Infrastructure.Repositories
 {
@@ -14,10 +9,12 @@ namespace eCommerce.Infrastructure.Repositories
     {
         protected readonly eCommerceDbContext _context;
         protected readonly DbSet<T> _dbSet;
-        public BaseRepository(eCommerceDbContext context)
+        //protected readonly ILogger _logger;
+        public BaseRepository(eCommerceDbContext context/*, ILogger logger*/)
         {
             _context = context;
             _dbSet = _context.Set<T>();
+            //_logger = logger;
         }
 
         public async Task<T?> SingleOrDefaultAsync(Expression<Func<T, bool>> whereCondition)
@@ -28,6 +25,10 @@ namespace eCommerce.Infrastructure.Repositories
         public async Task<T?> GetByIdAsync<Tid>(Tid id)
         {
             return await _dbSet.FindAsync(id);
+        }
+        public async Task<T?> GetByIdWithIncludeAsync<Tid>(Expression<Func<T, bool>> expression, Tid id)
+        {
+            return await _dbSet.Include(expression).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
@@ -70,12 +71,30 @@ namespace eCommerce.Infrastructure.Repositories
 
         public async Task  DeleteAsync(Expression<Func<T, bool>> whereCondition)
         {
-            var entity = await SingleOrDefaultAsync(whereCondition);
-            if (entity == null)
-                throw new KeyNotFoundException($"Entity with ID {whereCondition} not found.");
+            if (whereCondition == null)
+            {
+                throw new ArgumentNullException(nameof(whereCondition), "Condition for deletion cannot be null.");
+            }
 
-            _dbSet.Remove(entity);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var entity = await SingleOrDefaultAsync(whereCondition)
+                    ?? throw new KeyNotFoundException($"Entity matching the condition was not found.");
+
+                _dbSet.Remove(entity);
+                await _context.SaveChangesAsync();
+                //_logger?.LogInformation("Entity of type {EntityType} successfully deleted.", typeof(T).Name);
+            }
+            catch (DbUpdateException ex)
+            {
+                //_logger?.LogError(ex, "Database error while deleting entity of type {EntityType}.", typeof(T).Name);
+                throw new ApplicationException("An error occurred while trying to delete the entity. Please try again later.", ex);
+            }
+            catch (Exception ex)
+            {
+                //_logger?.LogError(ex, "Unexpected error while deleting entity of type {EntityType}.", typeof(T).Name);
+                throw new ApplicationException("An unexpected error occurred while deleting the entity.", ex);
+            }
         }
         public Task<bool> ExistsAsync(Expression<Func<T, bool>> whereCondition)
         {

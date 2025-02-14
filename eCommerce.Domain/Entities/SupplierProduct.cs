@@ -15,7 +15,7 @@ public partial class SupplierProduct
 
     public bool? IsActive { get; set; }
 
-    public virtual ProductVarient ProductVariant { get; set; } = null!;
+    public virtual ProductVariant ProductVariant { get; set; } = null!;
 
     public virtual Supplier Supplier { get; set; } = null!;
 }

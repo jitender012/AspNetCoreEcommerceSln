@@ -43,8 +43,7 @@ namespace eCommerce.Web.Areas.Admin.Controllers
             var brandDTO = new BrandDTO
             {
                 BrandName = data.BrandName,
-                BrandDescription = data.BrandDescription,
-                CreatedBy = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
+                BrandDescription = data.BrandDescription,                
             };
 
             // Handle image upload
@@ -127,8 +126,7 @@ namespace eCommerce.Web.Areas.Admin.Controllers
 
             brand.BrandId = data.BrandId;
             brand.BrandName = data.BrandName;
-            brand.BrandDescription = data.BrandDescription;
-            brand.UpdatedBy = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            brand.BrandDescription = data.BrandDescription;            
             brand.BrandImage = data.BrandImage;
 
             // Handle image upload

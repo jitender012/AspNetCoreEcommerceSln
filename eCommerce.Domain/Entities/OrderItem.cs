@@ -27,5 +27,5 @@ public partial class OrderItem
 
     public virtual Order Order { get; set; } = null!;
 
-    public virtual ProductVarient ProductVariant { get; set; } = null!;
+    public virtual ProductVariant ProductVariant { get; set; } = null!;
 }

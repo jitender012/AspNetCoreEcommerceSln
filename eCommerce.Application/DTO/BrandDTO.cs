@@ -11,18 +11,13 @@ namespace eCommerce.Application.DTO
     public class BrandDTO
     {
         public Guid BrandId { get; set; }
-        
+
         [Required]
         public string BrandName { get; set; } = null!;
 
         public string? BrandImage { get; set; }
 
         public string? BrandDescription { get; set; }
-
-        public Guid? CreatedBy { get; set; }
-
-
-        public Guid? UpdatedBy { get; set; }
 
 
 
@@ -34,8 +29,6 @@ namespace eCommerce.Application.DTO
                 BrandName = BrandName,
                 BrandImage = BrandImage,
                 BrandDescription = BrandDescription,
-                CreatedBy = CreatedBy,            
-                UpdatedBy = UpdatedBy
             };
         }
         public static BrandDTO FromBrand(Brand brand)
@@ -46,8 +39,6 @@ namespace eCommerce.Application.DTO
                 BrandName = brand.BrandName,
                 BrandImage = brand.BrandImage,
                 BrandDescription = brand.BrandDescription,
-                CreatedBy = brand.CreatedBy,              
-                UpdatedBy = brand.UpdatedBy
             };
         }
         public static List<BrandDTO> FromBrandList(IEnumerable<Brand> brands)

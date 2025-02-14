@@ -62,3 +62,165 @@ Sln:
 3. Created another migration "AlteredCategory".
 4. Deleted all old migration files except "AlteredCategory" .
 5. Updated database using "AlteredCategory" migration.
+
+
+
+
+Controller basic methods:
+
+[Authorize] // Requires authentication for all actions
+public class ProductsController : Controller
+{
+    private readonly IProductService _productService;
+    private readonly IMapper _mapper;
+
+    public ProductsController(IProductService productService, IMapper mapper)
+    {
+        _productService = productService;
+        _mapper = mapper;
+    }
+
+    // GET: Products
+    public async Task<IActionResult> Index()
+    {
+        var products = await _productService.GetAllAsync();
+        return View(products);
+    }
+
+    // GET: Products/Details/5
+    public async Task<IActionResult> Details(int id)
+    {
+        if (id <= 0)
+        {
+            return BadRequest("Invalid product ID.");
+        }
+
+        var product = await _productService.GetByIdAsync(id);
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        return View(product);
+    }
+
+    // GET: Products/Create
+    [Authorize(Roles = "admin")] // Only admins can create
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    // POST: Products/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> Create(ProductDto productDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(productDto);
+        }
+
+        try
+        {
+            var product = _mapper.Map<Product>(productDto);
+            await _productService.AddAsync(product);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError("", $"Error: {ex.Message}");
+            return View(productDto);
+        }
+    }
+
+    // GET: Products/Edit/5
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> Edit(int id)
+    {
+        if (id <= 0)
+        {
+            return BadRequest("Invalid product ID.");
+        }
+
+        var product = await _productService.GetByIdAsync(id);
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        var productDto = _mapper.Map<ProductDto>(product);
+        return View(productDto);
+    }
+
+    // POST: Products/Edit/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> Edit(int id, ProductDto productDto)
+    {
+        if (id != productDto.Id)
+        {
+            return BadRequest("Product ID mismatch.");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return View(productDto);
+        }
+
+        try
+        {
+            var product = _mapper.Map<Product>(productDto);
+            await _productService.UpdateAsync(product);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError("", $"Error: {ex.Message}");
+            return View(productDto);
+        }
+    }
+
+    // GET: Products/Delete/5
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        if (id <= 0)
+        {
+            return BadRequest("Invalid product ID.");
+        }
+
+        var product = await _productService.GetByIdAsync(id);
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        return View(product);
+    }
+
+    // POST: Products/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        if (id <= 0)
+        {
+            return BadRequest("Invalid product ID.");
+        }
+
+        try
+        {
+            await _productService.DeleteAsync(id);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError("", $"Error: {ex.Message}");
+            return View();
+        }
+    }
+}

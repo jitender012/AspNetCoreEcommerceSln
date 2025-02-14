@@ -31,13 +31,15 @@ public partial class Product
 
     public bool? IsDeleted { get; set; }
 
-    public virtual Category? Category { get; set; }
+    public virtual ProductCategory? Category { get; set; }
 
     public virtual AspNetUser CreatedByNavigation { get; set; } = null!;
 
-    public virtual Brand ProductNavigation { get; set; } = null!;
+    //public virtual Brand ProductNavigation { get; set; } = null!;
+    public virtual Brand Brand { get; set; } = null!;
 
-    public virtual ICollection<ProductVarient> ProductVarients { get; set; } = new List<ProductVarient>();
+
+    public virtual ICollection<ProductVariant> ProductVariants { get; set; } = new List<ProductVariant>();
 
     public virtual AspNetUser? UpdatedByNavigation { get; set; }
 }
