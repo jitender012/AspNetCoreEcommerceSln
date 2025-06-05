@@ -1,4 +1,5 @@
-﻿@model ProductFeatureViewModel
+﻿@using eCommerce.Domain.Entities
+@model ProductFeatureViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -9,22 +10,43 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <form class="create-form" asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
-                <label asp-for="Name" class="control-label">Brand Name</label>
+                <label asp-for="Name" class="control-label">Feature Name</label>
                 @Html.TextBoxFor(model => model.Name, new { @class = "form-control", placeholder = "Enter Feature name" })
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="IsManadatory" class="control-label">Is Manadatory</label>
-                @Html.TextBoxFor(model => model.IsManadatory, new { @class = "form-control" })
+                @Html.LabelFor(model => model.FeatureCategoryId, new { @class = "control-label" })
+                <select class="form-control" name="FeatureCategoryId">
+                    <option value="">--Select Feature Category --</option>
+                    @foreach (var fc in ViewBag.FeatureCategories)
+                    {
+                        <option value="@fc.Value">@fc.Text</option>
+                    }
+                </select>                
                 <span asp-validation-for="IsManadatory" class="text-danger"></span>
             </div>
-          
-                       
+
+           
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.InputType, new { @class = "control-label" })
+                @Html.DropDownListFor(model => model.InputType, new SelectList(Enum.GetValues(typeof(FeatureInputType))), "-- Select Input Type --",
+                new { @class = "form-control" })                
+                <span asp-validation-for="IsManadatory" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="IsManadatory" class="control-label">Is Manadatory</label>
+                 @Html.CheckBoxFor(model => model.IsManadatory) 
+                
+                <span asp-validation-for="IsManadatory" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

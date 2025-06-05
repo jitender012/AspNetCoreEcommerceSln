@@ -585,6 +585,9 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Property<int?>("DisplayOrder")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<bool?>("IsMandatory")
                         .HasColumnType("bit");
 
@@ -1074,17 +1077,13 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Property<int>("ProductCategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductFeaturesId")
-                        .HasColumnType("int");
-
                     b.HasKey("ProductCategoryFeatureId")
                         .HasName("PK_VariationCategory");
 
-                    b.HasIndex("FeatureCategoryId");
-
                     b.HasIndex("ProductCategoryId");
 
-                    b.HasIndex("ProductFeaturesId");
+                    b.HasIndex("FeatureCategoryId", "ProductCategoryId")
+                        .IsUnique();
 
                     b.ToTable("ProductCategoryFeature", "Product");
                 });
@@ -1165,6 +1164,12 @@ namespace eCommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("FeatureCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InputType")
+                        .HasColumnType("int");
+
                     b.Property<bool?>("IsManadatory")
                         .HasColumnType("bit");
 
@@ -1174,6 +1179,8 @@ namespace eCommerce.Infrastructure.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("ProductFeaturesId");
+
+                    b.HasIndex("FeatureCategoryId");
 
                     b.ToTable("ProductFeatures", "Product");
                 });
@@ -1895,6 +1902,7 @@ namespace eCommerce.Infrastructure.Migrations
                     b.HasOne("eCommerce.Domain.Entities.ProductFeature", "ProductFeature")
                         .WithMany("FeatureOptions")
                         .HasForeignKey("ProductFeatureId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_FeatureOption_ProductFeatures");
 
@@ -2023,7 +2031,7 @@ namespace eCommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Products_AspNetUsers");
 
-                    b.HasOne("eCommerce.Domain.Entities.Brand", "ProductNavigation")
+                    b.HasOne("eCommerce.Domain.Entities.Brand", "Brand")
                         .WithOne("Product")
                         .HasForeignKey("eCommerce.Domain.Entities.Product", "ProductId")
                         .IsRequired()
@@ -2034,11 +2042,11 @@ namespace eCommerce.Infrastructure.Migrations
                         .HasForeignKey("UpdatedBy")
                         .HasConstraintName("FK_Products_AspNetUsers1");
 
+                    b.Navigation("Brand");
+
                     b.Navigation("Category");
 
                     b.Navigation("CreatedByNavigation");
-
-                    b.Navigation("ProductNavigation");
 
                     b.Navigation("UpdatedByNavigation");
                 });
@@ -2067,16 +2075,9 @@ namespace eCommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_ProductCategoryFeature_ProductCategory");
 
-                    b.HasOne("eCommerce.Domain.Entities.ProductFeature", "ProductFeatures")
-                        .WithMany("ProductCategoryFeatures")
-                        .HasForeignKey("ProductFeaturesId")
-                        .HasConstraintName("FK_ProductCategoryFeature_ProductFeatures");
-
                     b.Navigation("FeatureCategory");
 
                     b.Navigation("ProductCategory");
-
-                    b.Navigation("ProductFeatures");
                 });
 
             modelBuilder.Entity("eCommerce.Domain.Entities.ProductConfiguration", b =>
@@ -2107,6 +2108,15 @@ namespace eCommerce.Infrastructure.Migrations
                         .HasConstraintName("FK_ProductDiscount_ProductVarient");
 
                     b.Navigation("ProductVariant");
+                });
+
+            modelBuilder.Entity("eCommerce.Domain.Entities.ProductFeature", b =>
+                {
+                    b.HasOne("eCommerce.Domain.Entities.FeatureCategory", "FeatureCategory")
+                        .WithMany("ProductFeatures")
+                        .HasForeignKey("FeatureCategoryId");
+
+                    b.Navigation("FeatureCategory");
                 });
 
             modelBuilder.Entity("eCommerce.Domain.Entities.ProductImage", b =>
@@ -2339,6 +2349,8 @@ namespace eCommerce.Infrastructure.Migrations
             modelBuilder.Entity("eCommerce.Domain.Entities.FeatureCategory", b =>
                 {
                     b.Navigation("ProductCategoryFeatures");
+
+                    b.Navigation("ProductFeatures");
                 });
 
             modelBuilder.Entity("eCommerce.Domain.Entities.FeatureOption", b =>
@@ -2379,8 +2391,6 @@ namespace eCommerce.Infrastructure.Migrations
             modelBuilder.Entity("eCommerce.Domain.Entities.ProductFeature", b =>
                 {
                     b.Navigation("FeatureOptions");
-
-                    b.Navigation("ProductCategoryFeatures");
                 });
 
             modelBuilder.Entity("eCommerce.Domain.Entities.ProductVariant", b =>

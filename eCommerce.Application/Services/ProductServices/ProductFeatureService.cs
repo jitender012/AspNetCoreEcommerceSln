@@ -1,6 +1,7 @@
 ﻿using eCommerce.Application.DTO.ProductDTOs;
 using eCommerce.Application.ServiceContracts;
 using eCommerce.Application.ServiceContracts.ProductServiceContracts;
+using eCommerce.Domain.CustomException;
 using eCommerce.Domain.Entities;
 using eCommerce.Domain.RepositoryContracts.Products;
 using Microsoft.Extensions.Logging;
@@ -21,14 +22,14 @@ namespace eCommerce.Application.Services.ProductServices
             if (productFeatures == null || !productFeatures.Any())
             {
                 _logger.LogWarning("No product features found.");
-                return []; 
+                return [];
             }
-           
+
             var productFeatureDTOs = productFeatures.Select(pf => new ProductFeatureDTO
             {
                 Name = pf.Name,
                 CreatedBy = pf.CreatedBy,
-                ProductFeaturesId = pf.ProductFeaturesId,
+                ProductFeatureId = pf.ProductFeaturesId,
                 IsManadatory = pf.IsManadatory
             }).ToList();
 
@@ -42,21 +43,38 @@ namespace eCommerce.Application.Services.ProductServices
                 _logger.LogError("Invalid id.");
                 throw new ArgumentNullException("ID must be greater than zero");
             }
-            var productFeature =await _productFeatureRepository.FetchByIdAsync(id);
+            var productFeature = await _productFeatureRepository.FetchByIdAsync(id);
 
             if (productFeature == null)
             {
                 _logger.LogWarning("Product feature not found with ID: {Id}", id);
-                return new ProductFeatureDTO(); 
+                return new ProductFeatureDTO();
             }
 
-            return new ProductFeatureDTO()
+            var pf = new ProductFeatureDTO
             {
-                ProductFeaturesId = productFeature.ProductFeaturesId,
+                ProductFeatureId = productFeature.ProductFeaturesId,
                 Name = productFeature.Name,
                 CreatedBy = productFeature.CreatedBy,
-                IsManadatory = productFeature.IsManadatory
-            };          
+                IsManadatory = productFeature.IsManadatory,
+                InputType = productFeature.InputType,
+                FeatureCategoryId = productFeature.FeatureCategoryId!.Value,
+                
+
+                FeatureOptions = productFeature.FeatureOptions.Select(fo => new FeatureOptionDTO
+                {
+                    FeatureOptionId = fo.FeatureOptionId,
+                    Value = fo.Value,
+                    CreatedBy = fo.CreatedBy
+                }).ToList()
+            };
+            if (productFeature.FeatureCategory !=null)
+            {
+                pf.FeatureCategoryName = productFeature.FeatureCategory.Name;
+            }
+
+            return pf;
+
         }
 
         public async Task<int> AddAsync(ProductFeatureDTO data)
@@ -73,45 +91,50 @@ namespace eCommerce.Application.Services.ProductServices
                 throw new ArgumentException("Feature name is required.");
             }
 
-            string userId = _userContextService.GetUserId()?.ToString() ?? "000000000";
+            string userId = _userContextService.GetUserId()?.ToString() ?? "";
 
             ProductFeature pf = new()
             {
                 Name = data.Name,
+                IsManadatory = data.IsManadatory,
                 CreatedBy = userId,
-                IsManadatory = data.IsManadatory
+                InputType = data.InputType,
+                FeatureCategoryId = data.FeatureCategoryId
             };
+
             try
             {
-                var id = await _productFeatureRepository.InsertAsync(pf, data.FeatureCategoryId);
+                var id = await _productFeatureRepository.InsertAsync(pf);
                 return id;
             }
 
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Database error while inserting product feature.");
-                throw;                
+                throw;
             }
         }
 
 
         public async Task<bool> UpdateAsync(ProductFeatureDTO data)
         {
-            if (data == null || data.ProductFeaturesId <= 0)
+            if (data == null || data.ProductFeatureId <= 0)
             {
                 _logger.LogError("Invalid ProductFeature data for update.");
                 throw new ArgumentException("Invalid product feature data.");
             }
 
-            var existingFeature = await _productFeatureRepository.FetchByIdAsync(data.ProductFeaturesId);
+            var existingFeature = await _productFeatureRepository.FetchByIdAsync(data.ProductFeatureId);
             if (existingFeature == null)
             {
-                _logger.LogWarning("Product feature not found with ID: {Id}", data.ProductFeaturesId);
-                return false; 
+                _logger.LogWarning("Product feature not found with ID: {Id}", data.ProductFeatureId);
+                return false;
             }
 
             existingFeature.Name = data.Name;
-            existingFeature.IsManadatory = data.IsManadatory;            
+            existingFeature.IsManadatory = data.IsManadatory;
+            existingFeature.FeatureCategoryId = data.FeatureCategoryId;
+            existingFeature.InputType = data.InputType;
 
             await _productFeatureRepository.ModifyAsync(existingFeature);
 
@@ -135,6 +158,33 @@ namespace eCommerce.Application.Services.ProductServices
 
             await _productFeatureRepository.RemoveAsync(id);
             return true;
+        }
+
+        public async Task<List<ProductFeatureDTO>> GetByFeatureCategoryIdAsync(int id)
+        {
+            if (id <= 0)
+            {
+                _logger.LogError("Invalid ProductFeature ID: {Id}", id);
+                throw new ArgumentException("ID must be greater than zero.");
+            }
+
+            var data = await _productFeatureRepository.FetchByFeatureCategoryIdAsync(id);
+
+            if (data == null)
+            {
+                _logger.LogWarning("No product feature found with ID: {Id}", id);
+                return [];
+            }
+
+            var productFeatures = data.Select(x => new ProductFeatureDTO()
+            {
+                ProductFeatureId  = x.ProductFeaturesId,
+                Name = x.Name,
+                InputType = x.InputType,
+                IsManadatory = x.IsManadatory
+            }).ToList();
+            
+            return productFeatures;
         }
     }
 }

@@ -9,6 +9,11 @@ namespace eCommerce.Domain.RepositoryContracts.Products
 {
     public interface IFeatureCategoryRepository
     {
+
+        #region Basic CRUD operations
+        Task<bool> ModifyAsync(FeatureCategory featureCategory);
+
+        #endregion
         #region Insert Methods
 
         /// <summary>
@@ -16,7 +21,7 @@ namespace eCommerce.Domain.RepositoryContracts.Products
         /// </summary>
         /// <param name="CategoryId">Id of category to link with</param>
         /// <returns>void</returns>
-        Task<int> InsertFeatureCategoryAsync(FeatureCategory featureCategory, int productCategoryId);
+        Task<int> InsertAsync(FeatureCategory featureCategory, int productCategoryId);
 
         /// <summary>
         /// 
@@ -34,8 +39,13 @@ namespace eCommerce.Domain.RepositoryContracts.Products
         /// </summary>
         /// <param name="productCategory"></param>
         /// <returns></returns>
-        Task<IEnumerable<FeatureCategory>> FetchAllAsync(int productCategory = 0);
+        Task<IEnumerable<FeatureCategory>> FetchAllAsync();
+        Task<IEnumerable<FeatureCategory>> FetchByProductCategoryIdAsync(int productCategory );
+        Task<bool> UnlinkCategoryFeature(int productCategoryId, int featureCategoryId);
+        Task<bool> LinkFeatCatToProdCat(int featureCategoryId, int productCategoryId);
+
         Task<FeatureCategory> FindByIdAsync(int id);
+        Task<FeatureCategory> FindDetailsAsync(int id);
         #endregion
 
         public Task<bool> RemoveAsync(int id);

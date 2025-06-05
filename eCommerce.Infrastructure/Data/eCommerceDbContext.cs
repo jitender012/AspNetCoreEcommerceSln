@@ -106,7 +106,9 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
+      
+
         modelBuilder.Entity<Address>(entity =>
         {
             entity.ToTable("Address", "User");
@@ -354,7 +356,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
 
             entity.HasOne(d => d.ProductFeature).WithMany(p => p.FeatureOptions)
                 .HasForeignKey(d => d.ProductFeatureId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_FeatureOption_ProductFeatures");
         });
 
@@ -615,9 +617,8 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ProductCategoryFeature_ProductCategory");
 
-            entity.HasOne(d => d.ProductFeatures).WithMany(p => p.ProductCategoryFeatures)
-                .HasForeignKey(d => d.ProductFeaturesId)
-                .HasConstraintName("FK_ProductCategoryFeature_ProductFeatures");
+            entity.HasIndex(d => new { d.FeatureCategoryId, d.ProductCategoryId })
+                .IsUnique();
         });
 
         modelBuilder.Entity<ProductConfiguration>(entity =>

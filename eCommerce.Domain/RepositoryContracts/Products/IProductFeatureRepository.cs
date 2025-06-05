@@ -11,7 +11,7 @@ namespace eCommerce.Domain.RepositoryContracts.Products
         /// </summary>
         /// <param name="productFeature">ProductFeature object</param>
         /// <returns>void</returns>
-        Task<int> InsertAsync(ProductFeature productFeature, int featureCategoryId, int productCategoryId = 0);
+        Task<int> InsertAsync(ProductFeature productFeature);
 
         Task<IEnumerable<ProductFeature>> FetchAllAsync();
 
@@ -30,12 +30,15 @@ namespace eCommerce.Domain.RepositoryContracts.Products
         /// <returns></returns>
         Task InsertMultipleProductFeatureAsync(IEnumerable<ProductFeature> productFeatures);
 
+        Task<List<ProductFeature>> GetFeaturesByFeatureCategoryIdsAsync(List<int?> categoryIds);
+        Task<List<ProductFeature>> FetchByFeatureCategoryIdAsync(int featureCategoryId);
+
         Task<int> LinkFeatureToFeatureCategoryAsync(int featureId, int categoryId);
 
         Task<int> LinkProductFeatureToMultipleFeatureCategoriesAsync(int featureId, List<int> categoryIds);
 
         Task<int> LinkToSpecificProductCategoryAsync(int featureId, int categoryId);
 
-        Task<List<ProductFeature>> GetProductFeaturesAsync(int categoryId = 0, int productCategoryId = 0);
+        //Task<List<ProductFeature>> GetProductFeaturesAsync(int categoryId = 0, int productCategoryId = 0);
     }
 }

@@ -16,8 +16,11 @@ namespace eCommerce.Application.ServiceContracts.AdminServiceContracts
         Task<List<CategoryDTO>> GetAllAsync();
         Task<List<CategoryDTO>> GetMainCategoriesAsync();
         Task<List<CategoryDTO>> GetSubCategoriesAsync();
+        Task<List<CategoryDTO>> GetChildCategoriesAsync();
         Task<List<CategoryDTO>> GetAllCategoriesHierarchicalAsync();
         Task<CategoryDTO> GetCategoryByIdAsync(int id);
+        Task<List<CategoryDTO>> GetByFeatureCategoryIdAsync(int id);
+
 
         /// <summary>
         /// Creates new category
@@ -27,5 +30,7 @@ namespace eCommerce.Application.ServiceContracts.AdminServiceContracts
         Task<int> AddCategoryAsync(CategoryDTO data);
         Task<bool> UpdateCategoryAsync(CategoryDTO data);
         Task<bool> DeleteCategoryAsync(int id);
+        Task<List<CategoryDTO>> GetUnlinkedProductCategories(int featureCategoryId);
+
     }
 }

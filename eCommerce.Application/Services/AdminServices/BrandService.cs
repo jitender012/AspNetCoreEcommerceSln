@@ -16,9 +16,9 @@ namespace eCommerce.Application.Services.AdminServices
         public async Task<Guid> AddBrand(BrandDTO data)
         {
             if (string.IsNullOrEmpty(data.BrandName))
-                throw new ArgumentException("Brand name is required.");
+                throw new ArgumentNullException("Brand name is required.");
 
-            Brand brand = new Brand()
+            Brand brand = new ()
             {
                 BrandId = Guid.NewGuid(),
                 BrandName = data.BrandName,
@@ -59,7 +59,7 @@ namespace eCommerce.Application.Services.AdminServices
 
         public async Task<List<BrandDTO>> GetAllBrands()
         {
-            var brands = await _brandRepository.GetAllAsync();
+            var brands = await _brandRepository.GetAllAsync();            
             return BrandDTO.FromBrandList(brands);
         }
 

@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Ecommerce.Web.styles.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/Ecommerce.Web.styles.css" asp-append-version="true" /> *@
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-thin-straight/css/uicons-thin-straight.css'>
 </head>
 <body>
@@ -38,7 +38,7 @@
                     </li>
 
 
-                    <li class="sidebar-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Category" ? "active" : "")">
+                    <li class=" @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Product" ? "active" : "")">
                         <a class="sidebar-link " href="~/Vendor/Product/Index">
                             <i class="align-middle" data-feather="check-square"></i><span class="align-middle">Listings</span>
                         </a>
@@ -46,7 +46,7 @@
 
                     <li class="sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString()  == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "FeatureCategory" ? "active" : "")">
 
-                        <a data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="sidebar-link " href="#adminLeftNavCollapse1" role="button">
+                        <a class="sidebar-link " data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" href="#adminLeftNavCollapse1" role="button">
                             <i class="align-middle" data-feather="settings"></i> <span class="align-middle ">Your Stores </span>
                         </a>
                         <div id="collapseOne" class="accordion-collapse collapse " data-bs-parent="#accordionExample">

@@ -15,14 +15,15 @@ namespace eCommerce.Domain.RepositoryContracts.Products
         /// </summary>
         /// <param name="productFeatureId">Id of ProductFeature to link</param>
         /// <returns>void</returns>
-        Task InsertFeatureOptionsAsync(FeatureOption featureOption);
+        Task<int> InsertAsync(FeatureOption featureOption);
 
         /// <summary>
         /// Get all Feature options but Product Feature Id
         /// </summary>
         /// <param name="productFeatureId">Id of Product Feature</param>
         /// <returns>List<FeatureOption></returns>
-        Task<List<FeatureOption>> GetFeatureOptionsAsync();
+        Task<List<FeatureOption>> FetchAllAsync();
         Task<List<FeatureOption>> GetFeatureOptionsByProductFeatureAsync(int productFeatureId);
+        Task<bool> RemoveFeatureOptionAsync(int id);
     }
 }

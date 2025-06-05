@@ -41,13 +41,12 @@
 
         </a>
         <h4>
-            FeatureCategories
+            Product Features
         </h4>
     </div>
     <div>
-        <a href="@Url.Action("Create", "ProductFeature")" class="btn btn-outline-success">
-            <i class="bi bi-plus-circle"></i>
-            Add
+        <a href="@Url.Action("Create", "ProductFeature")" class="btn btn-success">            
+            Create New
         </a>
     </div>
 </div>
@@ -71,7 +70,7 @@
 
         @foreach (var item in Model)
         {
-            <tr id="@item.ProductFeaturesId">
+            <tr id="@item.ProductFeatureId">
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
@@ -83,8 +82,9 @@
                 </td>
                 <td style="text-align:center;vertical-align:middle">
                     <div class="btn-group">
-                        <a href="@Url.Action("Edit", "ProductFeature", new {id= item.ProductFeaturesId})" class=" btn btn-outline-info"> Edit</a>
-                        <a href="#" class="delete-ProductFeature btn btn-outline-danger" name="FeatureCategory_id" data-id="@item.ProductFeaturesId">Delete</a>
+                        <a href="@Url.Action("Edit", "ProductFeature", new {id= item.ProductFeatureId})" class=" btn btn-outline-info"> Edit</a>
+                        <a href="@Url.Action("Details", "ProductFeature", new {ProductFeatureId= item.ProductFeatureId})" class=" btn btn-outline-success"> Details</a>
+                        <a href="#" class="delete-ProductFeature btn btn-outline-danger" name="FeatureCategory_id" data-id="@item.ProductFeatureId">Delete</a>
                     </div>
                 </td>
             </tr>
@@ -113,7 +113,7 @@
                 $.ajax({
                     type: "POST",
                     url: '@Url.Action("Delete", "ProductFeature")',
-                    data: { ProductFeaturesId: ProductFeaturesId },
+                    data: { id: ProductFeaturesId },
                     success: function (response) {
                         if (response.success) {
                             alert(response.message);

@@ -10,58 +10,55 @@
 }
 
 <div class="container p-5">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="mb-0">Create Feature Category</h4>
+        </div>
+        <div class="card-body">
+            @using (Html.BeginForm("Create", "FeatureCategory", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-    @using (Html.BeginForm("Create", "FeatureCategory", FormMethod.Post))
-    {
-        @Html.AntiForgeryToken()
-
-        <div class="form-horizontal ">
-            <h4>Create Feature Category</h4>
-            <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-            <div class="form-group col-md-8">
-                <label class="contro l-label col-md-6">Feature Category Name</label>
-                <div class="col-md-12">
-
-                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                <div class="mb-3">
+                    <label for="name" class="form-label">Feature Category Name</label>
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter Name" } })
                     @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-
                 </div>
-            </div>
-            <div class="form-group col-md-8">
-                <label class="control-label col-md-6">Is Mandatory</label>
-                <div class="col-md-12">
 
-                    @Html.EditorFor(model => model.IsMandatory, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.IsMandatory, "", new { @class = "text-danger" })
-
-                </div>
-            </div>
-          <div class="form-group">
-                <label class="control-label col-md-2">Product Category Name</label>
-                <div class="col-md-10">
-
-                    <div class="form-group">                        
+                <div class="mb-3">
+                    <label for="type" class="form-label">Product Category</label>
+                    
                         @Html.DropDownListFor(
                                  model => model.ProductCategoryId,
                                  (IEnumerable<SelectListItem>)ViewBag.ProductCategories,
                                  "Select a Product Category",
-                                 new { @class = "form-control" }
+                                 new { @class = "form-select" }
                                  )
-                    </div>
+                   
+                </div>
+                              
+                <div class="mb-3">
+                   
+                        @Html.CheckBoxFor(model => model.IsMandatory, new { htmlAttributes = new { @class = "form-check-input" } })
+                        @Html.ValidationMessageFor(model => model.IsMandatory, "", new { @class = "text-danger" })
+                        <label class="form-check-label" for="IsMandatory">
+                            Is Mandatory
+                        </label>
+                    
+                </div>
 
+                <!-- Submit Button -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Create</button>                    
                 </div>
-            </div> 
-            
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Create" class="btn btn-default" />
-                </div>
-            </div>
+              
+            }
+
+
         </div>
-    }
-    <br />
+
+    </div>
     <div>
         @Html.ActionLink("Back to List", "Index", "FeatureCategory")
     </div>

@@ -1,7 +1,8 @@
-﻿@model ProductFeatureViewModel
+﻿@using eCommerce.Domain.Entities
+@model ProductFeatureViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -10,13 +11,13 @@
 
 <div class="card py-4 px-5">
 
-    @using (Html.BeginForm("Edit", "ProductFeature", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @using (Html.BeginForm("Edit", "ProductFeature", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
         <div class="form row">
             <div class="col-12 col-md-6 col-lg-6 mt-3">
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                @Html.HiddenFor(model => model.ProductFeaturesId)
+                @Html.HiddenFor(model => model.ProductFeatureId)
 
                 <div class="form-group mb-2">
                     <label class="control-label">Feature Name</label>
@@ -25,12 +26,32 @@
                         @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                     </div>
                 </div>
+               
+                <div class="form-group mb-2">                    
+                    <label class="control-label">Feature Category</label>
+
+                    <select class="form-control" name="FeatureCategoryId">
+                        <option value="@Model.FeatureCategoryId">@Model.FeatureCategoryName</option>
+                        @foreach (var fc in ViewBag.FeatureCategories)
+                        {
+                            <option value="@fc.Value">@fc.Text</option>
+                        }
+                    </select>
+                    <span asp-validation-for="IsManadatory" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-2">
+                    @Html.LabelFor(model => model.InputType, new { @class = "control-label" })
+                    @Html.DropDownListFor(model => model.InputType, new SelectList(Enum.GetValues(typeof(FeatureInputType))), "-- Select Input Type --",
+                             new { @class = "form-control" })
+                    <span asp-validation-for="IsManadatory" class="text-danger"></span>
+                </div>
 
 
                 <div class="form-group mb-2">
                     <label class="control-label">Is Mandatory</label>
                     <div class="">
-                        @Html.EditorFor(model => model.IsManadatory, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.CheckBoxFor(model => model.IsManadatory, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.IsManadatory, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -49,20 +70,3 @@
         @Html.ActionLink("Back to List", "Index")
     </div>
 </div>
-
-@section Scripts {
-
-    <script>
-        $(document).ready(function () {
-            $("#ImageFile").change(function () {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#imagePreview').attr('src', e.target.result);
-                    $('#oldImage').hide();
-                    $('#imagePreview').show();
-                }
-                reader.readAsDataURL(this.files[0]);
-            });
-        });
-    </script>
-}

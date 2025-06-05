@@ -17,6 +17,8 @@ namespace eCommerce.Application.ServiceContracts.ProductServiceContracts
         Task<List<FeatureCategoryDTO>> GetAllAsync();
 
         Task<FeatureCategoryDTO> GetByIdAsync(int id);
+        Task<FeatureCategoryDetailsDTO> GetDetailsAsync(int id);
+        Task<List<FeatureCategoryDTO>> GetByProductCategoryIdAsync(int id);
 
         /// <summary>
         /// Creates new FeatureCategory
@@ -26,6 +28,8 @@ namespace eCommerce.Application.ServiceContracts.ProductServiceContracts
         Task<int> AddAsync(FeatureCategoryDTO data);
 
         Task<bool> UpdateAsync(FeatureCategoryDTO data);
+        Task<bool> UnlinkFeatCatProdCat(int productCategoryId, int featureCategoryId);
+        Task<bool> LinkFeatCatToProdCat(int featureCategoryId, int productCategoryId);
 
         Task<bool> DeleteAsync(int id);
     }

@@ -6,7 +6,7 @@ using eCommerce.Domain.Entities;
 using eCommerce.Domain.RepositoryContracts.Products;
 using Microsoft.Extensions.Logging;
 
-namespace eCommerce.Application.Services
+namespace eCommerce.Application.Services.ProductServices
 {
     public class ProductService(IProductRepository productRepository, IUserContextService userContextService, ILogger<ProductService> logger) : IProductService
     {
@@ -65,6 +65,7 @@ namespace eCommerce.Application.Services
                 throw;
             }
         }
+
         public Task<List<ProductDTO>> GetAllAsync()
         {
             throw new NotImplementedException();
@@ -84,16 +85,16 @@ namespace eCommerce.Application.Services
         {
             throw new NotImplementedException();
         }
-       
-        
+
+
         public async Task<List<SellerProductDTO>> GetProductsBySeller()
         {
             var userId = _userContextService.GetUserId();
 
             if (userId.HasValue && userId != Guid.Empty)
-            {               
+            {
                 IEnumerable<Product> products = await _productRepository.FetchBySellerIdAsync(userId.Value);
-                
+
                 return products.Select(p => new SellerProductDTO
                 {
                     ProductName = p.ProductName,
@@ -105,14 +106,14 @@ namespace eCommerce.Application.Services
                         Quantity = pv.Quantity,
                         IsActive = pv.IsActive
                     }).ToList(),
-                    TotalStock = p.ProductVariants.Sum(pv=>pv.Quantity),
-                    MaxPrice = p.ProductVariants.Max(pv=>pv.Price),
-                    MinPrice = p.ProductVariants.Min(pv=>pv.Price)
+                    TotalStock = p.ProductVariants.Sum(pv => pv.Quantity),
+                    MaxPrice = p.ProductVariants.Max(pv => pv.Price),
+                    MinPrice = p.ProductVariants.Min(pv => pv.Price)
                 }).ToList();
             }
             else
             {
-                return new List<SellerProductDTO>(); // Return empty list if userId is invalid
+                return []; // Return empty list if userId is invalid
             }
         }
 
@@ -121,6 +122,6 @@ namespace eCommerce.Application.Services
             throw new NotImplementedException();
         }
 
-       
+
     }
 }

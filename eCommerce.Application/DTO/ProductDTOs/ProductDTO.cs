@@ -13,10 +13,9 @@ namespace eCommerce.Application.DTO.ProductDTOs
         public string? Description { get; set; }
 
         public string? Url { get; set; }
-        
-        public string? BrandName { get; set; }
+        public int BrandId { get; set; }
 
-        public string? CategoryName { get; set; }    
+        public int CategoryId { get; set; }
 
         public DateTime CreatedAt { get; set; }
 

@@ -10,7 +10,7 @@ public partial class FeatureOption
     public int ProductFeatureId { get; set; }
 
     public string Value { get; set; } = null!;
-    public Guid? CreatedBy { get; set; } = null!;
+    public string CreatedBy { get; set; } = null!;
 
     public virtual ICollection<ProductConfiguration> ProductConfigurations { get; set; } = new List<ProductConfiguration>();
 

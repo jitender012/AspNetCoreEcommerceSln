@@ -21,12 +21,12 @@ namespace eCommerce.Web.Areas.Admin.Controllers
 
             return View(productFeatureVM);
         }
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int ProductFeatureId)
         {
-            if (id <= 0)
+            if (ProductFeatureId <= 0)
                 return BadRequest("Invalid Id.");
 
-            var productFeatureDTO = await _productFeatureService.GetByIdAsync(id);
+            var productFeatureDTO = await _productFeatureService.GetByIdAsync(ProductFeatureId);
 
             if (productFeatureDTO == null)
                 return NotFound();
@@ -44,19 +44,33 @@ namespace eCommerce.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ProductFeatureViewModel data)
         {
-            await PopulateDropdown();
+
             if (!ModelState.IsValid)
             {
+                //For ajax call
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return Json(new { success = false, message = "Validation failed" });
+
+                await PopulateDropdown();
                 return View(data);
             }
+
             var productFeatureDTO = _mapper.Map<ProductFeatureDTO>(data);
             var result = await _productFeatureService.AddAsync(productFeatureDTO);
+
             if (result <= 0)
             {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return Json(new { success = false, message = "Create failed" });
+
                 ModelState.AddModelError("", "Failed to create product feature.");
+                await PopulateDropdown();
                 return View(data);
             }
-            return RedirectToAction(nameof(Index));
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                return Json(new { success = true, message = "Feature added!" });
+
+            return RedirectToAction(actionName: nameof(Index));
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -90,20 +104,20 @@ namespace eCommerce.Web.Areas.Admin.Controllers
                 return View(data);
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details),new { ProductFeatureId = data.ProductFeatureId });
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete(int id)
+        [HttpPost]
+        public async Task<ActionResult> Delete(int id)
         {
             if (id <= 0)
-                return BadRequest("Invalid ID.");
+                return Json(new { success = false, message = "Invalid Id." }); 
 
             var result =  await _productFeatureService.DeleteAsync(id);
             if (!result)
-                ModelState.AddModelError("", "Failed to delete product feature.");
+                return Json(new { success = false, message = "Failed to delete product feature." });
 
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true, message = "Product feature deleted successfully." });
         }
 
         private async Task PopulateDropdown()
@@ -118,6 +132,7 @@ namespace eCommerce.Web.Areas.Admin.Controllers
 
             ViewBag.FeatureCategories = dropdownItems;
         }
+
 
     }
 }

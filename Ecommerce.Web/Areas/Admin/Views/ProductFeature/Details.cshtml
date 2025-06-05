@@ -1,5 +1,68 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model ProductFeatureViewModel
 @{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
+
+<div class="container">
+    <div class="card">
+        <div class="p-3 d-flex justify-content-between  ">
+            <h4>Product Feature Details</h4>
+            <a href="@Url.Action("Edit", new { id = Model.ProductFeatureId })" class="link-dark">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </a>
+
+
+        </div>
+
+        <div class="card-body">
+            <div class="row ">
+                <div class="col-4 mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" readonly value="@Model.Name" class="form-control" />
+                </div>
+                <div class="col-4 mb-3">
+                    <label class="form-label">Created By</label>
+                    <input type="text" readonly value="@Model.CreatedBy" class="form-control" />
+                </div>
+                <div class="col-4 mb-3 ">
+                    <label class="form-label">Is Mandatory</label>
+                    <input type="checkbox" disabled value="@Model.IsManadatory" class="form-check" />
+                </div>
+                <div class="col-4 mb-3">
+                    <label class="form-label">Input Type</label>
+                    <input type="text" readonly value="@Model.InputType" class="form-control" />
+                </div>
+                <div class="col-4 mb-3">
+                    <label class="form-label">Feature Category</label>
+                    <input type="text" readonly value="@Model.FeatureCategoryName" class="form-control" />
+                </div>
+            </div>
+            @if (Model.InputType == eCommerce.Domain.Entities.FeatureInputType.Dropdown)
+            {
+                <hr />
+                <div class="row mt-3">
+                    <div class="col-6">
+                        <h5>Feature Options</h5>
+                        @foreach (var features in Model.FeatureOptions!)
+                        {
+                            <div class="d-flex">
+                                <input type="text" readonly value="@features.Value" class="form-control mb-2" />
+                                <div class="m-2 mt-0">
+                                    <a href="@Url.Action("Delete", "ProductFeature", new {id = features.ProductFeatureId})" class=" btn btn-outline-danger">×</a>
+                                </div>
+                            </div>
+                        }
+                        <button class="btn btn-outline-success">+</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+</div>
+
+<div class="card-footer">
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+

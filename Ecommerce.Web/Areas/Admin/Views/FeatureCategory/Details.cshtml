@@ -1,0 +1,143 @@
+﻿@model FeatureCategoryDetailsDTO
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<script src="~/js/jquery code/adminjs/featurecategory.js"></script>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <div class=" d-flex justify-content-between  align-items-center">
+                <h4>Feature Category Details</h4>
+                <a href="@Url.Action("Edit", new { id = Model.FeatureCategoryId })" class="link-dark">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row ">
+                <div class="col-4 ">
+                    <label class="form-label">Name</label>
+                    <input type="text" readonly value="@Model.Name" class="form-control" />
+                </div>
+                <div class="col-4 ">
+                    <label class="form-label">Created By</label>
+                    <input type="text" readonly value="@Model.CreatedBy" class="form-control" />
+                </div>
+                <div class="col-4 ">
+                    <label class="form-label">Is Mandatory</label>
+                    <input type="checkbox" disabled @(Model.IsMandatory ? "checked" : "") class="form-check" />
+                </div>
+            </div>
+            <hr />
+            <div class="row mt-3">
+                <div class="col-6">
+                    <div id="featureList" data-id="@Model.FeatureCategoryId">
+                        @await Html.PartialAsync("_FeatureListPartial", Model.ProductFeatures)
+                    </div>
+                    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#addFeaturesForm">
+                        +
+                    </button>
+                </div>
+
+                <div class="col-6">
+                    <div id="productCategoryList" data-id="@Model.FeatureCategoryId">
+                        @await Html.PartialAsync("_ProductCategoryList", Model.ProductCategories)
+                    </div>
+                    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#link-product-category-modal">
+                        +
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="card-footer">
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="addFeaturesForm" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addFeaturesFormLabel">Add Feature</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="create-form" method="post" enctype="multipart/form-data">
+
+                    <div class="form-group">
+                        <label class="control-label">Feature Name</label>
+                        <input type="text" class="form-control" name="Name" placeholder="Enter Feature name" />
+                    </div>
+                    <input type="hidden" name="FeatureCategoryId" value="@Model.FeatureCategoryId" />
+
+                    <div class="form-group">
+                        <label class="control-label">Input Type</label>
+                        <select class="form-control" name="InputType">
+                            <option>--Select Input Type--</option>
+                            <option value="0">Dropdown</option>
+                            <option value="1">Textbox</option>
+                            <option value="2">Number</option>
+                            <option value="3">Boolean</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Is Mandatory</label>
+                        <input type="checkbox" class="form-check-input" name="IsMandatory" />
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <div class="form-group">
+                            <input type="submit" value="Add" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="link-product-category-modal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Link Product Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="link-product-category-form" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="FeatCatId" value="@Model.FeatureCategoryId" />
+
+                    <div class="form-group">
+                        <label class="control-label">Product Categories</label>
+                        <select class="form-control" name="ProductCategoryId">
+                            <option>--Select Product Category--</option>
+                            @foreach (var item in ViewBag.ProductCategories)
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <div class="form-group">
+                            <input type="submit" value="Add" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

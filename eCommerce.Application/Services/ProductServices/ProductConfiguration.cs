@@ -37,7 +37,7 @@ namespace eCommerce.Application.Services
                     CreatedBy = userId!
                 };
                 
-                await _productFeatureRepository.InsertAsync(pf, productFeature.FeatureCategoryId);
+                await _productFeatureRepository.InsertAsync(pf);
             }
             catch (Exception ex)
             {
@@ -62,7 +62,7 @@ namespace eCommerce.Application.Services
                 ProductFeatureId = featureOption.ProductFeatureId,
                 Value = featureOption.Value
             };
-            await _featureOptionsRepository.InsertFeatureOptionsAsync(fo);
+            await _featureOptionsRepository.InsertAsync(fo);
         }
 
         #endregion

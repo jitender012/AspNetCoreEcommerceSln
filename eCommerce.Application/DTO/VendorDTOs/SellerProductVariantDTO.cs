@@ -8,6 +8,7 @@ namespace eCommerce.Application.DTO.VendorDTOs
 {
     public class SellerProductVariantDTO
     {
+        public Guid ProductVariantId { get; set; }
         public string? VarientName { get; set; }
         public int? Quantity { get; set; }
         public decimal Price { get; set; }

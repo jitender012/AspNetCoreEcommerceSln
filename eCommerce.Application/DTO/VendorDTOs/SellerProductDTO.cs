@@ -9,6 +9,7 @@ namespace eCommerce.Application.DTO.VendorDTOs
     public class SellerProductDTO
     {
 
+        public Guid ProductId { get; set; }
         public string ProductName { get; set; } = null!;
         public decimal MinPrice { get; set; }
         public decimal MaxPrice { get; set; }

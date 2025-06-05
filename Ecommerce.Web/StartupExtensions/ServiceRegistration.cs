@@ -27,6 +27,7 @@ namespace eCommerce.Web.StartupExtensions
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IFeatureCategoryService, FeatureCategoryService>();
             services.AddScoped<IProductFeatureService, ProductFeatureService>();
+            services.AddScoped<IFeatureOptionService, FeatureOptionService>();
 
             //for retrieving of user information
             services.AddScoped<IUserContextService, UserContextService>();
@@ -43,6 +44,7 @@ namespace eCommerce.Web.StartupExtensions
             services.AddScoped<IProductFeatureRepository, ProductFeatureRepository>();
             services.AddScoped<IProductVariantRepository, ProductVariantRepository>();
             services.AddScoped<IProductFeatureRepository, ProductFeatureRepository>();
+            
 
         }
     }

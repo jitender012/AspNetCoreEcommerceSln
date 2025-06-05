@@ -1,24 +1,27 @@
-﻿@model List<ProductVariantViewModel>
+﻿@model List<SellerProductViewModel>
 
 @{
     ViewData["Title"] = "";
-    Layout = "~/Areas/Admin/Views/Shared/_VendorLayout.cshtml";
+    Layout = "~/Areas/Vendor/Views/Shared/_VendorLayout.cshtml";
 }
 <link href="~/lib/datatables.net-bs5/datatables.bootstrap5.min.css" rel="stylesheet" />
+    <!-- Display TempData messages -->
+<div>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["NotFound"] != null)
+    {
+        <div class="alert alert-warning">
+            @TempData["NotFound"]
+        </div>
+    }
 
-<!-- Display TempData messages -->
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
-    </div>
-}
-@if (TempData["NotFound"] != null)
-{
-    <div class="alert alert-warning">
-        @TempData["NotFound"]
-    </div>
-}
+</div>
+
 <div class="d-flex justify-content-between align-items-end mb-3">
     <div>
         <a href="@Url.Action("Dashboard","Dashboard")" style=" color: #6ebb4a; font-size: 14px; font-weight: 600;">
@@ -27,13 +30,13 @@
 
         </a>
         <h4>
-            Brands
+            Products
         </h4>
     </div>
     <div>
-        <a href="@Url.Action("Create", "Brand")" class="addNewBtn">
+        <a href="@Url.Action("Create", "Product")" class="addNewBtn">
             <i class="bi bi-plus-circle"></i>
-            Add New Brand
+            Add New Product
         </a>
     </div>
 </div>
@@ -41,17 +44,18 @@
     <table class="table table-bordered table-hover w-100" id="myTable">
         <thead>
             <tr>
+                <th>Image</th>
                 <th>
                     Product Name
                 </th>
                 <th>
-                    SKU
+                    Price Range
                 </th>
                 <th>
-                   Price
+                    Total Quantity
                 </th>
                 <th>
-                    Active
+
                 </th>
             </tr>
         </thead>
@@ -59,30 +63,26 @@
 
         @foreach (var item in Model)
         {
-            <tr id="@item.ProductIvarientId">
+            <tr id="@item.ProductId">
                 <td>
-                    @Html.DisplayFor(modelItem => item.VarientName)
+                    <img href="@Url.Content(item.Url)" height="50" width="50" />
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Sku)
+                    @Html.DisplayFor(modelItem => item.ProductName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Price)
+                    <span>@item.MinPrice.ToString("C") - @item.MaxPrice.ToString("C")</span>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IsActive)
+                    @Html.DisplayFor(modelItem => item.TotalStock)
                 </td>
-               @*  <td class="text-center">
-                    @if (item.BrandImage != null)
-                    {
-                        <img src="@Url.Content(item.BrandImage)" alt="Alternate Text" style="height:60px; width:60px; border-radius:50%" />
-                    }
-                </td> *@
+
+               
                 <td style="text-align:center;vertical-align:middle">
                     <div class="btn-group">
-                        <a href="@Url.Action("Details", "Product", new {brandId= item.ProductIvarientId})" class=" btn btn-outline-info">@* <i class="bi bi-pencil-square"></i>&nbsp; *@ Edit</a>
-                        <a href="@Url.Action("Edit", "Product", new {brandId= item.ProductIvarientId})" class=" btn btn-outline-info">@* <i class="bi bi-pencil-square"></i>&nbsp; *@ Edit</a>
-                        <a href="#" class="delete-brand btn btn-outline-danger" name="brand_id" data-id="@item.ProductIvarientId">@* <i class="bi bi-trash"></i>&nbsp; *@ Delete</a>
+                        <a href="@Url.Action("Details", "Product", new {brandId= item.ProductId})" class=" btn btn-outline-info">@* <i class="bi bi-pencil-square"></i>&nbsp; *@ Edit</a>
+                        <a href="@Url.Action("Edit", "Product", new {brandId= item.ProductId})" class=" btn btn-outline-info">@* <i class="bi bi-pencil-square"></i>&nbsp; *@ Edit</a>
+                        <a href="#" class="delete-brand btn btn-outline-danger" name="brand_id" data-id="@item.ProductId">@* <i class="bi bi-trash"></i>&nbsp; *@ Delete</a>
                     </div>
                 </td>
             </tr>
@@ -127,11 +127,11 @@
             }
         });
     });
-        // $(document).ready(
-        // function () {
-        //     alert("Hi");
-        //     }
-        // )
+    // $(document).ready(
+    // function () {
+    //     alert("Hi");
+    //     }
+    // )
 
 </script>
 

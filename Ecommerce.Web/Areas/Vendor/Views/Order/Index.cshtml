@@ -1,0 +1,29 @@
+﻿
+
+<script src="~/lib/signalr/signalr.min.js"></script>
+
+<script>
+    var connection = new signarR.HubConnectionBuilder().withUrl("/orderHub").build();
+
+    connection.start().then(function () {
+        console.log("Connected to SignalR");
+    }).catch(function (err) {
+        console.error(err);
+    });
+
+    connection.on("ReceiveOrderStatus", function (orderId, status) {
+        let statusDiv = document.getElementById("statusUpdates");
+        statusDiv.innerHTML += `<p>Order <b>${orderId}</b> is now <b>${status}</b></p>`;
+    });
+
+    function updateOrderStatus() {
+        let orderId = document.getElementById("orderId").value;
+        let status = document.getElementById("status").value;
+
+        fetch('/Order/UpdateStatus', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `orderId=${orderId}&status=${status}`
+        }).then(() => console.log("Order status updated"));
+    }
+</script>

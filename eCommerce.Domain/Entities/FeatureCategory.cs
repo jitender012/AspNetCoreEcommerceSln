@@ -10,11 +10,13 @@ public partial class FeatureCategory
     public string Name { get; set; } = null!;
 
     public bool? IsMandatory { get; set; }
+    public bool IsDeleted { get; set; }
 
     public int? DisplayOrder { get; set; }
 
     public string CreatedBy { get; set; } = null!;
 
     public virtual ICollection<ProductCategoryFeature> ProductCategoryFeatures { get; set; } = new List<ProductCategoryFeature>();
+    public virtual ICollection<ProductFeature> ProductFeatures { get; set; } = [];
     
 }

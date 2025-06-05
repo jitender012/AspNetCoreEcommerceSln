@@ -3,9 +3,8 @@ using eCommerce.Application.ServiceContracts;
 using eCommerce.Application.ServiceContracts.AdminServiceContracts;
 using eCommerce.Domain.Entities;
 using eCommerce.Domain.RepositoryContracts;
-using Microsoft.AspNetCore.Http;
 
-namespace eCommerce.Application.Services
+namespace eCommerce.Application.Services.AdminServices
 {
     public class CategoryService : ICategoryService
     {
@@ -125,6 +124,19 @@ namespace eCommerce.Application.Services
             return catDTO;
         }
 
+        public async Task<List<CategoryDTO>> GetByFeatureCategoryIdAsync(int featureCategory)
+        {
+            var categories = await _categoryRepository.FetchByFeaureCategoryIdAsync(featureCategory);
+
+            var catDTO = categories.Select(x => new CategoryDTO
+            {
+                CategoryId = x.ProductCategoryId,
+                CategoryImage = x.CategoryImage,
+                CategoryName = x.CategoryName,
+                ParentCategoryId = x.ParentCategoryId
+            }).ToList();
+            return catDTO;
+        }
         public async Task<List<CategoryDTO>> GetSubCategoriesAsync()
         {
             var categories = await _categoryRepository.GetSubCategories();
@@ -154,6 +166,28 @@ namespace eCommerce.Application.Services
             await _categoryRepository.UpdateAsync(category);
 
             return true;
+        }
+
+        public async Task<List<CategoryDTO>> GetChildCategoriesAsync()
+        {
+            var category = await _categoryRepository.GetChildCategoriesAsync();
+
+            var categoryDTO = category.Select(category => new CategoryDTO
+            {
+                CategoryId = category.ProductCategoryId,
+                CategoryName = category.CategoryName,
+                CategoryImage = category.CategoryImage,
+            }).ToList();
+
+            return categoryDTO;
+        }
+
+        public async Task<List<CategoryDTO>> GetUnlinkedProductCategories(int featureCategoryId)
+        {
+            var categories = await _categoryRepository.FetchUnlinkedProductCategories(featureCategoryId);
+            var categoriesDTO = CategoryDTO.FromCategoryList(categories);
+
+            return categoriesDTO;
         }
     }
 }

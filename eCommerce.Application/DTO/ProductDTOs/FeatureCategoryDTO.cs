@@ -8,7 +8,7 @@ namespace eCommerce.Application.DTO.ProductDTOs
 {
     public class FeatureCategoryDTO
     {
-        public int? FeatureCategoryId { get; set; }
+        public int FeatureCategoryId { get; set; }
 
         public string Name { get; set; } = null!;
 
@@ -18,5 +18,7 @@ namespace eCommerce.Application.DTO.ProductDTOs
 
         public string? CreatedBy { get; set; } 
         public int? ProductCategoryId { get; set; }
+
+        public List<ProductFeatureDTO>? ProductFeatures { get; set; }
     }
 }

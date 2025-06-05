@@ -13,7 +13,7 @@ namespace eCommerce.Application.ServiceContracts.ProductServiceContracts
         /// <summary>
         /// 
         /// </summary>
-        /// <returns>List of all Feature categories</returns>
+        /// <returns>List of all Features</returns>
         Task<List<ProductFeatureDTO>> GetAllAsync();
 
         Task<ProductFeatureDTO> GetByIdAsync(int id);
@@ -29,5 +29,7 @@ namespace eCommerce.Application.ServiceContracts.ProductServiceContracts
 
         Task<bool> DeleteAsync(int id);
         #endregion
+
+        Task<List<ProductFeatureDTO>> GetByFeatureCategoryIdAsync(int id);
     }
 }

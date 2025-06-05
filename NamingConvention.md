@@ -1,4 +1,4 @@
-1. Foreign Key Naming
+﻿1. Foreign Key Naming
 Format: FK_<ChildTable>_<ParentTable>
 
 Example: FK_Products_Categories
@@ -120,3 +120,17 @@ InventoryId
 CartId
 OrderItemId
 PurchaseOrderItemId
+
+--- Common method names in Service Layer:
+→ GetAllAsync 
+→ GetByIdAsync 
+→ AddAsync 
+→ UpdateAsync 
+→ DeleteAsync 
+
+--- Common method names in Repository Layer:
+→ FetchAllAsync
+→ FindByIdAsync
+→ InsertAsync
+→ ModifyAsync
+→ RemoveByIdAsync

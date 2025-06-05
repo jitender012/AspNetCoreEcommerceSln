@@ -17,37 +17,12 @@ namespace eCommerce.Infrastructure.Repositories.Products
         }
 
         #region Common Methods
-        public async Task<int> InsertAsync(ProductFeature productFeature, int featureCategoryId, int productCategoryId = 0)
+        public async Task<int> InsertAsync(ProductFeature productFeature)
         {
-            using var transaction = await _context.Database.BeginTransactionAsync();
-            try
-            {
-                await _context.ProductFeatures.AddAsync(productFeature);
-                await _context.SaveChangesAsync();
+            await _context.ProductFeatures.AddAsync(productFeature);
+            await _context.SaveChangesAsync();
 
-                ProductCategoryFeature pcf = new()
-                {
-                    ProductFeaturesId = productFeature.ProductFeaturesId,
-                    FeatureCategoryId = featureCategoryId
-                };
-
-                if (productCategoryId > 0)
-                {
-                    pcf.ProductCategoryId = productCategoryId;
-                }
-
-                await _context.ProductCategoryFeatures.AddAsync(pcf);
-                await _context.SaveChangesAsync();
-
-                await transaction.CommitAsync();
-                return productFeature.ProductFeaturesId;
-            }
-
-            catch (Exception ex)
-            {
-                await transaction.RollbackAsync();
-                throw new Exception("Something went wrong while adding product feature.", ex);
-            }
+            return productFeature.ProductFeaturesId;
         }
 
         public async Task<IEnumerable<ProductFeature>> FetchAllAsync()
@@ -74,7 +49,12 @@ namespace eCommerce.Infrastructure.Repositories.Products
                 }
 
                 _logger.LogInformation("Fetching  Feature Category with ID {ProductFeatureId}", id);
-                var productFeature = await _context.ProductFeatures.FindAsync(id);
+
+                var productFeature = await _context.ProductFeatures
+                    .Where(x => x.ProductFeaturesId == id)
+                    .Include(x => x.FeatureCategory)
+                    .Include(x=>x.FeatureOptions)
+                    .FirstOrDefaultAsync();
 
                 if (productFeature == null)
                 {
@@ -125,7 +105,7 @@ namespace eCommerce.Infrastructure.Repositories.Products
                 _logger.LogWarning("Invalid id: {Id}", id);
                 return false;
             }
-           
+
             try
             {
                 var productFeature = await _context.ProductFeatures
@@ -146,42 +126,57 @@ namespace eCommerce.Infrastructure.Repositories.Products
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while removing Product Feature with id {Id}", id);
-                throw;  
+                throw;
             }
         }
 
         #endregion
 
 
-
-        public async Task<List<ProductFeature>> GetProductFeaturesAsync(int featureCategoryId = 0, int productCategoryId = 0)
+        public async Task<List<ProductFeature>> GetFeaturesByFeatureCategoryIdsAsync(List<int?> featureCategoryIds)
         {
             try
             {
-                IQueryable<ProductFeature> query = _context.ProductFeatures;
+                var productFeatures = await _context.ProductFeatures
+                    .Where(f => featureCategoryIds.Contains(f.FeatureCategoryId))
+                    .ToListAsync();
 
-                if (featureCategoryId < 0 && productCategoryId < 0)
-                {
-                    return query.ToList();
-                }
-
-                if (productCategoryId > 0 && featureCategoryId > 0)
-                {
-                    query = query
-                        .Where(pf => _context.ProductCategoryFeatures
-                            .Any(pcf => pcf.ProductFeaturesId == pf.ProductFeaturesId &&
-                                        pcf.ProductCategoryId == productCategoryId &&
-                                        pcf.FeatureCategoryId == featureCategoryId));
-                }
-
-                return await query.ToListAsync();
+                return productFeatures;
             }
-
             catch (Exception ex)
             {
-                throw new Exception("Something went wrong.", ex);
+                _logger.LogError(ex, "Error while fetching product features by feature category ids.");
+                throw;
             }
         }
+
+        //public async Task<List<ProductFeature>> GetProductFeaturesAsync(int featureCategoryId = 0, int productCategoryId = 0)
+        //{
+        //    try
+        //    {
+        //        IQueryable<ProductFeature> query = _context.ProductFeatures;
+
+        //        if (featureCategoryId < 0 && productCategoryId < 0)
+        //        {
+        //            return query.ToList();
+        //        }
+
+        //        if (productCategoryId > 0 && featureCategoryId > 0)
+        //        {
+        //            query = query
+        //                .Where(pf => _context.ProductCategoryFeatures
+        //                    .Any(pcf => pcf.ProductFeaturesId == pf.ProductFeaturesId &&
+        //                                pcf.FeatureCategoryId == featureCategoryId));
+        //        }
+
+        //        return await query.ToListAsync();
+        //    }
+
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("Something went wrong.", ex);
+        //    }
+        //}
 
         public Task InsertMultipleProductFeatureAsync(IEnumerable<ProductFeature> productFeatures)
         {
@@ -201,6 +196,21 @@ namespace eCommerce.Infrastructure.Repositories.Products
         public Task<int> LinkFeatureToFeatureCategoryAsync(int featureId, int categoryId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<List<ProductFeature>> FetchByFeatureCategoryIdAsync(int featureCategoryId)
+        {
+            try
+            {
+                return await _context.ProductFeatures
+                    .Where(x=>x.FeatureCategoryId == featureCategoryId)
+                    .ToListAsync();
+            }
+            catch (Exception)
+            {
+                _logger.LogError("Error occurred while fetching Product Features.");
+                throw;
+            }
         }
 
 

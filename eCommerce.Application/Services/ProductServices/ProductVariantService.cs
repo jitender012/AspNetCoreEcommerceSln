@@ -45,7 +45,7 @@ namespace eCommerce.Application.Services.ProductServices
             {
                 featureOption = productVariant.FeatureOptions.Select(fo => new FeatureOption
                 {
-                   CreatedBy = _userContextService.GetUserId(),
+                   CreatedBy = _userContextService.GetUserId().ToString(),
                    Value = fo.Value
                 }).ToList();
             }

@@ -8,10 +8,7 @@ namespace eCommerce.Infrastructure.Repositories
     public class CategoryRepository : BaseRepository<ProductCategory>, ICategoryRepository
     {
         private readonly new eCommerceDbContext _context;
-        public CategoryRepository(eCommerceDbContext context) : base(context)
-        {
-            _context = context;
-        }
+        public CategoryRepository(eCommerceDbContext context) : base(context) => _context = context;
 
         public async Task<List<ProductCategory>> GetMainCategories()
         {
@@ -50,9 +47,48 @@ namespace eCommerce.Infrastructure.Repositories
         {
             ProductCategory? category = await _context
                 .ProductCategories
-                .Include(x=>x.ParentCategory)
-                .FirstOrDefaultAsync(x=>x.ProductCategoryId == categoryId);
+                .Include(x => x.ParentCategory)
+                .FirstOrDefaultAsync(x => x.ProductCategoryId == categoryId);
             return category;
+        }
+
+        public async Task<List<ProductCategory>> GetChildCategoriesAsync()
+        {
+            var childCategories = await _context
+                .ProductCategories
+                .Where(c => !_context.ProductCategories
+                            .Any(sub => sub.ParentCategoryId == c.ProductCategoryId))
+                .ToListAsync();
+
+            return childCategories;
+        }
+
+        public async Task<List<ProductCategory>> FetchByFeaureCategoryIdAsync(int featureCategoryId)
+        {
+            var categories = await _context
+               .ProductCategoryFeatures
+               .Where(c => c.FeatureCategoryId == featureCategoryId)
+               .Select(c=>c.ProductCategory)
+               .ToListAsync();
+
+            return categories;
+        }
+
+        public async Task<List<ProductCategory>> FetchUnlinkedProductCategories(int featureCategoryId)
+        {
+            // Get all category IDs that are already linked
+            var linkedCategoryIds = await _context.ProductCategoryFeatures
+                .Where(pcf => pcf.FeatureCategoryId == featureCategoryId)
+                .Select(pcf => pcf.ProductCategoryId)
+                .ToListAsync();
+
+            // Get leaf categories (those not acting as a ParentCategory)
+            var leafCategories = await _context.ProductCategories
+                .Where(pc => !_context.ProductCategories.Any(child => child.ParentCategoryId == pc.ProductCategoryId))
+                .Where(pc => !linkedCategoryIds.Contains(pc.ProductCategoryId))
+                .ToListAsync();
+
+            return leafCategories;           
         }
     }
 }

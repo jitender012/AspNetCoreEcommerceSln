@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DTO\ProductFeatureDTOs\" />
     <Folder Include="Services\CustomerServices\" />
   </ItemGroup>
 

@@ -10,15 +10,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Data;
 using Serilog;
 using Microsoft.VisualBasic;
+using eCommerce.Web.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
-
 
 builder.Services.AddHttpClient("ApiClient", client =>
 {
@@ -26,7 +23,6 @@ builder.Services.AddHttpClient("ApiClient", client =>
 });
 
 builder.Services.AddApplicationService();
-
 
 //Registering DbContext
 builder.Services.AddDbContext<eCommerceDbContext>(options =>
@@ -49,6 +45,7 @@ builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, 
     .ReadFrom.Services(services));
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -65,7 +62,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
@@ -79,7 +75,6 @@ app.MapControllerRoute(
     pattern: "Admin/{controller=Home}/{action=Index}/{id?}",
     defaults: new { area = "Admin" });
 
-
 app.MapControllerRoute(
     name: "vendorRoute",
     pattern: "Vendor/{controller=Home}/{action=Index}/{id?}",
@@ -87,5 +82,6 @@ app.MapControllerRoute(
 
 app.UseAuthorization();
 
+app.MapHub<OrderHub>("/orderHub");
 
 app.Run();
