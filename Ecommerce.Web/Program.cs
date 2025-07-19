@@ -46,7 +46,7 @@ builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, 
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddSignalR();
-
+ 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -76,9 +76,9 @@ app.MapControllerRoute(
     defaults: new { area = "Admin" });
 
 app.MapControllerRoute(
-    name: "vendorRoute",
-    pattern: "Vendor/{controller=Home}/{action=Index}/{id?}",
-    defaults: new { area = "Vendor" });
+    name: "sellerRoute",
+    pattern: "Seller/{controller=Home}/{action=Index}/{id?}",
+    defaults: new { area = "Seller" });
 
 app.UseAuthorization();
 

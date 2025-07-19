@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace eCommerce.Web.Areas.Vendor.Controllers
+namespace eCommerce.Web.Areas.Seller.Controllers
 {
     public class OrderController : Controller
     {

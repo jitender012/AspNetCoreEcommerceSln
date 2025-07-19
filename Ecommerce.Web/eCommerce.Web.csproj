@@ -91,8 +91,9 @@
     <Folder Include="Areas\Customer\Data\" />
     <Folder Include="Areas\Customer\Models\" />
     <Folder Include="Areas\Customer\Views\" />
-    <Folder Include="Areas\Vendor\Data\" />
+    <Folder Include="Areas\Seller\Data\" />
     <Folder Include="wwwroot\Images\BrandImages\" />
+    <Folder Include="wwwroot\lib\filepond\" />
   </ItemGroup>
 
   <ItemGroup>

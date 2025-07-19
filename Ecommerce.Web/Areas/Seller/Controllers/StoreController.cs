@@ -2,9 +2,9 @@
 using eCommerce.Application.ServiceContracts.VendorServiceContracts;
 using Microsoft.AspNetCore.Mvc;
 
-namespace eCommerce.Web.Areas.Vendor.Controllers
+namespace eCommerce.Web.Areas.Seller.Controllers
 {
-    [Area("Vendor")]
+    [Area("Seller")]
     public class StoreController : Controller
     {
         private readonly IWarehouseService _storeService;

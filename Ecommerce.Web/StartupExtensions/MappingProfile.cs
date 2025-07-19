@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using eCommerce.Application.DTO;
 using eCommerce.Application.DTO.ProductDTOs;
 using eCommerce.Application.DTO.VendorDTOs;
-using eCommerce.Domain.Entities;
 using eCommerce.Web.Areas.Admin.Models.Product;
 using eCommerce.Web.Areas.Vendor.Models;
 using eCommerce.Web.Models.ProductModels;

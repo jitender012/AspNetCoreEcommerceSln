@@ -138,7 +138,7 @@ namespace eCommerce.Web.Controllers
             if (result.Succeeded)
             {
                 string area = applicationUser != null && await _userManager.IsInRoleAsync(applicationUser, "Admin") ? "Admin" :
-                                          applicationUser != null && await _userManager.IsInRoleAsync(applicationUser, "Seller") ? "Vendor" : "";
+                                          applicationUser != null && await _userManager.IsInRoleAsync(applicationUser, "Seller") ? "Seller" : "";
 
                 if (!string.IsNullOrEmpty(area))
                 {

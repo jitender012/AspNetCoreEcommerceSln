@@ -3,9 +3,9 @@ using eCommerce.Application.ServiceContracts.ProductServiceContracts;
 using eCommerce.Web.Models.ProductModels;
 using Microsoft.AspNetCore.Mvc;
 
-namespace eCommerce.Web.Areas.Vendor.Controllers
+namespace eCommerce.Web.Areas.Seller.Controllers
 {
-    [Area("Vendor")]
+    [Area("Seller")]
     public class ProductVariantController : Controller
     {
         private readonly IProductVariantService _productVariantService;

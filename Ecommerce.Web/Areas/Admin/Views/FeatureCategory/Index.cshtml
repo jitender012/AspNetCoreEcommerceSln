@@ -45,6 +45,9 @@
         <thead>
             <tr>
                 <th>
+                    
+                </th>
+                <th>
                     Feature Category Name
                 </th>
                 <th>
@@ -56,9 +59,13 @@
                 <th></th>
             </tr>
         </thead>
+        @{
+            int index = 1;
+        }
         @foreach (var item in Model)
         {
             <tr id="@item.FeatureCategoryId">
+                <td>@index</td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
@@ -76,6 +83,7 @@
                     </div>
                 </td>
             </tr>
+            index++;
         }
 
     </table>

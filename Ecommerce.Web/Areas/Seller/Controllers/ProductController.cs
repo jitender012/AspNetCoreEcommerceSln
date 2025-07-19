@@ -6,9 +6,9 @@ using eCommerce.Web.Models.ProductModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace eCommerce.Web.Areas.Vendor.Controllers
+namespace eCommerce.Web.Areas.Seller.Controllers
 {
-    [Area("Vendor")]   
+    [Area("Seller")]   
     public class ProductController(IProductService productService, IMapper mapper, ILogger<ProductController> logger, IBrandService brandService, ICategoryService categoryService, IFeatureCategoryService featureCategoryService) : Controller
     {
         private readonly IProductService _productService = productService;

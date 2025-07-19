@@ -71,6 +71,7 @@ namespace eCommerce.Infrastructure.Repositories.Products
                 throw new Exception("Something went wrong.", ex);
             }
         }
+
         public async Task InsertMultipleProductFeatureCategoryAsync(IEnumerable<FeatureCategory> categories)
         {
             try
@@ -83,6 +84,7 @@ namespace eCommerce.Infrastructure.Repositories.Products
                 throw new Exception("Something went wrong while inserting feature category.", ex);
             }
         }
+
         public Task<int> LinkToProductCategoryAsync(int featureId, int featureCategoryIds)
         {
             throw new NotImplementedException();
