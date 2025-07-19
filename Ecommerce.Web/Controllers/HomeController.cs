@@ -12,7 +12,7 @@ namespace Ecommerce.Web.Controllers
 
         public IActionResult Index()
         {
-            _logger.LogInformation("Inside Index of HomeController");
+            _logger.LogInformation("Inside Index of Home Controller");
 
             var categories = _context.ProductCategories.ToList();
             return View(categories);
