@@ -48,4 +48,20 @@ public partial class Order
     public virtual ICollection<Refund> Refunds { get; set; } = new List<Refund>();
 
     public virtual ICollection<ReturnRequest> ReturnRequests { get; set; } = new List<ReturnRequest>();
+
+
+    public void Cancel()
+    {
+        var hoursPassed = (DateTime.UtcNow - DateTime.Parse(CreatedAt)).TotalHours;
+
+        if (hoursPassed > 24)
+            throw new InvalidOperationException("Order can only be cancelled within 24 hours.");
+
+        if (OrderStatus == "Cancelled")
+            throw new InvalidOperationException("Order already cancelled.");
+
+        OrderStatus = "Cancelled";
+        UpdatedAt = DateTime.UtcNow.ToString("s"); // ISO for
+                                                   // mat
+    }
 }

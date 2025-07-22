@@ -169,13 +169,43 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-<input type="file" name="ProductImages" id="productImages" class="my-pond" multiple />
+<input type="file" name="ProductImages" id="productImages" accept="image/*" multiple />
+<div id="imagePreviewContainer"></div>
 
 <script>
-      $('.my-pond').filepond({
-        allowMultiple: true,
-        allowImagePreview: true,
-    });
+    const imageInput = document.getElementById('productImages');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const maxFiles = 5;
+
+    imageInput.addEventListener('change', function(event){
+        const selectedFiles = event.target.files;
+
+        imagePreviewContainer.innerHTML='';
+         if (selectedFiles.length > maxFiles) {
+            alert(`Max ${maxFiles} images allowed.`);
+            imageInput.value = ''; // Clear selected files
+            return;
+        }
+        for(let i = 0; i < selectedFiles.length; i++){
+            const file = selectedFiles[i];
+
+             if(file.type.startsWith('image/')){
+                const reader = new FileReader();
+
+                reader.onload = function(e){
+                    const imgElement = document.createElement('img');
+                    imgElement.src = e.target.result;
+                    imgElement.alt = file.name;
+                    imgElement.style.maxWidth = '200px'; // Adjust as needed
+                    imgElement.style.margin = '5px'; // Adjust as needed
+                    imagePreviewContainer.appendChild(imgElement);
+                }
+                 reader.readAsDataURL(file);
+             } else {
+                console.warn(`File ${file.name} is not an image.`);
+             }
+        }
+    })
 
     $(document).ready(
         function () {

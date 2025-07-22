@@ -19,11 +19,12 @@ namespace eCommerce.UnitTest
 {
     public class BrandServiceTest
     {
-        private readonly Mock<IBrandRepository> _brandRepositoryMock;
         private readonly BrandService _brandService;
 
-        private readonly Mock<ILogger<BrandService>> _mockLogger;
+        private readonly Mock<IBrandRepository> _brandRepositoryMock;
         private readonly Mock<IUserContextService> _mockUserContext;
+        private readonly Mock<ILogger<BrandService>> _mockLogger;
+
         private readonly Fixture _fixture;
 
         public BrandServiceTest()

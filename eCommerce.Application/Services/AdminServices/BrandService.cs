@@ -7,18 +7,25 @@ using Microsoft.Extensions.Logging;
 
 namespace eCommerce.Application.Services.AdminServices
 {
-    public class BrandService(IBrandRepository baseRepository, IUserContextService userContextService, ILogger<BrandService> logger) : IBrandService
+    public class BrandService : IBrandService
     {
-        private readonly IBrandRepository _brandRepository = baseRepository;
-        private readonly IUserContextService _userContextService = userContextService;
-        private readonly ILogger<BrandService> _logger = logger;
+        private readonly IBrandRepository _brandRepository;
+        private readonly IUserContextService _userContextService;
+        private readonly ILogger<BrandService> _logger;
+
+        public BrandService(IBrandRepository brandRepository, IUserContextService userContextService, ILogger<BrandService> logger)
+        {
+            _brandRepository = brandRepository;
+            _userContextService = userContextService;
+            _logger = logger;
+        }
 
         public async Task<Guid> AddBrand(BrandDTO data)
         {
             if (string.IsNullOrEmpty(data.BrandName))
                 throw new ArgumentNullException("Brand name is required.");
 
-            Brand brand = new ()
+            Brand brand = new()
             {
                 BrandId = Guid.NewGuid(),
                 BrandName = data.BrandName,
@@ -59,7 +66,7 @@ namespace eCommerce.Application.Services.AdminServices
 
         public async Task<List<BrandDTO>> GetAllBrands()
         {
-            var brands = await _brandRepository.GetAllAsync();            
+            var brands = await _brandRepository.GetAllAsync();
             return BrandDTO.FromBrandList(brands);
         }
 
