@@ -1,0 +1,14 @@
+﻿using eCommerce.Application.Features.BrandFeature.Dtos;
+using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace eCommerce.Application.Features.BrandFeature.Queries
+{
+    public record GetAllBrandsQuery : IRequest<List<BrandDto>>
+    {
+    }
+}

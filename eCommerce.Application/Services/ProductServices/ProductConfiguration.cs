@@ -28,7 +28,7 @@ namespace eCommerce.Application.Services
                 if (string.IsNullOrWhiteSpace(productFeature.Name))
                     throw new ArgumentException("Product feature name is required.");
 
-                var userId = _userContextService.GetUserId()?.ToString();
+                var userId = _userContextService.GetUserId().ToString();
 
                 ProductFeature pf = new()
                 {

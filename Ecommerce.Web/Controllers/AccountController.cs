@@ -142,7 +142,7 @@ namespace eCommerce.Web.Controllers
 
                 if (!string.IsNullOrEmpty(area))
                 {
-                    return RedirectToAction("Index", "Home", new { area });
+                    return RedirectToAction("Index", "Home", new {area = area });
                 }
 
                 return RedirectToAction("Index", "Home");

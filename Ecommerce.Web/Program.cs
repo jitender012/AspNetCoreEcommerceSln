@@ -1,16 +1,20 @@
+using eCommerce.Application.Behaviors;
+using eCommerce.Application.Features.BrandFeature.Commands;
+using eCommerce.Application.Features.BrandFeature.Validators;
 using eCommerce.Domain.IdentityEntities;
 using eCommerce.Domain.RepositoryContracts;
 using eCommerce.Infrastructure.Dapper;
 using eCommerce.Infrastructure.Data;
+using eCommerce.Web.Hubs;
 using eCommerce.Web.StartupExtensions;
+using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
 using Serilog;
-using Microsoft.VisualBasic;
-using eCommerce.Web.Hubs;
+using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +36,14 @@ builder.Services.AddScoped<IDapperRepository, DapperRepository>();
 
 builder.Services.AddScoped<IDbConnection>(sp => new SqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(CreateBrandCommand).Assembly);
+});
+
+builder.Services.AddValidatorsFromAssemblyContaining<CreateBrandValidator>();
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
     .AddEntityFrameworkStores<eCommerce.Infrastructure.Data.eCommerceDbContext>()
     .AddDefaultTokenProviders()
@@ -46,7 +58,7 @@ builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, 
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddSignalR();
- 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -62,25 +74,18 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
+
 app.MapControllerRoute(
-    name: "default",
+    name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapControllerRoute(
-    name: "adminRoute",
-    pattern: "Admin/{controller=Home}/{action=Index}/{id?}",
-    defaults: new { area = "Admin" });
-
-app.MapControllerRoute(
-    name: "sellerRoute",
-    pattern: "Seller/{controller=Home}/{action=Index}/{id?}",
-    defaults: new { area = "Seller" });
-
-app.UseAuthorization();
 
 app.MapHub<OrderHub>("/orderHub");
 

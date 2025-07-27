@@ -37,11 +37,7 @@ namespace eCommerce.Application.Services.AdminServices
             };
 
             var userId = _userContextService.GetUserId();
-
-            if (userId.HasValue)
-            {
-                brand.CreatedBy = userId.Value;
-            }
+            brand.CreatedBy = userId;
 
             var result = await _brandRepository.InsertAsync(brand);
 

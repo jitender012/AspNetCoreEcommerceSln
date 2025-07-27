@@ -28,4 +28,12 @@ public partial class Brand
     public virtual AspNetUser CreatedByNavigation { get; set; } = null!;
 
     public virtual Product? Product { get; set; }
+
+    public Brand()
+    {
+        BrandId = Guid.NewGuid();
+        CreatedAt = DateTime.UtcNow;
+        IsActive = true;
+        IsDeleted = false;
+    }
 }

@@ -1,9 +1,15 @@
-﻿using eCommerce.Domain.Entities;
+﻿using eCommerce.Application.DTO;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using eCommerce.Domain.Entities;
 
-namespace eCommerce.Application.DTO
+namespace eCommerce.Application.Features.BrandFeature.Dtos
 {
-    public class BrandDTO
+    public class CreateBrandDto
     {
         public Guid BrandId { get; set; }
 
@@ -20,7 +26,7 @@ namespace eCommerce.Application.DTO
         {
             return new Brand()
             {
-                BrandId = BrandId,
+                BrandId = Guid.NewGuid(),
                 BrandName = BrandName,
                 BrandImage = BrandImage,
                 BrandDescription = BrandDescription,
@@ -42,3 +48,4 @@ namespace eCommerce.Application.DTO
         }
     }
 }
+

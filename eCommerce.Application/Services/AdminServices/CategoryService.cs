@@ -30,11 +30,7 @@ namespace eCommerce.Application.Services.AdminServices
             };
 
             var userId = _userContext.GetUserId();
-
-            if (userId.HasValue)
-            {
-                category.CreatedBy = userId.Value;
-            }
+            category.CreatedBy = userId;
 
             if (data.ParentCategoryId > 0)
             {

@@ -18,12 +18,15 @@ namespace eCommerce.Application.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public Guid? GetUserId()
+        public Guid GetUserId()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            Guid? guid = userId != null ? Guid.Parse(userId) : null;
-            return guid;
+
+            return Guid.TryParse(userId, out var guid)
+                ? guid
+                : Guid.Empty; // or throw custom exception if login is required
         }
+
 
         public string GetUserName()
         {

@@ -91,13 +91,13 @@ namespace eCommerce.Application.Services.ProductServices
                 throw new ArgumentException("Feature name is required.");
             }
 
-            string userId = _userContextService.GetUserId()?.ToString() ?? "";
+            var userId = _userContextService.GetUserId();
 
             ProductFeature pf = new()
             {
                 Name = data.Name,
                 IsManadatory = data.IsManadatory,
-                CreatedBy = userId,
+                CreatedBy = userId.ToString(),
                 InputType = data.InputType,
                 FeatureCategoryId = data.FeatureCategoryId
             };

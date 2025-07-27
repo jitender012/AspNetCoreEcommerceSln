@@ -34,7 +34,7 @@ namespace eCommerce.Application.Services.ProductServices
                 Description = data.Description,
                 CreatedAt = DateTime.Now,
                 IsDeleted = false,
-                CreatedBy = userId ?? Guid.Empty,
+                CreatedBy = userId,
             };
 
             ProductVariant productVariant = new()
@@ -86,42 +86,31 @@ namespace eCommerce.Application.Services.ProductServices
             throw new NotImplementedException();
         }
 
-
         public async Task<List<SellerProductDTO>> GetProductsBySeller()
         {
             var userId = _userContextService.GetUserId();
+            IEnumerable<Product> products = await _productRepository.FetchBySellerIdAsync(userId);
 
-            if (userId.HasValue && userId != Guid.Empty)
+            return products.Select(p => new SellerProductDTO
             {
-                IEnumerable<Product> products = await _productRepository.FetchBySellerIdAsync(userId.Value);
-
-                return products.Select(p => new SellerProductDTO
+                ProductName = p.ProductName,
+                Url = p.Url,
+                ProductVariants = p.ProductVariants.Select(pv => new SellerProductVariantDTO
                 {
-                    ProductName = p.ProductName,
-                    Url = p.Url,
-                    ProductVariants = p.ProductVariants.Select(pv => new SellerProductVariantDTO
-                    {
-                        VarientName = pv.VarientName,
-                        Price = pv.Price,
-                        Quantity = pv.Quantity,
-                        IsActive = pv.IsActive
-                    }).ToList(),
-                    TotalStock = p.ProductVariants.Sum(pv => pv.Quantity),
-                    MaxPrice = p.ProductVariants.Max(pv => pv.Price),
-                    MinPrice = p.ProductVariants.Min(pv => pv.Price)
-                }).ToList();
-            }
-            else
-            {
-                return []; // Return empty list if userId is invalid
-            }
+                    VarientName = pv.VarientName,
+                    Price = pv.Price,
+                    Quantity = pv.Quantity,
+                    IsActive = pv.IsActive
+                }).ToList(),
+                TotalStock = p.ProductVariants.Sum(pv => pv.Quantity),
+                MaxPrice = p.ProductVariants.Max(pv => pv.Price),
+                MinPrice = p.ProductVariants.Min(pv => pv.Price)
+            }).ToList();
         }
 
         public Task<bool> UpdateProduct(ProductDTO data)
         {
             throw new NotImplementedException();
         }
-
-
     }
 }

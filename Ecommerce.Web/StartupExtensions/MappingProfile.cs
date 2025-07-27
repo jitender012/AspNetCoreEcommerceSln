@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
 using eCommerce.Application.DTO.ProductDTOs;
 using eCommerce.Application.DTO.VendorDTOs;
+using eCommerce.Application.Features.BrandFeature.Commands;
+using eCommerce.Application.Features.BrandFeature.Dtos;
+using eCommerce.Domain.Entities;
+using eCommerce.Web.Areas.Admin.Models.Brand;
 using eCommerce.Web.Areas.Admin.Models.Product;
 using eCommerce.Web.Areas.Vendor.Models;
 using eCommerce.Web.Models.ProductModels;
@@ -11,6 +15,10 @@ namespace eCommerce.Web.StartupExtensions
     {
         public MappingProfile()
         {
+
+            CreateMap<UpdateBrandViewModel, UpdateBrandCommand>();            
+            CreateMap<Brand, BrandDto>();
+            CreateMap<BrandDto, BrandViewModel>();
             #region Common Models
 
             CreateMap<ProductDTO, ProductViewModel>();

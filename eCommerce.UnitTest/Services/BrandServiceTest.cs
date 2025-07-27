@@ -41,7 +41,7 @@ namespace eCommerce.UnitTest.Services
         public async Task AddBrandAsync_ShouldReturnBrandId_WhenBrandIsValid()
         {
             // Arrange
-            var brandDto = _fixture.Build<BrandDTO>()                
+            var brandDto = _fixture.Build<BrandDTO>()
                 .Create();
 
             var expectedId = Guid.NewGuid();

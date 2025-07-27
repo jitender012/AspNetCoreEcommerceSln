@@ -8,7 +8,7 @@ namespace eCommerce.Application.ServiceContracts
 {
     public interface IUserContextService
     {
-        Guid? GetUserId();
+        Guid GetUserId();
         string GetUserName();
         string GetUserEmail();
     }
