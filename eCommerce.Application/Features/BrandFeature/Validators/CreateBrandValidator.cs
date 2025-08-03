@@ -11,5 +11,5 @@ namespace eCommerce.Application.Features.BrandFeature.Validators
                 .NotEmpty()
                 .WithMessage("Brand name is required.");
         }
-    }
+    }    
 }

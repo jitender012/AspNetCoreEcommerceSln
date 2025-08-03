@@ -4,7 +4,7 @@ namespace eCommerce.Domain.RepositoryContracts.Products
 {
     public interface IProductRepository
     {
-        Task<Guid> InsertAsync(Product product, ProductVariant productVariant, IEnumerable<ProductImage> productImages, IEnumerable<ProductConfiguration> configurations);
+        Task<Guid> InsertAsync(Product product, ProductVariant productVariant, IEnumerable<ProductImage> productImages, IEnumerable<FeatureOption> featureValues);
         Task<bool> ModifyAsync(Product product, ProductVariant productVariant, IEnumerable<ProductImage> productImages, IEnumerable<ProductConfiguration> configurations);
 
         Task<bool> RemoveAsync(Guid productId);
@@ -13,6 +13,7 @@ namespace eCommerce.Domain.RepositoryContracts.Products
         #region ReadMethods
         Task<IEnumerable<Product>> FetchAllAsync();
         Task<IEnumerable<Product>> FetchBySellerIdAsync(Guid vendorId);
+        Task<Product?> GetProductDetailSeller(Guid productId);
         Task<Product?> FetchByIdAsync(Guid productId);
 
         Task<IEnumerable<Product>> GetTopSellingProductsAsync(int count);

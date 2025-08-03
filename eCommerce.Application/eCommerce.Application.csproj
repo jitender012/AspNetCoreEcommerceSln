@@ -20,6 +20,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\FeatureFolders\Commands\" />
+    <Folder Include="Features\FeatureFolders\Dtos\" />
+    <Folder Include="Features\FeatureFolders\Handlers\" />
+    <Folder Include="Features\FeatureFolders\Queries\" />
+    <Folder Include="Features\FeatureFolders\Validators\" />
+    <Folder Include="Features\ProductFeatures\Validators\" />
+    <Folder Include="Features\ProductImageFeatures\Queries\" />
+    <Folder Include="Features\ProductImageFeatures\Validators\" />
+    <Folder Include="Features\ProductImageFeatures\Commands\" />
+    <Folder Include="Features\ProductImageFeatures\Handlers\" />
+    <Folder Include="Features\ProductVariantFeatures\Commands\" />
+    <Folder Include="Features\ProductVariantFeatures\Handlers\" />
+    <Folder Include="Features\ProductVariantFeatures\Queries\" />
+    <Folder Include="Features\ProductVariantFeatures\Validators\" />
     <Folder Include="Services\CustomerServices\" />
   </ItemGroup>
 

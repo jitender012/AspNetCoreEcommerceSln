@@ -275,7 +275,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
         {
             entity.ToTable("Brands", "Marketing");
 
-            entity.Property(e => e.BrandId).ValueGeneratedNever();
+            entity.Property(e => e.BrandId).HasDefaultValueSql("NEWID()");
             entity.Property(e => e.BrandImage)
                 .HasMaxLength(500)
                 .IsUnicode(false);

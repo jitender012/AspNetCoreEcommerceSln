@@ -25,8 +25,7 @@ namespace eCommerce.Application.Features.BrandFeature.Dtos
         public Brand ToBrand()
         {
             return new Brand()
-            {
-                BrandId = Guid.NewGuid(),
+            {                
                 BrandName = BrandName,
                 BrandImage = BrandImage,
                 BrandDescription = BrandDescription,

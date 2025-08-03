@@ -50,7 +50,7 @@ namespace eCommerce.Application.Services.ProductServices
 
             try
             {
-                var result = await _productRepository.InsertAsync(product, productVariant, data.ProuctImages!, data.ProductConfigurations!);
+               var result = Guid.NewGuid();
                 if (result == Guid.Empty)
                 {
                     _logger.LogError("Something went wrong while inserting product.");

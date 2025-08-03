@@ -3,6 +3,7 @@ using eCommerce.Application.DTO.ProductDTOs;
 using eCommerce.Application.DTO.VendorDTOs;
 using eCommerce.Application.Features.BrandFeature.Commands;
 using eCommerce.Application.Features.BrandFeature.Dtos;
+using eCommerce.Application.Features.ProductFeatures.Dtos;
 using eCommerce.Domain.Entities;
 using eCommerce.Web.Areas.Admin.Models.Brand;
 using eCommerce.Web.Areas.Admin.Models.Product;
@@ -16,6 +17,8 @@ namespace eCommerce.Web.StartupExtensions
         public MappingProfile()
         {
 
+
+            CreateMap<Product, ProductDto>();
             CreateMap<UpdateBrandViewModel, UpdateBrandCommand>();            
             CreateMap<Brand, BrandDto>();
             CreateMap<BrandDto, BrandViewModel>();

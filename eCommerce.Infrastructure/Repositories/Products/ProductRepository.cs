@@ -43,7 +43,7 @@ namespace eCommerce.Infrastructure.Repositories.Products
                                         .Where(p => p.CreatedBy == vendorId)
                                         .Include(p => p.ProductVariants)
                                             .ThenInclude(v => v.ProductImages)
-                                        .Include(b=>b.Brand)
+                                        .Include(b => b.Brand)
                                         .ToListAsync();
             return products;
         }
@@ -59,33 +59,34 @@ namespace eCommerce.Infrastructure.Repositories.Products
                     .FirstOrDefaultAsync(temp => temp.ProductId == productId);
 
         }
-        public async Task<Guid> InsertAsync(Product product, ProductVariant productVariant, IEnumerable<ProductImage> productImages, IEnumerable<ProductConfiguration> configurations)
+        public async Task<Guid> InsertAsync(Product product, ProductVariant productVariant, IEnumerable<ProductImage> productImages, IEnumerable<FeatureOption> featureValues)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 await _context.Products.AddAsync(product);
-                await _context.SaveChangesAsync();
-
                 productVariant.ProductId = product.ProductId;
-
                 await _context.ProductVariants.AddAsync(productVariant);
-                await _context.SaveChangesAsync();
 
                 foreach (var image in productImages)
-                {
                     image.ProductVariantId = productVariant.ProductIvarientId;
-                }
                 await _context.ProductImages.AddRangeAsync(productImages);
 
-                foreach (var conf in configurations)
+                List<ProductConfiguration> configurations = new List<ProductConfiguration>();
+
+                foreach (var fo in featureValues)
                 {
-                    conf.ProductVarientId = productVariant.ProductIvarientId;
+                    _context.FeatureOptions.Add(fo);
+
+                    configurations.Add(new ProductConfiguration
+                    {
+                        ProductVarientId = productVariant.ProductIvarientId,
+                        FeatureOptionId = fo.FeatureOptionId,
+                    });
                 }
-                await _context.ProductConfigurations.AddRangeAsync(configurations);
 
                 await _context.SaveChangesAsync();
-                transaction.Commit();
+                await transaction.CommitAsync();
 
                 return product.ProductId;
             }
@@ -96,6 +97,7 @@ namespace eCommerce.Infrastructure.Repositories.Products
                 return Guid.Empty;
             }
         }
+
 
         public async Task<bool> ModifyAsync(Product product, ProductVariant productVariant, IEnumerable<ProductImage> productImages, IEnumerable<ProductConfiguration> configurations)
         {
@@ -199,6 +201,17 @@ namespace eCommerce.Infrastructure.Repositories.Products
         public Task<IEnumerable<Product>> GetProductsByBrandAsync(Guid brandId)
         {
             throw new NotImplementedException();
+        }
+
+
+        public async Task<Product?> GetProductDetailSeller(Guid productId)
+        {
+            var productDetails = await _context.Products
+           .Include(x => x.ProductVariants)
+               .ThenInclude(y => y.ProductConfigurations)
+           .FirstOrDefaultAsync(x => x.ProductId == productId);
+
+            return productDetails;
         }
     }
 }
