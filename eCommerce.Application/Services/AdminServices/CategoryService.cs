@@ -94,6 +94,7 @@ namespace eCommerce.Application.Services.AdminServices
 
             var categoryDTO = new CategoryDTO()
             {
+                CategoryId = category.ProductCategoryId,
                 CategoryName = category.CategoryName,
                 CategoryImage = category.CategoryImage,
             };

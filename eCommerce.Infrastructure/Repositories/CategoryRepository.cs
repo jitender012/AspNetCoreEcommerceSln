@@ -68,7 +68,7 @@ namespace eCommerce.Infrastructure.Repositories
             var categories = await _context
                .ProductCategoryFeatures
                .Where(c => c.FeatureCategoryId == featureCategoryId)
-               .Select(c=>c.ProductCategory)
+               .Select(c => c.ProductCategory)
                .ToListAsync();
 
             return categories;
@@ -88,7 +88,15 @@ namespace eCommerce.Infrastructure.Repositories
                 .Where(pc => !linkedCategoryIds.Contains(pc.ProductCategoryId))
                 .ToListAsync();
 
-            return leafCategories;           
+            return leafCategories;
+        }
+
+        public async Task<List<ProductCategory>> GetAllCategories()
+        {
+            var categories = await _context.ProductCategories
+                   .Include(c => c.ParentCategory)
+                   .ToListAsync();
+            return categories;
         }
     }
 }

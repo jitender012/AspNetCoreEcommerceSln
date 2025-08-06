@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eCommerce.Domain.IdentityEntities;
+using System;
 using System.Collections.Generic;
 
 namespace eCommerce.Domain.Entities;
@@ -33,7 +34,7 @@ public partial class Product
 
     public virtual ProductCategory? Category { get; set; }
 
-    public virtual AspNetUser CreatedByNavigation { get; set; } = null!;
+    public virtual ApplicationUser CreatedByNavigation { get; set; } = null!;
 
     //public virtual Brand ProductNavigation { get; set; } = null!;
     public virtual Brand Brand { get; set; } = null!;
@@ -41,5 +42,5 @@ public partial class Product
 
     public virtual ICollection<ProductVariant> ProductVariants { get; set; } = new List<ProductVariant>();
 
-    public virtual AspNetUser? UpdatedByNavigation { get; set; }
+    public virtual ApplicationUser? UpdatedByNavigation { get; set; }
 }

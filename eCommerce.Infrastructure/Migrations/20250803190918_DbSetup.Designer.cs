@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eCommerce.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using eCommerce.Infrastructure.Data;
 namespace eCommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(eCommerceDbContext))]
-    partial class eCommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250803190918_DbSetup")]
+    partial class DbSetup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -289,6 +292,9 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CreatedByNavigationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool?>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -307,9 +313,7 @@ namespace eCommerce.Infrastructure.Migrations
 
                     b.HasKey("BrandId");
 
-                    b.HasIndex("CreatedBy");
-
-                    b.HasIndex("UpdatedBy");
+                    b.HasIndex("CreatedByNavigationId");
 
                     b.ToTable("Brands", "Marketing");
                 });
@@ -1629,18 +1633,11 @@ namespace eCommerce.Infrastructure.Migrations
                 {
                     b.HasOne("eCommerce.Domain.IdentityEntities.ApplicationUser", "CreatedByNavigation")
                         .WithMany()
-                        .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("CreatedByNavigationId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("eCommerce.Domain.IdentityEntities.ApplicationUser", "UpdatedByNavigation")
-                        .WithMany()
-                        .HasForeignKey("UpdatedBy")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("CreatedByNavigation");
-
-                    b.Navigation("UpdatedByNavigation");
                 });
 
             modelBuilder.Entity("eCommerce.Domain.Entities.Cart", b =>

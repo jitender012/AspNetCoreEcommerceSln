@@ -5,6 +5,7 @@ namespace eCommerce.Domain.RepositoryContracts
     public interface ICategoryRepository : IBaseRepository<ProductCategory>
     {
         Task<List<ProductCategory>> GetMainCategories();
+        Task<List<ProductCategory>> GetAllCategories();
         Task<List<ProductCategory>> GetSubCategories();
         Task<List<ProductCategory>> GetChildCategoriesAsync();
         Task<List<ProductCategory>> GetHierarchicalCategories();

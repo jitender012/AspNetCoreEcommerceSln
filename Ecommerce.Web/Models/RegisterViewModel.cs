@@ -19,6 +19,7 @@ namespace eCommerce.Web.Models
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Password and Confirm password do not match.")]
         public required string ConfirmPassword { get; set; }
+        public required string Role {  get; set; }
 
     }
 }

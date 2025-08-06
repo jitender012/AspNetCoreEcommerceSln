@@ -1,7 +1,11 @@
 ﻿using eCommerce.Application.DTO;
+using eCommerce.Application.Features.ProductCategoryFeatures.Commands;
+using eCommerce.Application.Features.ProductCategoryFeatures.Dtos;
+using eCommerce.Application.Features.ProductCategoryFeatures.Queries;
 using eCommerce.Application.ServiceContracts.AdminServiceContracts;
 using eCommerce.Application.ServiceContracts.UtilityServiceContracts;
 using eCommerce.Web.Areas.Admin.Models.Category;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,29 +20,26 @@ namespace eCommerce.Web.Areas.Admin.Controllers
 
         private readonly ICategoryService _categoryService;
         private readonly IFileUploadService _fileUploadService;
-        public CategoryController(ICategoryService categoryService, IFileUploadService fileUploadService)
+        private readonly IMediator _mediator;
+        public CategoryController(ICategoryService categoryService, IFileUploadService fileUploadService, IMediator mediator)
         {
             _categoryService = categoryService;
             _fileUploadService = fileUploadService;
+            _mediator = mediator;
         }
 
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            var categoriesDto = await _categoryService.GetAllAsync();
-            var parentCategories = await _categoryService.GetMainCategoriesAsync();
 
-            var parentCategoryLookup = parentCategories.ToDictionary(pc=>pc.CategoryId, pc=>pc.CategoryName);
+            var categoriesDto = await _mediator.Send(new GetAllCategories());                        
 
             var categoryViewModels = categoriesDto.Select(x => new CategoryViewModel
             {
-                CategoryId = x.CategoryId,
+                CategoryId = x.ProductCategoryId,
                 CategoryName = x.CategoryName,
-                CategoryImage = x.CategoryImage,
-                ParentCategoryId = x.ParentCategoryId,
-                ParentCategoryName = x.ParentCategoryId.HasValue && parentCategoryLookup.ContainsKey(x.ParentCategoryId.Value)
-                                         ? parentCategoryLookup[x.ParentCategoryId.Value]
-                                         : null
+                CategoryImage = x.CategoryImage,                
+                ParentCategoryName = x.ParentCategoryName
             });
             return View(categoryViewModels);
         }
@@ -46,11 +47,12 @@ namespace eCommerce.Web.Areas.Admin.Controllers
         // GET: Category/Create
         public async Task<ActionResult> Create()
         {
+
             var categories = await _categoryService.GetAllCategoriesHierarchicalAsync();
             var dropdownItems = new List<SelectListItem>();
             PopulateMainCategoryDropdown(categories, dropdownItems);
             ViewBag.Categories = dropdownItems;
-         
+
             return View();
         }
 
@@ -174,7 +176,7 @@ namespace eCommerce.Web.Areas.Admin.Controllers
             PopulateMainCategoryDropdown(categories, dropdownItems);
             ViewBag.Categories = dropdownItems;
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(data);
             }
@@ -199,6 +201,19 @@ namespace eCommerce.Web.Areas.Admin.Controllers
                     //_logger.LogError(ex, "File upload error in Create method.");
                     return View(data);
                 }
+            }
+
+            UpdateCategoryDto categoryDTO = new UpdateCategoryDto
+            {
+                CategoryId = data.CategoryId,
+                CategoryName = data.CategoryName,
+                CategoryImage = data.CategoryImage,
+                ParentCategoryId = data.ParentCategoryId,
+            };
+            var result = await _mediator.Send(new UpdateCategoryCommand(categoryDTO));
+            if (result)
+            {
+                return RedirectToAction(nameof(Index));
             }
             return View(data);
         }
@@ -234,14 +249,14 @@ namespace eCommerce.Web.Areas.Admin.Controllers
                 dropdownItems.Add(new SelectListItem
                 {
                     Value = category.CategoryId.ToString(),
-                    Text = new string('-', level * 2) + category.CategoryName 
+                    Text = new string('-', level * 2) + category.CategoryName
                 });
                 if (category.ChildCategoris?.Any() == true)
                 {
                     PopulateMainCategoryDropdown(category.ChildCategoris, dropdownItems, level + 1);
                 }
             }
-        }      
+        }
 
     }
 }

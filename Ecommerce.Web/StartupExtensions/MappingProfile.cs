@@ -3,6 +3,7 @@ using eCommerce.Application.DTO.ProductDTOs;
 using eCommerce.Application.DTO.VendorDTOs;
 using eCommerce.Application.Features.BrandFeature.Commands;
 using eCommerce.Application.Features.BrandFeature.Dtos;
+using eCommerce.Application.Features.ProductCategoryFeatures.Dtos;
 using eCommerce.Application.Features.ProductFeatures.Dtos;
 using eCommerce.Domain.Entities;
 using eCommerce.Web.Areas.Admin.Models.Brand;
@@ -17,9 +18,16 @@ namespace eCommerce.Web.StartupExtensions
         public MappingProfile()
         {
 
+            CreateMap<ProductCategory, ProductCategoryDto>()
+                .ForMember(dest => dest.ParentCategoryName,
+                           opt => opt.MapFrom(src => src.ParentCategory != null
+                                   ? src.ParentCategory.CategoryName
+                                   : string.Empty));
+
+            CreateMap<ProductCategory, ProductCategoryDetailsDto>();
 
             CreateMap<Product, ProductDto>();
-            CreateMap<UpdateBrandViewModel, UpdateBrandCommand>();            
+            CreateMap<UpdateBrandViewModel, UpdateBrandCommand>();
             CreateMap<Brand, BrandDto>();
             CreateMap<BrandDto, BrandViewModel>();
             #region Common Models
@@ -52,7 +60,7 @@ namespace eCommerce.Web.StartupExtensions
             CreateMap<SellerProductVariantViewModel, SellerProductVariantDTO>().ReverseMap();
 
             CreateMap<SellerProductViewModel, SellerProductDTO>();
-            CreateMap<SellerProductViewModel, SellerProductDTO>().ReverseMap();            
+            CreateMap<SellerProductViewModel, SellerProductDTO>().ReverseMap();
             #endregion
         }
     }

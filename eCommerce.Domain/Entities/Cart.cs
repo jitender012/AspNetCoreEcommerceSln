@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eCommerce.Domain.IdentityEntities;
+using System;
 using System.Collections.Generic;
 
 namespace eCommerce.Domain.Entities;
@@ -17,5 +18,5 @@ public partial class Cart
 
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 
-    public virtual AspNetUser CartNavigation { get; set; } = null!;
+    public virtual ApplicationUser CartNavigation { get; set; } = null!;
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eCommerce.Domain.IdentityEntities;
+using System;
 using System.Collections.Generic;
 
 namespace eCommerce.Domain.Entities;
@@ -21,5 +22,5 @@ public partial class AuditLog
 
     public string? NewValue { get; set; }
 
-    public virtual AspNetUser ChangedByNavigation { get; set; } = null!;
+    public virtual ApplicationUser ChangedByNavigation { get; set; } = null!;
 }

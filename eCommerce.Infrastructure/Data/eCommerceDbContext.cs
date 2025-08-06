@@ -21,18 +21,6 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
 
     public virtual DbSet<Address> Addresses { get; set; }
 
-    public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
-
-    public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
-
-    public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
-
-    public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
-
-    public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
-
-    public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
-
     public virtual DbSet<AuditLog> AuditLogs { get; set; }
 
     public virtual DbSet<Banner> Banners { get; set; }
@@ -130,92 +118,10 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasMaxLength(300)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.User).WithMany(p => p.Addresses)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Address_AspNetUsers");
+            
         });
 
-        modelBuilder.Entity<AspNetRole>(entity =>
-        {
-
-            entity.ToTable("AspNetRoles", "Identity");
-
-            entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
-                .IsUnique()
-                .HasFilter("([NormalizedName] IS NOT NULL)");
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Name).HasMaxLength(256);
-            entity.Property(e => e.NormalizedName).HasMaxLength(256);
-        });
-
-        modelBuilder.Entity<AspNetRoleClaim>(entity =>
-        {
-            entity.ToTable("AspNetRoleClaims", "Identity");
-
-            entity.HasIndex(e => e.RoleId, "IX_AspNetRoleClaims_RoleId");
-
-            entity.HasOne(d => d.Role).WithMany(p => p.AspNetRoleClaims).HasForeignKey(d => d.RoleId);
-        });
-
-        modelBuilder.Entity<AspNetUser>(entity =>
-        {
-            entity.ToTable("AspNetUsers", "Identity");
-
-            entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
-
-            entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
-                .IsUnique()
-                .HasFilter("([NormalizedUserName] IS NOT NULL)");
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Email).HasMaxLength(256);
-            entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
-            entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
-            entity.Property(e => e.UserName).HasMaxLength(256);
-
-            entity.HasMany(d => d.Roles).WithMany(p => p.Users)
-                .UsingEntity<Dictionary<string, object>>(
-                    "AspNetUserRole",
-                    r => r.HasOne<AspNetRole>().WithMany().HasForeignKey("RoleId"),
-                    l => l.HasOne<AspNetUser>().WithMany().HasForeignKey("UserId"),
-                    j =>
-                    {
-                        j.HasKey("UserId", "RoleId");
-                        j.ToTable("AspNetUserRoles");
-                        j.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
-                    });
-        });
-
-        modelBuilder.Entity<AspNetUserClaim>(entity =>
-        {
-            entity.ToTable("AspNetUserClaims", "Identity");
-
-            entity.HasIndex(e => e.UserId, "IX_AspNetUserClaims_UserId");
-
-            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserClaims).HasForeignKey(d => d.UserId);
-        });
-
-        modelBuilder.Entity<AspNetUserLogin>(entity =>
-        {
-            entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
-
-            entity.ToTable("AspNetUserLogin", "Identity");
-
-            entity.HasIndex(e => e.UserId, "IX_AspNetUserLogins_UserId");
-
-            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserLogins).HasForeignKey(d => d.UserId);
-        });
-
-        modelBuilder.Entity<AspNetUserToken>(entity =>
-        {
-            entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
-
-            entity.ToTable("AspNetUserTokens", "Identity");
-
-            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserTokens).HasForeignKey(d => d.UserId);
-        });
+       
 
         modelBuilder.Entity<AuditLog>(entity =>
         {
@@ -243,10 +149,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasMaxLength(50)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.ChangedByNavigation).WithMany(p => p.AuditLogs)
-                .HasForeignKey(d => d.ChangedBy)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_AuditLog_AspNetUsers");
+            
         });
 
         modelBuilder.Entity<Banner>(entity =>
@@ -275,7 +178,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
         {
             entity.ToTable("Brands", "Marketing");
 
-            entity.Property(e => e.BrandId).HasDefaultValueSql("NEWID()");
+            entity.Property(e => e.BrandId).ValueGeneratedNever();
             entity.Property(e => e.BrandImage)
                 .HasMaxLength(500)
                 .IsUnicode(false);
@@ -287,10 +190,15 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
             entity.Property(e => e.IsDeleted).HasDefaultValue(false);
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.Brands)
-                .HasForeignKey(d => d.CreatedBy)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Brands_AspNetUsers");
+            entity.HasOne(b => b.CreatedByNavigation)
+                .WithMany()
+                .HasForeignKey(b => b.CreatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(b => b.UpdatedByNavigation)
+                .WithMany()
+                .HasForeignKey(b => b.UpdatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<Cart>(entity =>
@@ -308,10 +216,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasDefaultValue("Active");
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
-            entity.HasOne(d => d.CartNavigation).WithOne(p => p.Cart)
-                .HasForeignKey<Cart>(d => d.CartId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_UserCart_AspNetUsers");
+           
         });
 
         modelBuilder.Entity<CartItem>(entity =>
@@ -370,10 +275,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasColumnType("datetime");
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
-            entity.HasOne(d => d.Customer).WithMany(p => p.Feedbacks)
-                .HasForeignKey(d => d.CustomerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Feedback_AspNetUsers");
+          
 
             entity.HasOne(d => d.ProductVariant).WithMany(p => p.Feedbacks)
                 .HasForeignKey(d => d.ProductVariantId)
@@ -424,10 +326,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
             entity.Property(e => e.Message).IsUnicode(false);
             entity.Property(e => e.Type).HasMaxLength(50);
 
-            entity.HasOne(d => d.User).WithMany(p => p.Notifications)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Notification_AspNetUsers");
+    
         });
 
         modelBuilder.Entity<Order>(entity =>
@@ -466,10 +365,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Orders_Orders");
 
-            entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
-                .HasForeignKey(d => d.CustomerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Orders_AspNetUsers");
+           
         });
 
         modelBuilder.Entity<OrderItem>(entity =>
@@ -553,19 +449,13 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasForeignKey(d => d.CategoryId)
                 .HasConstraintName("FK_Products_Category_Main");
 
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ProductCreatedByNavigations)
-                .HasForeignKey(d => d.CreatedBy)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Products_AspNetUsers");
 
             entity.HasOne(d => d.Brand).WithOne(p => p.Product)
                 .HasForeignKey<Product>(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Products_Brands");
 
-            entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.ProductUpdatedByNavigations)
-                .HasForeignKey(d => d.UpdatedBy)
-                .HasConstraintName("FK_Products_AspNetUsers1");
+            
         });
 
         modelBuilder.Entity<ProductAttribute>(entity =>
@@ -751,14 +641,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(50);
 
-            entity.HasOne(d => d.AnsweredByNavigation).WithMany(p => p.QAAnsweredByNavigations)
-                .HasForeignKey(d => d.AnsweredBy)
-                .HasConstraintName("FK_Q&A_AspNetUsers_Vendor");
-
-            entity.HasOne(d => d.Customer).WithMany(p => p.QACustomers)
-                .HasForeignKey(d => d.CustomerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Q&A_AspNetUsers_Customer");
+          
 
             entity.HasOne(d => d.ProductVariant).WithMany(p => p.QAs)
                 .HasForeignKey(d => d.ProductVariantId)
@@ -815,10 +698,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ReturnRequest_ProductVarient");
 
-            entity.HasOne(d => d.User).WithMany(p => p.ReturnRequests)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ReturnRequest_AspNetUsers");
+      
         });
 
         modelBuilder.Entity<Supplier>(entity =>
@@ -911,9 +791,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasMaxLength(255)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.User).WithMany(p => p.Warehouses)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK_Warehouse_AspNetUsers");
+           
         });
 
         modelBuilder.Entity<Wishlist>(entity =>
@@ -930,10 +808,6 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
 
-            entity.HasOne(d => d.Customer).WithMany(p => p.Wishlists)
-                .HasForeignKey(d => d.CustomerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Wishlist_AspNetUsers");
 
             entity.HasOne(d => d.ProductVariant).WithMany(p => p.Wishlists)
                 .HasForeignKey(d => d.ProductVariantId)

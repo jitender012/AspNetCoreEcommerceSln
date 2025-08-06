@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eCommerce.Domain.IdentityEntities;
+using System;
 using System.Collections.Generic;
 
 namespace eCommerce.Domain.Entities;
@@ -25,7 +26,8 @@ public partial class Brand
 
     public bool? IsDeleted { get; set; }
 
-    public virtual AspNetUser CreatedByNavigation { get; set; } = null!;
+    public virtual ApplicationUser CreatedByNavigation { get; set; } = null!;
+    public virtual ApplicationUser? UpdatedByNavigation { get; set; } = null!;
 
     public virtual Product? Product { get; set; }
 

@@ -38,8 +38,10 @@ namespace eCommerce.Web.Controllers
                 UserName = data.Name
             };
 
+
+
             var result = await _userManager.CreateAsync(applicationUser, data.Password);
-            var roleResult = await _userManager.AddToRoleAsync(applicationUser, "Customer");
+            var roleResult = await _userManager.AddToRoleAsync(applicationUser, data.Role);
 
             if (!roleResult.Succeeded)
             {

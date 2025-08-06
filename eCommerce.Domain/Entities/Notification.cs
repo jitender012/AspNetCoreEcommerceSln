@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eCommerce.Domain.IdentityEntities;
+using System;
 using System.Collections.Generic;
 
 namespace eCommerce.Domain.Entities;
@@ -17,5 +18,5 @@ public partial class Notification
 
     public DateTime CreatedAt { get; set; }
 
-    public virtual AspNetUser User { get; set; } = null!;
+    public virtual ApplicationUser User { get; set; } = null!;
 }

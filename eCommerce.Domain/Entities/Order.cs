@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eCommerce.Domain.IdentityEntities;
+using System;
 using System.Collections.Generic;
 
 namespace eCommerce.Domain.Entities;
@@ -39,7 +40,7 @@ public partial class Order
 
     public virtual Address BillingAddressNavigation { get; set; } = null!;
 
-    public virtual AspNetUser Customer { get; set; } = null!;
+    public virtual ApplicationUser Customer { get; set; } = null!;
 
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 

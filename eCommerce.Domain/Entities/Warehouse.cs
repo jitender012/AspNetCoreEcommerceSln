@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eCommerce.Domain.IdentityEntities;
+using System;
 using System.Collections.Generic;
 
 namespace eCommerce.Domain.Entities;
@@ -25,5 +26,5 @@ public partial class Warehouse
 
     public virtual ICollection<Inventory> Inventories { get; set; } = new List<Inventory>();
 
-    public virtual AspNetUser? User { get; set; }
+    public virtual ApplicationUser? User { get; set; }
 }

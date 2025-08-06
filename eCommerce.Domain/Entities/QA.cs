@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eCommerce.Domain.IdentityEntities;
+using System;
 using System.Collections.Generic;
 
 namespace eCommerce.Domain.Entities;
@@ -23,9 +24,9 @@ public partial class QA
 
     public DateTime? AnsweredAt { get; set; }
 
-    public virtual AspNetUser? AnsweredByNavigation { get; set; }
+    public virtual ApplicationUser? AnsweredByNavigation { get; set; }
 
-    public virtual AspNetUser Customer { get; set; } = null!;
+    public virtual ApplicationUser Customer { get; set; } = null!;
 
     public virtual ProductVariant ProductVariant { get; set; } = null!;
 }
