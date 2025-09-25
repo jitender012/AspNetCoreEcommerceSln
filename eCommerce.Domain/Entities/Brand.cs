@@ -29,7 +29,8 @@ public partial class Brand
     public virtual ApplicationUser CreatedByNavigation { get; set; } = null!;
     public virtual ApplicationUser? UpdatedByNavigation { get; set; } = null!;
 
-    public virtual Product? Product { get; set; }
+    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+
 
     public Brand()
     {

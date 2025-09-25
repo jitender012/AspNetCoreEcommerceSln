@@ -93,6 +93,7 @@
     <Folder Include="Areas\Customer\Views\" />
     <Folder Include="Areas\Seller\Data\" />
     <Folder Include="wwwroot\Images\BrandImages\" />
+    <Folder Include="wwwroot\Images\ProductImages\" />
     <Folder Include="wwwroot\lib\filepond\" />
   </ItemGroup>
 

@@ -1,27 +1,18 @@
-﻿using eCommerce.Application.DTO.VendorDTOs;
-using eCommerce.Application.Features.ProductImageFeatures.Dtos;
-using Microsoft.AspNetCore.Http;
+﻿using eCommerce.Application.Features.ProductVariantFeatures.Dtos;
 
 namespace eCommerce.Application.Features.ProductFeatures.Dtos
 {
-    public class CreateProductDto
-    {
-        public string ProductName { get; set; } = null!;
+    public class ProductSaveDTO
+    {                
 
-        public decimal Price { get; set; }
+        public string? Description { get; set; }        
 
-        public string? Description { get; set; }
-
-        public string? Url { get; set; }
-
-        public int BrandId { get; set; }
+        public Guid BrandId { get; set; }
 
         public int CategoryId { get; set; }    
 
-        public ProductVariantDto? ProductVariant { get; set; }
-
-        public IEnumerable<ProductImageDto>? ProuctImages { get; set; }
-
-        public IEnumerable<ProductFeaturesDto>? ProductFeatures { get; set; }
+        public ProductVariantSaveDTO ProductVariant { get; set; } = new();
+        
+        public IEnumerable<ProductFeaturesDto>? Features { get; set; }
     }
 }

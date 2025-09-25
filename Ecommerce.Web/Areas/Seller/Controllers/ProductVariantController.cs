@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using eCommerce.Application.ServiceContracts.ProductServiceContracts;
-using eCommerce.Web.Models.ProductModels;
+using eCommerce.Web.ViewModels.ProductVariantVMs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eCommerce.Web.Areas.Seller.Controllers
@@ -23,8 +23,8 @@ namespace eCommerce.Web.Areas.Seller.Controllers
             {
                 var productVariants =await _productVariantService.GetProductVariantsAsync();
 
-                _mapper.Map<ProductVariantViewModel>(productVariants);
-                return View(productVariants);
+                var productVariantsVm = _mapper.Map<CreateProductVariantVM>(productVariants);
+                return View(productVariantsVm);
             }
             catch (Exception)
             {

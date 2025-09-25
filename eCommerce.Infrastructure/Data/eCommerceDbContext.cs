@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using eCommerce.Domain.Entities;
 using eCommerce.Domain.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
@@ -95,7 +96,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
     {
         base.OnModelCreating(modelBuilder);
 
-      
+
 
         modelBuilder.Entity<Address>(entity =>
         {
@@ -118,10 +119,10 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasMaxLength(300)
                 .IsUnicode(false);
 
-            
+
         });
 
-       
+
 
         modelBuilder.Entity<AuditLog>(entity =>
         {
@@ -149,7 +150,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasMaxLength(50)
                 .IsUnicode(false);
 
-            
+
         });
 
         modelBuilder.Entity<Banner>(entity =>
@@ -216,7 +217,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasDefaultValue("Active");
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
-           
+
         });
 
         modelBuilder.Entity<CartItem>(entity =>
@@ -275,7 +276,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasColumnType("datetime");
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
-          
+
 
             entity.HasOne(d => d.ProductVariant).WithMany(p => p.Feedbacks)
                 .HasForeignKey(d => d.ProductVariantId)
@@ -326,7 +327,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
             entity.Property(e => e.Message).IsUnicode(false);
             entity.Property(e => e.Type).HasMaxLength(50);
 
-    
+
         });
 
         modelBuilder.Entity<Order>(entity =>
@@ -365,7 +366,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Orders_Orders");
 
-           
+
         });
 
         modelBuilder.Entity<OrderItem>(entity =>
@@ -422,6 +423,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasConstraintName("FK_Payment_Orders");
         });
 
+
         modelBuilder.Entity<Product>(entity =>
         {
             entity.HasKey(e => e.ProductId).HasName("PK__products__47027DF541B41370");
@@ -450,12 +452,22 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasConstraintName("FK_Products_Category_Main");
 
 
-            entity.HasOne(d => d.Brand).WithOne(p => p.Product)
-                .HasForeignKey<Product>(d => d.ProductId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+            entity.HasOne(d => d.Brand)
+                .WithMany(p => p.Products)
+                .HasForeignKey(d => d.BrandId)                
                 .HasConstraintName("FK_Products_Brands");
 
-            
+            entity.HasOne(p => p.CreatedByNavigation)
+            .WithMany()
+            .HasForeignKey(p => p.CreatedBy)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(p => p.UpdatedByNavigation)
+            .WithMany()
+            .HasForeignKey(p => p.UpdatedBy)
+            .OnDelete(DeleteBehavior.Restrict);
+
+
         });
 
         modelBuilder.Entity<ProductAttribute>(entity =>
@@ -554,7 +566,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
             entity.ToTable("ProductFeatures", "Product");
 
             entity.Property(e => e.Name).HasMaxLength(50);
-            
+
         });
 
         modelBuilder.Entity<ProductImage>(entity =>
@@ -641,7 +653,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(50);
 
-          
+
 
             entity.HasOne(d => d.ProductVariant).WithMany(p => p.QAs)
                 .HasForeignKey(d => d.ProductVariantId)
@@ -698,7 +710,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ReturnRequest_ProductVarient");
 
-      
+
         });
 
         modelBuilder.Entity<Supplier>(entity =>
@@ -791,7 +803,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasMaxLength(255)
                 .IsUnicode(false);
 
-           
+
         });
 
         modelBuilder.Entity<Wishlist>(entity =>

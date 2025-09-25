@@ -17,7 +17,7 @@ public partial class ProductVariant
 
     public decimal Price { get; set; }
 
-    public bool? IsActive { get; set; }
+    public bool? IsActive { get; set; } = true;
 
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 

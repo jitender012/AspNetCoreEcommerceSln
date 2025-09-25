@@ -5,11 +5,14 @@ using eCommerce.Application.Features.BrandFeature.Commands;
 using eCommerce.Application.Features.BrandFeature.Dtos;
 using eCommerce.Application.Features.ProductCategoryFeatures.Dtos;
 using eCommerce.Application.Features.ProductFeatures.Dtos;
+using eCommerce.Application.Features.ProductVariantFeatures.Dtos;
 using eCommerce.Domain.Entities;
 using eCommerce.Web.Areas.Admin.Models.Brand;
 using eCommerce.Web.Areas.Admin.Models.Product;
+using eCommerce.Web.Areas.Seller.Models;
 using eCommerce.Web.Areas.Vendor.Models;
-using eCommerce.Web.Models.ProductModels;
+using eCommerce.Web.ViewModels.ProductVariantVMs;
+using eCommerce.Web.ViewModels.ProductVMs;
 
 namespace eCommerce.Web.StartupExtensions
 {
@@ -17,6 +20,8 @@ namespace eCommerce.Web.StartupExtensions
     {
         public MappingProfile()
         {
+            CreateMap<ProductSaveVM, ProductSaveDTO>();
+            CreateMap<ProductFeaturesVM, ProductFeaturesDto>();
 
             CreateMap<ProductCategory, ProductCategoryDto>()
                 .ForMember(dest => dest.ParentCategoryName,
@@ -32,17 +37,6 @@ namespace eCommerce.Web.StartupExtensions
             CreateMap<BrandDto, BrandViewModel>();
             #region Common Models
 
-            CreateMap<ProductDTO, ProductViewModel>();
-            CreateMap<ProductDTO, ProductViewModel>().ReverseMap();
-
-            CreateMap<ProductVariantDTO, ProductVariantViewModel>();
-            CreateMap<ProductVariantDTO, ProductVariantViewModel>().ReverseMap();
-
-            CreateMap<ProductImagesDTO, ProductImageViewModel>().ReverseMap();
-            CreateMap<ProductImagesDTO, ProductImageViewModel>();
-
-            CreateMap<FeatureOptionDTO, FeatureOptionViewModel>();
-            CreateMap<FeatureOptionDTO, FeatureOptionViewModel>().ReverseMap();
 
             CreateMap<FeatureCategoryDTO, FeatureCategoryViewModel>();
             CreateMap<FeatureCategoryDTO, FeatureCategoryViewModel>().ReverseMap();
@@ -56,12 +50,40 @@ namespace eCommerce.Web.StartupExtensions
             #endregion
 
             #region For Seller Models
-            CreateMap<SellerProductVariantViewModel, SellerProductVariantDTO>();
-            CreateMap<SellerProductVariantViewModel, SellerProductVariantDTO>().ReverseMap();
+            // Domain to DTO and DTO to Domain
+            CreateMap<ProductSaveDTO, Product>();
+            CreateMap<ProductVariant, ProductVariantDto>();
+
+            //DTO to VM and VM to DTO
+            CreateMap<CreateProductVariantVM, SellerProductVariantDTO>();
+            CreateMap<CreateProductVariantVM, SellerProductVariantDTO>().ReverseMap();
 
             CreateMap<SellerProductViewModel, SellerProductDTO>();
             CreateMap<SellerProductViewModel, SellerProductDTO>().ReverseMap();
+
             #endregion
+
+            //Domain to DTO and DTO to Domain
+            CreateMap<Product, ProductListDto>()
+                .ForMember(dest => dest.CategoryName,
+                    opt => opt.MapFrom(src => src.Category!.CategoryName))
+                .ForMember(dest => dest.VariantCount,
+                    opt => opt.MapFrom(src => src.ProductVariants.Count));
+
+            CreateMap<Product, ProductDetailsDto>();
+
+            CreateMap<ProductVariant, ProductVariantDto>()
+                .ForMember(dest => dest.ImageUrls,
+                    opt => opt.MapFrom(src => src.ProductImages.Select(pi => pi.ImageUrl)));
+
+            CreateMap<ProductFeatureDto, FeaturesVM>();
+
+            //DTO to VM and VM to DTO
+            CreateMap<ProductListDto, ProductListVM>();
+            CreateMap<ProductDetailsDto, ProductDetailsVM>();
+            CreateMap<ProductVariantDto, ProductVariantVM>();
+            CreateMap<ProductFeatureDto, FeaturesVM >();
+
         }
     }
 }

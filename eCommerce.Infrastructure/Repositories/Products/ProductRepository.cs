@@ -44,6 +44,7 @@ namespace eCommerce.Infrastructure.Repositories.Products
                                         .Include(p => p.ProductVariants)
                                             .ThenInclude(v => v.ProductImages)
                                         .Include(b => b.Brand)
+                                        .Include(c => c.Category)
                                         .ToListAsync();
             return products;
         }
@@ -65,7 +66,6 @@ namespace eCommerce.Infrastructure.Repositories.Products
             try
             {
                 await _context.Products.AddAsync(product);
-                productVariant.ProductId = product.ProductId;
                 await _context.ProductVariants.AddAsync(productVariant);
 
                 foreach (var image in productImages)
@@ -209,6 +209,9 @@ namespace eCommerce.Infrastructure.Repositories.Products
             var productDetails = await _context.Products
            .Include(x => x.ProductVariants)
                .ThenInclude(y => y.ProductConfigurations)
+               .ThenInclude(z => z.FeatureOption)
+            .Include(x => x.ProductVariants)
+                .ThenInclude(y => y.ProductImages)
            .FirstOrDefaultAsync(x => x.ProductId == productId);
 
             return productDetails;

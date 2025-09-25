@@ -1,0 +1,20 @@
+﻿.select2-container--bootstrap-5 {
+    width: 100% !important;
+}
+
+    .select2-container--bootstrap-5 .select2-selection {
+        border: 1px solid #dee2e6 !important;
+        border-radius: 0.2rem !important;
+        font-size: .875rem;
+        padding: .95rem .85rem !important;
+        display: flex !important;
+        align-items: center !important;
+        background-color: #fff;
+    }
+
+    .select2-container--bootstrap-5 .select2-selection__clear {
+        font-size: 14px !important;
+        color: #6c757d !important;
+        margin-right: 10px !important;
+        margin-left: -5px !important;
+    }

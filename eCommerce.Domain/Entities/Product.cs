@@ -30,7 +30,7 @@ public partial class Product
 
     public DateTime? UpdatedAt { get; set; }
 
-    public bool? IsDeleted { get; set; }
+    public bool? IsDeleted { get; set; } = false;
 
     public virtual ProductCategory? Category { get; set; }
 

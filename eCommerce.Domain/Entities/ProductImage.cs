@@ -11,9 +11,9 @@ public partial class ProductImage
 
     public Guid ProductVariantId { get; set; }
 
-    public bool IsPrimary { get; set; }
+    public bool IsPrimary { get; set; } = false;
 
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     public DateTime? UpdatedAt { get; set; }
 

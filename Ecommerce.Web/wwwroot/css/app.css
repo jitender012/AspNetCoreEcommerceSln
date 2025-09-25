@@ -15439,3 +15439,20 @@ span.flatpickr-weekday {
     justify-content: space-between;
     margin-bottom: 10px;
 }
+.dt-layout-cell {
+    width: 100%;
+}
+
+.dt-paging-button {
+    margin: 3px;
+}
+
+.page-link {
+    border: 1px solid lightgrey;
+    padding-right: 8px;
+    padding-left: 8px;
+}
+
+.dt-layout-table {
+    background-color: white;
+}

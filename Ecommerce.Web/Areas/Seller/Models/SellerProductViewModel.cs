@@ -1,4 +1,6 @@
-﻿namespace eCommerce.Web.Areas.Vendor.Models
+﻿using eCommerce.Web.ViewModels.ProductVariantVMs;
+
+namespace eCommerce.Web.Areas.Vendor.Models
 {
     public class SellerProductViewModel
     {
@@ -9,6 +11,6 @@
         public int? TotalStock { get; set; }
         public string? Url { get; set; }
 
-        public List<SellerProductVariantViewModel>? ProductVariants { get; set; }           
+        public List<CreateProductVariantVM>? ProductVariants { get; set; }           
     }
 }

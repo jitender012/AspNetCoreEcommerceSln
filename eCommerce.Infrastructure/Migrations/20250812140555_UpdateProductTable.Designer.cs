@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eCommerce.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using eCommerce.Infrastructure.Data;
 namespace eCommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(eCommerceDbContext))]
-    partial class eCommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250812140555_UpdateProductTable")]
+    partial class UpdateProductTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -798,8 +801,6 @@ namespace eCommerce.Infrastructure.Migrations
 
                     b.HasKey("ProductId")
                         .HasName("PK__products__47027DF541B41370");
-
-                    b.HasIndex("BrandId");
 
                     b.HasIndex("UpdatedBy");
 
@@ -1790,11 +1791,6 @@ namespace eCommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("eCommerce.Domain.Entities.Product", b =>
                 {
-                    b.HasOne("eCommerce.Domain.Entities.Brand", "Brand")
-                        .WithMany("Products")
-                        .HasForeignKey("BrandId")
-                        .HasConstraintName("FK_Products_Brands");
-
                     b.HasOne("eCommerce.Domain.Entities.ProductCategory", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
@@ -1805,6 +1801,12 @@ namespace eCommerce.Infrastructure.Migrations
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("eCommerce.Domain.Entities.Brand", "Brand")
+                        .WithOne("Product")
+                        .HasForeignKey("eCommerce.Domain.Entities.Product", "ProductId")
+                        .IsRequired()
+                        .HasConstraintName("FK_Products_Brands");
 
                     b.HasOne("eCommerce.Domain.IdentityEntities.ApplicationUser", "UpdatedByNavigation")
                         .WithMany()
@@ -2063,7 +2065,7 @@ namespace eCommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("eCommerce.Domain.Entities.Brand", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("eCommerce.Domain.Entities.Cart", b =>

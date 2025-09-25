@@ -1,7 +1,4 @@
-﻿using AutoMapper.Features;
-using eCommerce.Application.DTO.ProductDTOs;
-using eCommerce.Application.Features.ProductFeatures.Dtos;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace eCommerce.Application.Features.ProductVariantFeatures.Dtos
 {
-    public class ProductVariantDto
+    public class ProductVariantSaveDTO
     {
         public Guid ProductIvarientId { get; set; }
 
@@ -17,7 +14,7 @@ namespace eCommerce.Application.Features.ProductVariantFeatures.Dtos
 
         public int? Quantity { get; set; }
 
-        public string Sku { get; set; } = null!;
+        public string SKU { get; set; } = null!;
 
         public decimal Price { get; set; }
 

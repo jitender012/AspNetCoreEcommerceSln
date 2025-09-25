@@ -11,6 +11,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eCommerce.Web.Areas.Admin.Controllers
 {
@@ -103,45 +104,35 @@ namespace eCommerce.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(BrandViewModel data, IEnumerable<IFormFile> ImageFile)
         {
-            // Map ViewModel to DTO           
+            if (!ModelState.IsValid)
+                return View(data);
 
+            // Map ViewModel to DTO           
             var createBrandDto = new CreateBrandDto
             {
                 BrandDescription = data.BrandDescription,
                 BrandName = data.BrandName,
             };
 
-            // Handle image upload
-            if (ImageFile.Any())
+            try
             {
-                try
+                if (ImageFile.Any())
                 {
                     var folderPath = "Images/BrandImages";
                     var fileNames = await _fileUploadService.UploadFilesAsync(ImageFile, folderPath);
                     createBrandDto.BrandImage = fileNames.FirstOrDefault();
                 }
-                catch (InvalidOperationException ex)
-                {
-                    ModelState.AddModelError("brandImg", ex.Message);
-                    TempData["Error"] = "Invalid file format or size. Please try again.";
-                    return View(data);
-                }
-                catch (Exception)
-                {
-                    TempData["Error"] = "An unexpected error occurred during file upload. Please try again.";
-                    //_logger.LogError(ex, "File upload error in Create method.");
-                    return View(data);
-                }
-            }
-
-            // Save brand to the database
-            try
-            {
                 var command = new CreateBrandCommand(createBrandDto);
                 var brandId = await _mediator.Send(command);
 
                 TempData["Success"] = "Brand created successfully!";
                 return RedirectToAction("Index");
+            }
+            catch (InvalidOperationException ex)
+            {
+                ModelState.AddModelError("brandImg", ex.Message);
+                TempData["Error"] = "Invalid file format or size. Please try again.";
+                return View(data);
             }
             catch (ValidationException ex)
             {

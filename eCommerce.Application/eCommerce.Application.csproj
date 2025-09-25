@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <Folder Include="Features\FeatureFolders\Commands\" />
-    <Folder Include="Features\ProductFeatures\Validators\" />
     <Folder Include="Features\ProductImageFeatures\Queries\" />
     <Folder Include="Features\ProductImageFeatures\Validators\" />
     <Folder Include="Features\ProductImageFeatures\Commands\" />

@@ -1,16 +1,14 @@
 ﻿using eCommerce.Application.DTO.ProductDTOs;
 
-namespace eCommerce.Web.Areas.Vendor.Models
+namespace eCommerce.Web.ViewModels.ProductVariantVMs
 {
-    public class SellerProductVariantViewModel
+    public class CreateProductVariantVM
     {
-
-        public Guid ProductVariantId { get; set; }
         public string? VarientName { get; set; }
         public string? SKU { get; set; } 
         public int? Quantity { get; set; }
         public decimal Price { get; set; }
         public bool? IsActive { get; set; }
-
+        public List<IFormFile>? ProuctImages { get; set; } = new();
     }
 }
