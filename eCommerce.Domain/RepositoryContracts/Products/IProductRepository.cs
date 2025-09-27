@@ -4,7 +4,7 @@ namespace eCommerce.Domain.RepositoryContracts.Products
 {
     public interface IProductRepository
     {
-        Task<Guid> InsertAsync(Product product, ProductVariant productVariant, IEnumerable<ProductImage> productImages, IEnumerable<FeatureOption> featureValues);
+        Task<Guid> InsertAsync(Product product, ProductVariant productVariant, List<ProductImage> productImages, List<FeatureOption> featureValues);
         Task<bool> ModifyAsync(Product product, ProductVariant productVariant, IEnumerable<ProductImage> productImages, IEnumerable<ProductConfiguration> configurations);
 
         Task<bool> RemoveAsync(Guid productId);

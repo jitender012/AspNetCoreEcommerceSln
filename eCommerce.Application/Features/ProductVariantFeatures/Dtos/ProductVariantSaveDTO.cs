@@ -20,8 +20,6 @@ namespace eCommerce.Application.Features.ProductVariantFeatures.Dtos
 
         public bool? IsActive { get; set; } = true;
 
-        public List<string> ImageUrls { get; set; } = [];
-
-        public List<ProductFeatureDto> Features { get; set; } = [];
+        public List<string> ImageUrls { get; set; } = [];        
     }
 }

@@ -2,7 +2,7 @@
 
 namespace eCommerce.Web.ViewModels.ProductVariantVMs
 {
-    public class CreateProductVariantVM
+    public class ProductVariantSaveVM
     {
         public string? VarientName { get; set; }
         public string? SKU { get; set; } 

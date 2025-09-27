@@ -65,7 +65,7 @@ namespace eCommerce.Web.Areas.Seller.Controllers
 
             return View(vm);
         }
-      
+
 
         [HttpPost]
         public async Task<IActionResult> Create(ProductSaveVM model, CancellationToken cancellationToken)
@@ -91,7 +91,7 @@ namespace eCommerce.Web.Areas.Seller.Controllers
 
             try
             {
-                var dto = _mapper.Map<CreateProductDto>(model);
+                var dto = _mapper.Map<ProductSaveDTO>(model);
                 var images = model.ProductVariant.ProuctImages;
 
                 if (images != null && images.Count > 0)
@@ -114,7 +114,7 @@ namespace eCommerce.Web.Areas.Seller.Controllers
                 return View(model);
             }
         }
-       
+
         public async Task<IActionResult> Edit(Guid id)
         {
             await PopulateBrandDropdownItems();
@@ -157,7 +157,7 @@ namespace eCommerce.Web.Areas.Seller.Controllers
         [HttpGet]
         public async Task<JsonResult> GetFeatureCategoriesWithFeatures(int categoryId)
         {
-            var categories = await _featureCategoryService.GetByProductCategoryIdAsync(categoryId);
+            List<FeatureCategoryDTO>? categories = await _featureCategoryService.GetByProductCategoryIdAsync(categoryId);
             return Json(categories);
         }
     }

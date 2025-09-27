@@ -27,7 +27,7 @@
         <div class="create-form">
             <div class="row">
                 <div class="form-group py-1 col-12 col-md-6 col-lg-4">
-                    @Html.LabelFor(model => model.ProductVariant.VarientName, "Product Name", new { @class = "control-label" })
+                    @Html.LabelFor(model => model.ProductVariant.VarientName, "Product  Name", new { @class = "control-label" })
                     @Html.TextBoxFor(model => model.ProductVariant.VarientName, new { @class = "form-control", placeholder = "Enter product name" })
                     @Html.ValidationMessageFor(m => m.ProductVariant.VarientName, null, new { @class = "text-danger" })
                 </div>

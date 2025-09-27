@@ -595,13 +595,14 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
             entity.Property(e => e.ProductIvarientId)
                 .ValueGeneratedNever()
                 .HasColumnName("ProductIVarientId");
-            entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.Price)
+                .HasColumnType("decimal(10, 2)");
             entity.Property(e => e.Sku)
                 .HasMaxLength(50)
                 .HasColumnName("SKU");
             entity.Property(e => e.VarientName)
-                .HasMaxLength(10)
-                .IsFixedLength();
+                .HasMaxLength(100)
+                .IsUnicode();
 
             entity.HasOne(d => d.Product).WithMany(p => p.ProductVariants)
                 .HasForeignKey(d => d.ProductId)

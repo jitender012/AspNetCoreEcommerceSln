@@ -23,7 +23,7 @@ namespace eCommerce.Web.Areas.Seller.Controllers
             {
                 var productVariants =await _productVariantService.GetProductVariantsAsync();
 
-                var productVariantsVm = _mapper.Map<CreateProductVariantVM>(productVariants);
+                var productVariantsVm = _mapper.Map<ProductVariantSaveVM>(productVariants);
                 return View(productVariantsVm);
             }
             catch (Exception)

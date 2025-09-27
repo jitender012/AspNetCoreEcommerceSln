@@ -60,7 +60,8 @@ namespace eCommerce.Infrastructure.Repositories.Products
                     .FirstOrDefaultAsync(temp => temp.ProductId == productId);
 
         }
-        public async Task<Guid> InsertAsync(Product product, ProductVariant productVariant, IEnumerable<ProductImage> productImages, IEnumerable<FeatureOption> featureValues)
+
+        public async Task<Guid> InsertAsync(Product product, ProductVariant productVariant, List<ProductImage> productImages, List<FeatureOption> featureOption)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
@@ -70,20 +71,22 @@ namespace eCommerce.Infrastructure.Repositories.Products
 
                 foreach (var image in productImages)
                     image.ProductVariantId = productVariant.ProductIvarientId;
+
                 await _context.ProductImages.AddRangeAsync(productImages);
 
                 List<ProductConfiguration> configurations = new List<ProductConfiguration>();
 
-                foreach (var fo in featureValues)
+                foreach (var fo in featureOption)
                 {
-                    _context.FeatureOptions.Add(fo);
+                   await _context.FeatureOptions.AddAsync(fo);
 
                     configurations.Add(new ProductConfiguration
                     {
-                        ProductVarientId = productVariant.ProductIvarientId,
-                        FeatureOptionId = fo.FeatureOptionId,
+                        ProductVarientId = productVariant.ProductIvarientId,                        
+                        FeatureOption = fo
                     });
                 }
+                await _context.ProductConfigurations.AddRangeAsync(configurations);
 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();

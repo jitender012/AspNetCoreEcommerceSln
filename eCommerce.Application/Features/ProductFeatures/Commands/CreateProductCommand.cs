@@ -24,11 +24,10 @@ namespace eCommerce.Application.Features.ProductFeatures.Commands
                 return Guid.Empty;
             }
 
-            var productVariantt = _mapper.Map<ProductVariant>(data.ProductVariant);
             var product = new Product
             {
                 ProductId = Guid.NewGuid(),
-                ProductName = data.ProductVariant.VarientName,
+                ProductName = data.ProductVariant.VarientName!,
                 Price = data.ProductVariant.Price,
                 Description = data.Description,
                 CreatedAt = DateTime.Now,
@@ -36,13 +35,14 @@ namespace eCommerce.Application.Features.ProductFeatures.Commands
                 CreatedBy = userId,
                 BrandId = data.BrandId,
                 CategoryId = data.CategoryId,
+                Url = data.ProductVariant.ImageUrls.FirstOrDefault() ?? string.Empty
             };
 
             var productVariant = new ProductVariant
             {
                 ProductIvarientId = Guid.NewGuid(),
                 VarientName = data.ProductVariant.VarientName,
-                ProductId = product.ProductId, // Not data.ProductId!
+                ProductId = product.ProductId,
                 Quantity = data.ProductVariant.Quantity,
                 Sku = data.ProductVariant.SKU,
                 Price = data.ProductVariant.Price,
@@ -52,22 +52,23 @@ namespace eCommerce.Application.Features.ProductFeatures.Commands
 
             var productImages = data.ProductVariant.ImageUrls.Select(x => new ProductImage
             {
+                ProductVariantId = productVariant.ProductIvarientId,
                 ImageUrl = x,
                 CreatedAt = DateTime.Now,
                 IsPrimary = false,
-                Order = 1,
-            });
+                Order = 1
+            }).ToList();
 
-            var featureValues = data.Features.Select(x => new FeatureOption
+            var featureOptions = data.Features.Select(x => new FeatureOption
             {
                 ProductFeatureId = x.ProductFeaturesId,
                 Value = x.Value,
                 CreatedBy = userId.ToString(),
-            });
+            }).ToList();
 
             try
             {
-                var result = await _productRepository.InsertAsync(product, productVariant, productImages, featureValues);
+                var result = await _productRepository.InsertAsync(product, productVariant, productImages, featureOptions);
                 if (result == Guid.Empty)
                 {
                     _logger.LogError("Something went wrong while inserting product.");

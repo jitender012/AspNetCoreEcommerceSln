@@ -11,6 +11,6 @@ namespace eCommerce.Web.Areas.Vendor.Models
         public int? TotalStock { get; set; }
         public string? Url { get; set; }
 
-        public List<CreateProductVariantVM>? ProductVariants { get; set; }           
+        public List<ProductVariantSaveVM>? ProductVariants { get; set; }           
     }
 }

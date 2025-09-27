@@ -13,6 +13,6 @@ namespace eCommerce.Application.Features.ProductFeatures.Dtos
 
         public ProductVariantSaveDTO ProductVariant { get; set; } = new();
         
-        public IEnumerable<ProductFeaturesDto>? Features { get; set; }
+        public IEnumerable<FeaturesDto>? Features { get; set; }
     }
 }
