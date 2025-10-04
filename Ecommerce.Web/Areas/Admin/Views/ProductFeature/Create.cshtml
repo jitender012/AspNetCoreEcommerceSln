@@ -1,60 +1,437 @@
-﻿@using eCommerce.Domain.Entities
-@model ProductFeatureViewModel
-
-@{
-    ViewData["Title"] = "Create";
+﻿@{
+    ViewData["Title"] = Model.ProductFeatureId.HasValue ? "Edit Feature" : "Create Feature";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h4>Create Product Feature</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form class="create-form" asp-action="Create" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+@model FeatureSaveVM
 
-            <div class="form-group">
-                <label asp-for="Name" class="control-label">Feature Name</label>
-                @Html.TextBoxFor(model => model.Name, new { @class = "form-control", placeholder = "Enter Feature name" })
-                <span asp-validation-for="Name" class="text-danger"></span>
+<div class="container-fluid py-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="/admin/features">Features</a></li>
+                            <li class="breadcrumb-item active">@(Model.ProductFeatureId.HasValue ? "Edit" : "Create")</li>
+                        </ol>
+                    </nav>
+                    <h1 class="h3 mb-0">
+                        @if (Model.ProductFeatureId.HasValue)
+                        {
+                            <i class="fas fa-edit me-2"></i>
+
+                            @:Edit Feature
+                        }
+                        else
+                        {
+                            <i class="fas fa-plus-circle me-2"></i>
+
+                            @:Create New Feature
+                        }
+                    </h1>
+                </div>
+                <div>
+                    <a href="/admin/features" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to List
+                    </a>
+                </div>
             </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.FeatureCategoryId, new { @class = "control-label" })
-                <select class="form-control" name="FeatureCategoryId">
-                    <option value="">--Select Feature Category --</option>
-                    @foreach (var fc in ViewBag.FeatureCategories)
-                    {
-                        <option value="@fc.Value">@fc.Text</option>
-                    }
-                </select>                
-                <span asp-validation-for="IsManadatory" class="text-danger"></span>
-            </div>
-
-           
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.InputType, new { @class = "control-label" })
-                @Html.DropDownListFor(model => model.InputType, new SelectList(Enum.GetValues(typeof(FeatureInputType))), "-- Select Input Type --",
-                new { @class = "form-control" })                
-                <span asp-validation-for="IsManadatory" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="IsManadatory" class="control-label">Is Manadatory</label>
-                 @Html.CheckBoxFor(model => model.IsManadatory) 
-                
-                <span asp-validation-for="IsManadatory" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
+
+    <form id="featureForm" asp-action="Create"
+          method="post">
+
+        <input type="hidden" asp-for="ProductFeatureId" />
+
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Basic Information -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-info-circle me-2"></i>Basic Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label name="Name" class="form-label fw-semibold">
+                                    Feature Name <span class="text-danger">*</span>
+                                </label>
+                                @Html.TextBoxFor(x => x.Name, new { @class = "form-control", @placeholder = "e.g., RAM, Storage, Display Size, Color" })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Enter a descriptive name for this product feature
+                                </small>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label name="FeatureCategoryId" class="form-label fw-semibold">
+                                    Feature Category <span class="text-danger">*</span>
+                                </label>
+                                @Html.DropDownListFor(x => x.FeatureCategoryId, Model.FeatureCategoryDropdown, "Select Feature Category", new { @class = "form-select" })
+                                @Html.ValidationMessageFor(model => model.FeatureCategoryId, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label name="InputType" class="form-label fw-semibold">
+                                    Input Type <span class="text-danger">*</span>
+                                </label>
+                                @Html.DropDownListFor(x => x.InputType, Model.InputTypeDropdown, "Select Input Type", new { @class = "form-select", id = "inputTypeSelect" })
+                                @Html.ValidationMessageFor(model => model.InputType, "", new { @class = "text-danger" })
+                                <small class="form-text text-muted" id="inputTypeHelp">
+                                    <i class="fas fa-question-circle me-1"></i>
+                                    Select how sellers will input this feature
+                                </small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="MeasurementUnitId" class="form-label fw-semibold">
+                                    Measurement Unit <span class="text-muted">(Optional)</span>
+                                </label>
+                                @Html.DropDownListFor(x => x.MeasurementUnitId, Model.MeasurementUnitDropdown, "No Unit", new { @class = "form-select" })
+                                @Html.ValidationMessageFor(model => model.MeasurementUnitId, "", new { @class = "text-danger" })
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-ruler me-1"></i>
+                                    Used for numeric values (e.g., 128 GB, 6.5 inch)
+                                </small>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Status</label>
+                                <div class="form-check form-switch">
+                                    @Html.CheckBoxFor(x => x.IsManadatory, new { @class = "form-check-input", @id = "isMandatorySwitch", @style = "width: 3em; height: 1.5em;" })
+                                    <label class="form-check-label ms-2" for="isMandatorySwitch">
+                                        <strong id="mandatoryText">
+                                            @(Model.IsManadatory ? "Mandatory" : "Optional")
+                                        </strong>
+                                    </label>
+                                </div>
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-star me-1"></i>
+                                    Mandatory features must be provided for all products
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature Options (Only for Dropdown) -->
+                <div class="card mb-4" id="optionsCard" style="display: none;">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-list me-2"></i>Feature Options
+                        </h5>
+                        <button type="button" class="btn btn-sm btn-primary" id="addOptionBtn">
+                            <i class="fas fa-plus me-1"></i>Add Option
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info mb-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Add predefined options that sellers can choose from when specifying this feature.
+                        </div>
+                        <div id="optionsContainer">
+                            <!-- Options will be added here dynamically -->
+                        </div>
+                        <div id="noOptionsMessage" class="text-center py-4 text-muted">
+                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                            <p>No options added yet. Click "Add Option" to get started.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Submit Card -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
+                                <i class="fas fa-save me-2"></i>
+                                @(Model.ProductFeatureId.HasValue ? "Update Feature" : "Create Feature")
+                            </button>
+                            <a href="/admin/features" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Help Card -->
+                <div class="card border-info mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-lightbulb me-2"></i>Quick Guide
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <strong>Input Types:</strong>
+                            <ul class="small mb-0 mt-2">
+                                <li><strong>Dropdown:</strong> Pre-defined choices (e.g., 4GB, 8GB, 16GB)</li>
+                                <li><strong>Text Box:</strong> Free text entry (e.g., Color description)</li>
+                                <li><strong>Number:</strong> Numeric values (e.g., Weight, Size)</li>
+                                <li><strong>Boolean:</strong> Yes/No options (e.g., Waterproof)</li>
+                            </ul>
+                        </div>
+                        <hr>
+                        <div>
+                            <strong>Examples:</strong>
+                            <ul class="small mb-0 mt-2">
+                                <li><strong>RAM:</strong> Dropdown with 2GB, 4GB, 8GB</li>
+                                <li><strong>Weight:</strong> Number with kg unit</li>
+                                <li><strong>Color:</strong> Text Box or Dropdown</li>
+                                <li><strong>Waterproof:</strong> Boolean (Yes/No)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature Preview Card -->
+                <div class="card border-secondary">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-eye me-2"></i>Preview
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <small class="text-muted">Feature Name:</small>
+                            <p class="mb-1" id="previewName">-</p>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">Input Type:</small>
+                            <p class="mb-1" id="previewInputType">-</p>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">Unit:</small>
+                            <p class="mb-1" id="previewUnit">-</p>
+                        </div>
+                        <div>
+                            <small class="text-muted">Status:</small>
+                            <p class="mb-0" id="previewStatus">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<!-- Option Row Template (Hidden) -->
+<template id="optionTemplate">
+    <div class="option-row mb-2">
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="fas fa-grip-vertical"></i>
+            </span>
+            <input type="text" class="form-control option-value"
+                   placeholder="Enter option value (e.g., 4GB, Red, Small)"
+                   name="FeatureOptions[INDEX]" required />
+            <button type="button" class="btn btn-outline-danger remove-option-btn">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    </div>
+</template>
 
+
+<style>
+    .option-row {
+        transition: all 0.3s ease;
+    }
+
+        .option-row:hover {
+            background-color: #f8f9fa;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+    .form-check-input:checked {
+        background-color: #198754;
+        border-color: #198754;
+    }
+
+    #optionsCard {
+        transition: all 0.3s ease;
+    }
+</style>
+
+
+
+<script>
+    $(document).ready(function() {
+        let optionIndex = 0;
+    
+
+        // Input type change handler
+        $('#inputTypeSelect').change(function() {
+            const inputType = $(this).val();
+            updateInputTypeHelp(inputType);
+            updatePreview();
+
+            if (inputType === '0') { // Dropdown
+                $('#optionsCard').slideDown();
+                if ($('#optionsContainer .option-row').length === 0) {
+                    addOptionRow();
+                }
+            } else {
+                $('#optionsCard').slideUp();
+            }
+        });
+
+        // Trigger on page load
+        $('#inputTypeSelect').trigger('change');
+
+        // Add option button
+        $('#addOptionBtn').click(function() {
+            addOptionRow();
+        });
+
+        // Remove option button (delegated event)
+        $(document).on('click', '.remove-option-btn', function() {
+            const $row = $(this).closest('.option-row');
+            $row.fadeOut(300, function() {
+                $(this).remove();
+                updateNoOptionsMessage();
+                reindexOptions();
+            });
+        });
+
+        // Add option row function
+        function addOptionRow(value = '', optionId = 0) {
+            const template = $('#optionTemplate').html();
+            const $newRow = $(template.replace(/INDEX/g, optionIndex));
+
+            if (value) {
+                $newRow.find('.option-value').val(value);
+            }            
+
+            $('#optionsContainer').append($newRow);
+            $('#noOptionsMessage').hide();
+
+            optionIndex++;
+        }
+
+        // Update no options message
+        function updateNoOptionsMessage() {
+            if ($('#optionsContainer .option-row').length === 0) {
+                $('#noOptionsMessage').show();
+            } else {
+                $('#noOptionsMessage').hide();
+            }
+        }
+
+        // Reindex options after removal
+        function reindexOptions() {
+            $('#optionsContainer .option-row').each(function(index) {
+                $(this).find('input, select').each(function() {
+                    const name = $(this).attr('name');
+                    if (name) {
+                        $(this).attr('name', name.replace(/\[\d+\]/, '[' + index + ']'));
+                    }
+                });
+            });
+        }
+
+        // Update input type help text
+        function updateInputTypeHelp(inputType) {
+            const helpTexts = {
+                '0': '<i class="fas fa-caret-square-down me-1 text-info"></i> Sellers will select from predefined options',
+                '1': '<i class="fas fa-font me-1 text-primary"></i> Sellers will enter free text',
+                '2': '<i class="fas fa-hashtag me-1 text-success"></i> Sellers will enter numeric values',
+                '3': '<i class="fas fa-toggle-on me-1 text-warning"></i> Sellers will select Yes or No'
+            };
+
+            $('#inputTypeHelp').html(helpTexts[inputType] || 'Select how sellers will input this feature');
+        }
+
+        // Mandatory switch handler
+        $('#isMandatorySwitch').change(function() {
+            if ($(this).is(':checked')) {
+                $('#mandatoryText').text('Mandatory').removeClass('text-muted').addClass('text-warning');
+            } else {
+                $('#mandatoryText').text('Optional').removeClass('text-warning').addClass('text-muted');
+            }
+            updatePreview();
+        });
+
+        // Real-time preview updates
+        $('#Name').on('input', updatePreview);
+        $('#inputTypeSelect').change(updatePreview);
+        $('#measurementUnitSelect').change(updatePreview);
+
+        function updatePreview() {
+            const name = $('#Name').val() || '-';
+            const inputType = $('#inputTypeSelect option:selected').text() || '-';
+            const unit = $('#measurementUnitSelect option:selected').text() || 'No unit';
+            const mandatory = $('#isMandatorySwitch').is(':checked');
+
+            $('#previewName').text(name);
+            $('#previewInputType').text(inputType);
+            $('#previewUnit').text(unit);
+            $('#previewStatus').html(mandatory ?
+                '<span class="badge bg-warning text-dark">Mandatory</span>' :
+                '<span class="badge bg-secondary">Optional</span>');
+        }
+
+        // Initial preview
+        updatePreview();
+
+        // Form validation
+        $('#featureForm').submit(function(e) {
+            let isValid = true;
+            const errors = [];
+
+            // Validate options for dropdown
+            if ($('#inputTypeSelect').val() === '0') {
+                const optionValues = [];
+                let hasEmptyOption = false;
+
+                // Check for duplicates
+                const uniqueValues = [...new Set(optionValues)];
+                if (uniqueValues.length !== optionValues.length) {
+                    errors.push('Duplicate option values are not allowed');
+                    isValid = false;
+                }
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fix the following errors:\n• ' + errors.join('\n• '));
+                return false;
+            }
+
+            // Show loading state
+            $('#submitBtn').prop('disabled', true)
+                .html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+        });
+
+        // Prevent form submission on Enter in option fields
+        $(document).on('keypress', '.option-value', function(e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                $('#addOptionBtn').click();
+            }
+        });
+
+        window.addEventListener('beforeunload', function(e) {
+            if (formChanged) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+    });
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

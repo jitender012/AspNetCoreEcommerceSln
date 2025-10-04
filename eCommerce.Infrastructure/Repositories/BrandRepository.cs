@@ -1,6 +1,7 @@
 ﻿using eCommerce.Domain.Entities;
 using eCommerce.Domain.RepositoryContracts;
 using eCommerce.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace eCommerce.Infrastructure.Repositories
 {
@@ -17,10 +18,13 @@ namespace eCommerce.Infrastructure.Repositories
         //    return brand.BrandId;
         //}
 
-        //public async Task<List<Brand>> GetAllBrands()
-        //{
-        //    return await _context.Brands.ToListAsync();
-        //}
+        public async Task<List<Brand>> GetAllBrands()
+        {
+            return await _context.Brands
+                .Where(x => x.IsDeleted == false)
+                .Include(x=>x.Products)
+                .ToListAsync();
+        }
 
         //public async Task<List<Brand>> GetAllBrands(Expression<Func<Brand, bool>> whereCondition)
         //{
@@ -42,21 +46,27 @@ namespace eCommerce.Infrastructure.Repositories
         //    await _context.SaveChangesAsync();
         //}
 
-        //public async Task<bool> DeleteAsync(Guid brandId)
-        //{
-        //    Brand? brand = await _context
-        //        .Brands
-        //        .Where(temp => temp.BrandId == brandId)
-        //        .SingleOrDefaultAsync();
+        public async Task<bool> SoftDeleteAsync(Guid brandId)
+        {
+            Brand? brand = await _context.Brands
+                .Where(temp => temp.BrandId == brandId)
+                .FirstOrDefaultAsync();
 
-        //    if (brand == null)
-        //    {
-        //        return false;
-        //    }
-        //   _context.Brands.Remove(brand);
-        //    return true;
-        //}
+            if (brand == null)
+                return false;
+
+            brand.IsDeleted = true;
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
         #endregion
+        public async Task<bool> ExistsByNameAsync(string brandName)
+        {
+            var normalized = brandName.ToLower();
+            return await _context.Brands.AnyAsync(b => b.BrandName.ToLower() == normalized);
+        }
+
+
     }
 }

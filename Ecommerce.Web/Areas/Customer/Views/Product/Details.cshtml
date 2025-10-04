@@ -1,0 +1,616 @@
+﻿@using eCommerce.Web.ViewModels.ProductVMs
+@{
+    ViewData["Title"] = Model.ProductName;
+    Layout = "~/Areas/Seller/Views/Shared/_VendorLayout.cshtml";
+}
+
+@model ProductDetailsVM
+
+<div class="container my-4">
+    <div class="row">
+        <!-- Product Images -->
+        <div class="col-lg-6 mb-4">
+            <div class="product-images">
+                <!-- Main Image -->
+                <div class="main-image mb-3">
+                    <img id="mainProductImage" src="@(Model.ProductVariants.FirstOrDefault()?.ImageUrls.FirstOrDefault() ?? "/images/placeholder.jpg")"
+                         alt="@Model.ProductName" class="img-fluid rounded shadow-sm w-100"
+                         style="max-height: 500px; object-fit: cover;">
+                </div>
+
+                <!-- Thumbnail Images -->
+                <div class="thumbnail-images">
+                    <div class="row g-2" id="thumbnailContainer">
+                        @if (Model.ProductVariants.Any() && Model.ProductVariants.First().ImageUrls.Any())
+                        {
+                            @foreach (var imageUrl in Model.ProductVariants.First().ImageUrls)
+                            {
+                                <div class="col-3">
+                                    <img src="@imageUrl" alt="Product thumbnail"
+                                         class="img-thumbnail thumbnail-img cursor-pointer w-100"
+                                         style="height: 80px; object-fit: cover;"
+                                         onclick="changeMainImage('@imageUrl')">
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-lg-6">
+            <div class="product-details">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/products" class="text-decoration-none">Products</a></li>
+                        <li class="breadcrumb-item"><a href="/category/@Model.CategoryName.ToLower()" class="text-decoration-none">@Model.CategoryName</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">@Model.ProductName</li>
+                    </ol>
+                </nav>
+
+                <!-- Brand -->
+                <div class="brand mb-2">
+                    <span class="badge bg-secondary">@Model.BrandName</span>
+                </div>
+
+                <!-- Product Title -->
+                <h1 class="product-title h2 mb-3">@Model.ProductName</h1>
+
+                <!-- Price -->
+                <div class="product-price mb-4">
+                    <span id="currentPrice" class="h3 text-primary fw-bold">$@Model.Price.ToString("F2")</span>
+                    <span id="variantPrice" class="h4 text-success fw-bold ms-2" style="display: none;"></span>
+                </div>
+
+                <!-- SKU -->
+                <div class="product-sku mb-3">
+                    <small class="text-muted">SKU: <span id="currentSku">@(Model.ProductVariants.FirstOrDefault()?.Sku ?? "N/A")</span></small>
+                </div>
+
+                <!-- Product Description -->
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <div class="product-description mb-4">
+                        <p class="text-muted">@Model.Description</p>
+                    </div>
+                }
+
+                <!-- Product Form -->
+                <form id="productForm" asp-page-handler="AddToCart" method="post">
+                    <input type="hidden" asp-for="ProductId" />
+                    <input type="hidden" id="selectedVariantId" name="VariantId" value="@(Model.ProductVariants.FirstOrDefault()?.ProductIvarientId)" />
+
+                    <!-- Variant Selection -->
+                    @if (Model.ProductVariants != null && Model.ProductVariants.Count > 1)
+                    {
+                        <div class="variant-group mb-4">
+                            <label class="form-label fw-semibold">Choose Variant:</label>
+                            <div class="variant-options">
+                                @foreach (var variant in Model.ProductVariants.Where(v => v.IsActive == true))
+                                {
+                                    <button type="button" class="btn btn-outline-primary variant-btn me-2 mb-2"
+                                            data-variant-id="@variant.ProductIvarientId"
+                                            data-variant-price="@variant.Price"
+                                            data-variant-sku="@variant.Sku"
+                                            data-variant-quantity="@variant.Quantity"
+                                            data-variant-images="@string.Join(",", variant.ImageUrls)">
+                                        @(!string.IsNullOrEmpty(variant.VarientName) ? variant.VarientName : variant.Sku)
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Quantity -->
+                    <div class="quantity-section mb-4">
+                        <label class="form-label fw-semibold">Quantity:</label>
+                        <div class="quantity-controls d-flex align-items-center">
+                            <button type="button" class="btn btn-outline-secondary" id="decreaseQty">-</button>
+                            <input type="number" class="form-control mx-2 text-center" id="quantity" name="Quantity"
+                                   value="1" min="1" max="@(Model.ProductVariants.FirstOrDefault()?.Quantity ?? 1)" style="width: 80px;">
+                            <button type="button" class="btn btn-outline-secondary" id="increaseQty">+</button>
+                            <span class="text-muted ms-3">
+                                <span id="stockStatus">@(Model.ProductVariants.FirstOrDefault()?.Quantity ?? 0) in stock</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons mb-4">
+                        <div class="d-grid gap-2 d-md-flex">
+                            <button type="submit" class="btn btn-primary btn-lg flex-fill me-md-2" id="addToCartBtn">
+                                <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                            </button>
+                            <button type="button" class="btn btn-outline-danger btn-lg" id="wishlistBtn">
+                                <i class="far fa-heart"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-lg" id="compareBtn">
+                                <i class="fas fa-balance-scale"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Product Features for Selected Variant -->
+                <div id="variantFeatures" class="product-features mb-4">
+                    @if (Model.ProductVariants.FirstOrDefault()?.Features.Any() == true)
+                    {
+                        <h6 class="fw-semibold mb-3">Product Features:</h6>
+                        <div class="features-list">
+                            @foreach (var feature in Model.ProductVariants.First().Features)
+                            {
+                                <div class="feature-item mb-2">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <strong class="text-muted">@feature.Name:</strong>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <span>@feature.Value</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <!-- Additional Product Info -->
+                <div class="product-info-cards">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="info-card d-flex align-items-center p-3 border rounded">
+                                <i class="fas fa-truck text-primary me-3 fs-4"></i>
+                                <div>
+                                    <div class="fw-semibold">Free Shipping</div>
+                                    <small class="text-muted">On orders over $50</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-card d-flex align-items-center p-3 border rounded">
+                                <i class="fas fa-undo text-primary me-3 fs-4"></i>
+                                <div>
+                                    <div class="fw-semibold">Easy Returns</div>
+                                    <small class="text-muted">30-day return policy</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-card d-flex align-items-center p-3 border rounded">
+                                <i class="fas fa-shield-alt text-primary me-3 fs-4"></i>
+                                <div>
+                                    <div class="fw-semibold">Warranty</div>
+                                    <small class="text-muted">1-year manufacturer warranty</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-card d-flex align-items-center p-3 border rounded">
+                                <i class="fas fa-headset text-primary me-3 fs-4"></i>
+                                <div>
+                                    <div class="fw-semibold">Support</div>
+                                    <small class="text-muted">24/7 customer service</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Details Tabs -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="productTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="description-tab" data-bs-toggle="tab"
+                            data-bs-target="#description" type="button" role="tab">
+                        Description
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="specifications-tab" data-bs-toggle="tab"
+                            data-bs-target="#specifications" type="button" role="tab">
+                        Specifications
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="variants-tab" data-bs-toggle="tab"
+                            data-bs-target="#variants" type="button" role="tab">
+                        All Variants
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content border border-top-0 p-4" id="productTabsContent">
+                <!-- Description Tab -->
+                <div class="tab-pane fade show active" id="description" role="tabpanel">
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <p>@Model.Description</p>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No detailed description available for this product.</p>
+                    }
+                </div>
+
+                <!-- Specifications Tab -->
+                <div class="tab-pane fade" id="specifications" role="tabpanel">
+                    <div id="currentVariantSpecs">
+                        @if (Model.ProductVariants.FirstOrDefault()?.Features.Any() == true)
+                        {
+                            <table class="table table-striped">
+                                <tbody>
+                                    @foreach (var feature in Model.ProductVariants.First().Features)
+                                    {
+                                        <tr>
+                                            <td class="fw-semibold" style="width: 30%;">@feature.Name</td>
+                                            <td>@feature.Value</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No specifications available for this variant.</p>
+                        }
+                    </div>
+                </div>
+
+                <!-- All Variants Tab -->
+                <div class="tab-pane fade" id="variants" role="tabpanel">
+                    <div class="variants-comparison">
+                        <h5 class="mb-4">Available Variants</h5>
+                        <div class="row">
+                            @foreach (var variant in Model.ProductVariants.Where(v => v.IsActive == true))
+                            {
+                                <div class="col-md-6 col-lg-4 mb-4">
+                                    <div class="card variant-card h-100">
+                                        @if (variant.ImageUrls.Any())
+                                        {
+                                            <img src="@variant.ImageUrls.First()" class="card-img-top"
+                                                 style="height: 200px; object-fit: cover;" alt="@variant.VarientName">
+                                        }
+                                        <div class="card-body">
+                                            <h6 class="card-title">@(!string.IsNullOrEmpty(variant.VarientName) ? variant.VarientName : variant.Sku)</h6>
+                                            <p class="card-text">
+                                                <strong class="text-primary">$@variant.Price.ToString("F2")</strong><br>
+                                                <small class="text-muted">SKU: @variant.Sku</small><br>
+                                                <small class="@(variant.Quantity > 0 ? "text-success" : "text-danger")">
+                                                    @(variant.Quantity > 0 ? $"{variant.Quantity} in stock" : "Out of stock")
+                                                </small>
+                                            </p>
+                                        </div>
+                                        <div class="card-footer">
+                                            <button type="button" class="btn btn-outline-primary btn-sm select-variant-btn"
+                                                    data-variant-id="@variant.ProductIvarientId">
+                                                Select This Variant
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden variant data for JavaScript -->
+<script type="text/javascript">
+    var productVariants = @Html.Raw(Json.Serialize(Model.ProductVariants));
+    var productId = '@Model.ProductId';
+</script>
+
+<style>
+    .cursor-pointer {
+        cursor: pointer;
+    }
+
+    .thumbnail-img:hover {
+        opacity: 0.8;
+    }
+
+    .variant-btn.active {
+        background-color: var(--bs-primary);
+        color: white;
+        border-color: var(--bs-primary);
+    }
+
+    .quantity-controls input::-webkit-outer-spin-button,
+    .quantity-controls input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .quantity-controls input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    .info-card {
+        transition: transform 0.2s;
+    }
+
+        .info-card:hover {
+            transform: translateY(-2px);
+        }
+
+    .variant-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+        .variant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        let currentVariant = null;
+        let currentStock = 0;
+
+        // Initialize first variant as selected
+        if (productVariants && productVariants.length > 0) {
+            currentVariant = productVariants[0];
+            currentStock = currentVariant.quantity || 0;
+            $('.variant-btn').first().addClass('active');
+            updateUI();
+        }
+
+        // Variant selection
+        $('.variant-btn').click(function() {
+            $('.variant-btn').removeClass('active');
+            $(this).addClass('active');
+
+            var variantId = $(this).data('variant-id');
+            currentVariant = productVariants.find(v => v.productIvarientId === variantId);
+
+            if (currentVariant) {
+                updateUI();
+            }
+        });
+
+        // Select variant from variants tab
+        $('.select-variant-btn').click(function() {
+            var variantId = $(this).data('variant-id');
+            $('.variant-btn[data-variant-id="' + variantId + '"]').click();
+
+            // Switch to first tab
+            $('#description-tab').click();
+
+            // Scroll to top of product details
+            $('html, body').animate({
+                scrollTop: $('.product-details').offset().top - 100
+            }, 500);
+        });
+
+        // Update UI based on selected variant
+        function updateUI() {
+            if (!currentVariant) return;
+
+            // Update hidden form field
+            $('#selectedVariantId').val(currentVariant.productIvarientId);
+
+            // Update price
+            if (currentVariant.price !== @Model.Price) {
+                $('#variantPrice').text('$' + currentVariant.price.toFixed(2)).show();
+            } else {
+                $('#variantPrice').hide();
+            }
+
+            // Update SKU
+            $('#currentSku').text(currentVariant.sku);
+
+            // Update stock
+            currentStock = currentVariant.quantity || 0;
+            $('#stockStatus').text(currentStock + ' in stock');
+            $('#quantity').attr('max', currentStock);
+
+            // Update images
+            if (currentVariant.imageUrls && currentVariant.imageUrls.length > 0) {
+                $('#mainProductImage').attr('src', currentVariant.imageUrls[0]);
+                updateThumbnails(currentVariant.imageUrls);
+            }
+
+            // Update features
+            updateFeatures(currentVariant.features);
+            updateSpecifications(currentVariant.features);
+
+            // Update add to cart button
+            updateAddToCartButton();
+        }
+
+        // Update thumbnails
+        function updateThumbnails(imageUrls) {
+            var thumbnailHtml = '';
+            imageUrls.forEach(function(url) {
+                thumbnailHtml += '<div class="col-3">' +
+                    '<img src="' + url + '" alt="Product thumbnail" ' +
+                    'class="img-thumbnail thumbnail-img cursor-pointer w-100" ' +
+                    'style="height: 80px; object-fit: cover;" ' +
+                    'onclick="changeMainImage(\'' + url + '\')">' +
+                    '</div>';
+            });
+            $('#thumbnailContainer').html(thumbnailHtml);
+        }
+
+        // Update features display
+        function updateFeatures(features) {
+            if (features && features.length > 0) {
+                var featuresHtml = '<h6 class="fw-semibold mb-3">Product Features:</h6><div class="features-list">';
+                features.forEach(function(feature) {
+                    featuresHtml += '<div class="feature-item mb-2">' +
+                        '<div class="row">' +
+                        '<div class="col-sm-4"><strong class="text-muted">' + feature.name + ':</strong></div>' +
+                        '<div class="col-sm-8"><span>' + feature.value + '</span></div>' +
+                        '</div></div>';
+                });
+                featuresHtml += '</div>';
+                $('#variantFeatures').html(featuresHtml);
+            } else {
+                $('#variantFeatures').html('<p class="text-muted">No features available for this variant.</p>');
+            }
+        }
+
+        // Update specifications tab
+        function updateSpecifications(features) {
+            if (features && features.length > 0) {
+                var specsHtml = '<table class="table table-striped"><tbody>';
+                features.forEach(function(feature) {
+                    specsHtml += '<tr>' +
+                        '<td class="fw-semibold" style="width: 30%;">' + feature.name + '</td>' +
+                        '<td>' + feature.value + '</td>' +
+                        '</tr>';
+                });
+                specsHtml += '</tbody></table>';
+                $('#currentVariantSpecs').html(specsHtml);
+            } else {
+                $('#currentVariantSpecs').html('<p class="text-muted">No specifications available for this variant.</p>');
+            }
+        }
+
+        // Update add to cart button
+        function updateAddToCartButton() {
+            if (currentStock <= 0) {
+                $('#addToCartBtn').prop('disabled', true)
+                    .html('<i class="fas fa-times me-2"></i>Out of Stock')
+                    .removeClass('btn-primary').addClass('btn-secondary');
+                $('#stockStatus').html('<span class="text-danger">Out of stock</span>');
+            } else {
+                $('#addToCartBtn').prop('disabled', false)
+                    .html('<i class="fas fa-shopping-cart me-2"></i>Add to Cart')
+                    .removeClass('btn-secondary').addClass('btn-primary');
+            }
+        }
+
+        // Quantity controls
+        $('#increaseQty').click(function() {
+            var currentQty = parseInt($('#quantity').val());
+            if (currentQty < currentStock) {
+                $('#quantity').val(currentQty + 1);
+            }
+        });
+
+        $('#decreaseQty').click(function() {
+            var currentQty = parseInt($('#quantity').val());
+            if (currentQty > 1) {
+                $('#quantity').val(currentQty - 1);
+            }
+        });
+
+        // Quantity input validation
+        $('#quantity').on('input', function() {
+            var qty = parseInt($(this).val());
+            if (qty > currentStock) {
+                $(this).val(currentStock);
+            } else if (qty < 1 || isNaN(qty)) {
+                $(this).val(1);
+            }
+        });
+
+        // Wishlist toggle
+        $('#wishlistBtn').click(function() {
+            $(this).find('i').toggleClass('far fas');
+            $(this).toggleClass('btn-outline-danger btn-danger');
+
+            var isInWishlist = $(this).hasClass('btn-danger');
+            // Make AJAX call to add/remove from wishlist
+            // $.post('/api/wishlist', { productId: productId, action: isInWishlist ? 'add' : 'remove' });
+        });
+
+        // Compare toggle
+        $('#compareBtn').click(function() {
+            $(this).toggleClass('btn-outline-secondary btn-warning');
+            var inCompare = $(this).hasClass('btn-warning');
+            // Make AJAX call to add/remove from comparison
+            // $.post('/api/compare', { productId: productId, action: inCompare ? 'add' : 'remove' });
+        });
+
+        // Form submission
+        $('#productForm').submit(function(e) {
+            e.preventDefault();
+
+            if (currentStock <= 0) {
+                alert('This variant is out of stock.');
+                return;
+            }
+
+            var formData = {
+                ProductId: $('#ProductId').val(),
+                VariantId: $('#selectedVariantId').val(),
+                Quantity: parseInt($('#quantity').val())
+            };
+
+            // Add loading state
+            $('#addToCartBtn').prop('disabled', true)
+                .html('<i class="fas fa-spinner fa-spin me-2"></i>Adding...');
+
+            // Make actual AJAX call to add to cart
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    $('#addToCartBtn').html('<i class="fas fa-check me-2"></i>Added to Cart');
+
+                    // Show success message
+                    showSuccessMessage('Product added to cart successfully!');
+
+                    // Reset button after 2 seconds
+                    setTimeout(function() {
+                        $('#addToCartBtn').prop('disabled', false)
+                            .html('<i class="fas fa-shopping-cart me-2"></i>Add to Cart');
+                    }, 2000);
+                },
+                error: function() {
+                    $('#addToCartBtn').prop('disabled', false)
+                        .html('<i class="fas fa-shopping-cart me-2"></i>Add to Cart');
+                    showErrorMessage('Failed to add product to cart. Please try again.');
+                }
+            });
+        });
+
+        // Show success message
+        function showSuccessMessage(message) {
+            var alert = $('<div class="alert alert-success alert-dismissible fade show mt-3" role="alert">' +
+                message +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+                '</div>');
+            alert.insertAfter('#productForm');
+
+            setTimeout(function() {
+                alert.fadeOut();
+            }, 5000);
+        }
+
+        // Show error message
+        function showErrorMessage(message) {
+            var alert = $('<div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">' +
+                message +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+                '</div>');
+            alert.insertAfter('#productForm');
+        }
+    });
+
+    // Change main image function
+    function changeMainImage(imageSrc) {
+        $('#mainProductImage').attr('src', imageSrc);
+
+        // Update active thumbnail
+        $('.thumbnail-img').removeClass('border-primary').addClass('border-secondary');
+        $('img[src="' + imageSrc + '"]').removeClass('border-secondary').addClass('border-primary');
+    }
+</script>

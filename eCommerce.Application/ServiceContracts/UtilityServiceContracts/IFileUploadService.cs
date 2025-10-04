@@ -9,6 +9,6 @@ namespace eCommerce.Application.ServiceContracts.UtilityServiceContracts
 {
     public interface IFileUploadService
     {
-        Task<List<string>> UploadFilesAsync(IEnumerable<IFormFile> files, string folderPath);
+        Task<List<string>> UploadImageAsync(IEnumerable<IFormFile> files, string folderPath);
     }
 }

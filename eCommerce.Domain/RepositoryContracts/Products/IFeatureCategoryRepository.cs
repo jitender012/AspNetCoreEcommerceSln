@@ -21,7 +21,7 @@ namespace eCommerce.Domain.RepositoryContracts.Products
         /// </summary>
         /// <param name="CategoryId">Id of category to link with</param>
         /// <returns>void</returns>
-        Task<int> InsertAsync(FeatureCategory featureCategory, int productCategoryId);
+        Task<int> InsertAsync(FeatureCategory featureCategory);
 
         /// <summary>
         /// 

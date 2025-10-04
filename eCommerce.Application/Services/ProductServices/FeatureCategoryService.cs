@@ -107,7 +107,7 @@ namespace eCommerce.Application.Services.ProductServices
                 IsMandatory = true
             };
 
-            int id = await _featureCategoryRepository.InsertAsync(category, data.ProductCategoryId!.Value);
+            int id = await _featureCategoryRepository.InsertAsync(category);
             return id;
         }
 

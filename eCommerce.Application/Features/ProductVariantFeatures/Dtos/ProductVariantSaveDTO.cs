@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eCommerce.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace eCommerce.Application.Features.ProductVariantFeatures.Dtos
 
         public decimal Price { get; set; }
 
-        public bool? IsActive { get; set; } = true;
+        public ProductStatus Status { get; set; } 
 
         public List<string> ImageUrls { get; set; } = [];        
     }

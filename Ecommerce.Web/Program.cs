@@ -41,7 +41,7 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(CreateBrandCommand).Assembly);
 });
 
-builder.Services.AddValidatorsFromAssemblyContaining<CreateBrandValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<BrandSaveValidator>();
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()

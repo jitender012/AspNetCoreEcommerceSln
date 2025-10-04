@@ -9,14 +9,15 @@
     <link href="~/css/app.css" rel="stylesheet" />
      <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    @* <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-thin-straight/css/uicons-thin-straight.css'> *@
+    @* <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet"> *@
+    
 
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Ecommerce.Web.styles.css" asp-append-version="true" />
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-thin-straight/css/uicons-thin-straight.css'>
 </head>
 <body>
     <div class="wrapper">
@@ -56,15 +57,12 @@
                             <i class="align-middle" data-feather="settings"></i> <span class="align-middle ">Configuration </span>
                         </a>
                         <div id="collapseOne" class="accordion-collapse collapse " data-bs-parent="#accordionExample">                       
-                            <div style="display: grid;justify-content: center;">
-                              
-                                <a class="sidebar-link " href="~/Admin/ProductFeature/Index">
-                                    <span class="align-middle">Product Features</span>
-                                </a>
-                               
-                             
+                            <div style="display: grid;justify-content: center;">                                                                                          
                                 <a class="sidebar-link " href="~/Admin/FeatureCategory/Index">
                                     <span class="align-middle">Feature Category</span>
+                                </a>
+                                <a class="sidebar-link " href="~/Admin/ProductFeature/Index">
+                                    <span class="align-middle">Product Features</span>
                                 </a>
                             </div>
                            
@@ -224,54 +222,22 @@
                                     </div>
                                 </div>
                                 <div class="list-group">
-                                    <a href="#" class="list-group-item">
-                                        <div class="row g-0 align-items-center">
-                                            <div class="col-2">
-                                                <img src="img/avatars/avatar-5.jpg" class="avatar img-fluid rounded-circle" alt="Vanessa Tucker">
+                                    @for (int i = 0; i < 5; i++)
+                                    {
+                                        <a href="#" class="list-group-item">
+                                            <div class="row g-0 align-items-center">
+                                                <div class="col-2">
+                                                    <img src="" class="avatar img-fluid rounded-circle" alt="Vanessa Tucker">
+                                                </div>
+                                                <div class="col-10 ps-2">
+                                                    <div class="text-dark">Vanessa Tucker</div>
+                                                    <div class="text-muted small mt-1">Nam pretium turpis et arcu. Duis arcu tortor.</div>
+                                                    <div class="text-muted small mt-1">15m ago</div>
+                                                </div>
                                             </div>
-                                            <div class="col-10 ps-2">
-                                                <div class="text-dark">Vanessa Tucker</div>
-                                                <div class="text-muted small mt-1">Nam pretium turpis et arcu. Duis arcu tortor.</div>
-                                                <div class="text-muted small mt-1">15m ago</div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <div class="row g-0 align-items-center">
-                                            <div class="col-2">
-                                                <img src="img/avatars/avatar-2.jpg" class="avatar img-fluid rounded-circle" alt="William Harris">
-                                            </div>
-                                            <div class="col-10 ps-2">
-                                                <div class="text-dark">William Harris</div>
-                                                <div class="text-muted small mt-1">Curabitur ligula sapien euismod vitae.</div>
-                                                <div class="text-muted small mt-1">2h ago</div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <div class="row g-0 align-items-center">
-                                            <div class="col-2">
-                                                <img src="img/avatars/avatar-4.jpg" class="avatar img-fluid rounded-circle" alt="Christina Mason">
-                                            </div>
-                                            <div class="col-10 ps-2">
-                                                <div class="text-dark">Christina Mason</div>
-                                                <div class="text-muted small mt-1">Pellentesque auctor neque nec urna.</div>
-                                                <div class="text-muted small mt-1">4h ago</div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <div class="row g-0 align-items-center">
-                                            <div class="col-2">
-                                                <img src="img/avatars/avatar-3.jpg" class="avatar img-fluid rounded-circle" alt="Sharon Lessman">
-                                            </div>
-                                            <div class="col-10 ps-2">
-                                                <div class="text-dark">Sharon Lessman</div>
-                                                <div class="text-muted small mt-1">Aenean tellus metus, bibendum sed, posuere ac, mattis non.</div>
-                                                <div class="text-muted small mt-1">5h ago</div>
-                                            </div>
-                                        </div>
-                                    </a>
+                                        </a>
+                                    }
+                                    
                                 </div>
                                 <div class="dropdown-menu-footer">
                                     <a href="#" class="text-muted">Show all messages</a>

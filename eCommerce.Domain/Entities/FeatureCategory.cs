@@ -16,7 +16,15 @@ public partial class FeatureCategory
 
     public string CreatedBy { get; set; } = null!;
 
+    /// <summary>
+    /// Links the product category to feature categories (many to many).
+    /// </summary>
+
     public virtual ICollection<ProductCategoryFeature> ProductCategoryFeatures { get; set; } = new List<ProductCategoryFeature>();
+
+    /// <summary>
+    /// Gets or sets the collection of features associated with the product category.
+    /// </summary>
     public virtual ICollection<ProductFeature> ProductFeatures { get; set; } = [];
     
 }

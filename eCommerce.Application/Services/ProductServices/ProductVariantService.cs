@@ -21,7 +21,7 @@ namespace eCommerce.Application.Services.ProductServices
            
             ProductVariant pv = new()
             {
-                ProductIvarientId = Guid.NewGuid(),
+                ProductVariantId = Guid.NewGuid(),
                 VarientName = productVariant.VarientName,
             };
 
@@ -32,7 +32,7 @@ namespace eCommerce.Application.Services.ProductServices
                 int order = 1;
                 productImage = productVariant.ProductImagesDTO.Select(img => new ProductImage
                 {
-                    ProductVariantId = pv.ProductIvarientId,
+                    ProductVariantId = pv.ProductVariantId,
                     ImageUrl = img.ImageUrl,
                     CreatedAt = DateTime.Now,
                     IsPrimary = img.IsPrimary,
@@ -51,7 +51,7 @@ namespace eCommerce.Application.Services.ProductServices
             }
            
             await _productVariantRepository.InsertProductVariantAsync(pv, productImage, featureOption);
-            return pv.ProductIvarientId;
+            return pv.ProductVariantId;
         }
 
         public Task<bool> DeleteProductVariantAsync(Guid productVariantId)

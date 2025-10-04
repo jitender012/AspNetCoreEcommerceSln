@@ -2,22 +2,30 @@
 using System.Collections.Generic;
 
 namespace eCommerce.Domain.Entities;
-
+public enum ProductStatus
+{
+    Draft,
+    Active,
+    Inactive,
+    Archived
+}
 public partial class ProductVariant
 {
-    public Guid ProductIvarientId { get; set; }
+    public Guid ProductVariantId { get; set; }
 
     public string? VarientName { get; set; }
 
-    public Guid ProductId { get; set; }
-
-    public int? Quantity { get; set; }
+    public Guid ProductId { get; set; }    
 
     public string Sku { get; set; } = null!;
 
     public decimal Price { get; set; }
+    
+    public int? SortOrder { get; set; } 
 
-    public bool? IsActive { get; set; } = true;
+    public string? Barcode { get; set; }
+
+    public ProductStatus Status { get; set; } = ProductStatus.Draft;
 
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 

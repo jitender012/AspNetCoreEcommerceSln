@@ -9,7 +9,7 @@ public partial class ProductConfiguration
 
     public int FeatureOptionId { get; set; }
 
-    public Guid ProductVarientId { get; set; }
+    public Guid ProductVariantId { get; set; }
 
     public virtual FeatureOption FeatureOption { get; set; } = null!;
 

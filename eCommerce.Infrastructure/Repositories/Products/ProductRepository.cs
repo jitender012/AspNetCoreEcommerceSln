@@ -27,7 +27,7 @@ namespace eCommerce.Infrastructure.Repositories.Products
                                                 .ThenInclude(v => v.ProductImages)
                                             .ToListAsync(); ;
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 _logger.LogError("Error occurred while fetching all records.");
                 throw;
@@ -70,7 +70,7 @@ namespace eCommerce.Infrastructure.Repositories.Products
                 await _context.ProductVariants.AddAsync(productVariant);
 
                 foreach (var image in productImages)
-                    image.ProductVariantId = productVariant.ProductIvarientId;
+                    image.ProductVariantId = productVariant.ProductVariantId;
 
                 await _context.ProductImages.AddRangeAsync(productImages);
 
@@ -82,7 +82,7 @@ namespace eCommerce.Infrastructure.Repositories.Products
 
                     configurations.Add(new ProductConfiguration
                     {
-                        ProductVarientId = productVariant.ProductIvarientId,                        
+                        ProductVariantId = productVariant.ProductVariantId,                        
                         FeatureOption = fo
                     });
                 }
@@ -124,7 +124,7 @@ namespace eCommerce.Infrastructure.Repositories.Products
                 _context.Entry(existingProduct).CurrentValues.SetValues(product);
 
                 // Update product variant
-                var existingVariant = existingProduct.ProductVariants.FirstOrDefault(v => v.ProductIvarientId == productVariant.ProductIvarientId);
+                var existingVariant = existingProduct.ProductVariants.FirstOrDefault(v => v.ProductVariantId == productVariant.ProductVariantId);
                 if (existingVariant != null)
                 {
                     _context.Entry(existingVariant).CurrentValues.SetValues(productVariant);
@@ -139,7 +139,7 @@ namespace eCommerce.Infrastructure.Repositories.Products
                 _context.ProductImages.RemoveRange(existingVariant.ProductImages);
                 foreach (var image in productImages)
                 {
-                    image.ProductVariantId = existingVariant.ProductIvarientId;
+                    image.ProductVariantId = existingVariant.ProductVariantId;
                 }
                 await _context.ProductImages.AddRangeAsync(productImages);
 
@@ -147,7 +147,7 @@ namespace eCommerce.Infrastructure.Repositories.Products
                 _context.ProductConfigurations.RemoveRange(existingVariant.ProductConfigurations);
                 foreach (var config in configurations)
                 {
-                    config.ProductVarientId = existingVariant.ProductIvarientId;
+                    config.ProductVariantId = existingVariant.ProductVariantId;
                 }
                 await _context.ProductConfigurations.AddRangeAsync(configurations);
 

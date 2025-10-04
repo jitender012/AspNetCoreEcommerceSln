@@ -1,127 +1,977 @@
-﻿@model ProductSaveVM
-<link href="~/css/product.css" rel="stylesheet" />
-<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-
-@{
-    ViewData["Title"] = "Create";
+﻿@{
+    ViewData["Title"] = "Add New Product";
     Layout = "~/Areas/Seller/Views/Shared/_VendorLayout.cshtml";
 }
 
+@model ProductSaveVM
 
-
-<h4>Create Product</h4>
-<hr />
-
-<form asp-action="Create" method="post" enctype="multipart/form-data">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-
-    <p class="d-inline-flex gap-1 ">
-        <div class="crfrm" type="button" data-bs-toggle="collapse" data-bs-target="#basicDetails" aria-expanded="false" aria-controls="basicDetails">
-            Basic Details
-        </div>
-    </p>
-
-    <div class="collapse show " id="basicDetails">
-        <div class="create-form">
-            <div class="row">
-                <div class="form-group py-1 col-12 col-md-6 col-lg-4">
-                    @Html.LabelFor(model => model.ProductVariant.VarientName, "Product  Name", new { @class = "control-label" })
-                    @Html.TextBoxFor(model => model.ProductVariant.VarientName, new { @class = "form-control", placeholder = "Enter product name" })
-                    @Html.ValidationMessageFor(m => m.ProductVariant.VarientName, null, new { @class = "text-danger" })
+<div class="container-fluid py-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                   @*  <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/seller/dashboard" class="text-decoration-none">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="/seller/products" class="text-decoration-none">Products</a></li>
+                            <li class="breadcrumb-item active">Add New Product</li>
+                        </ol>
+                    </nav> *@
+                    <h1 class="h3 mb-0">Add New Product</h1>
+                    <p class="text-muted mb-0">Create a new product and generate variants automatically</p>
                 </div>
-
-                <div class="form-group py-1 col-12 col-md-6 col-lg-4">
-                    <label class="control-label d-block" for="BrandId">Brand</label>
-                    @Html.DropDownListFor(x => x.BrandId, Model.BrandList, "-- Select Brand --", new { @class = "form-control select2" })
-                    @Html.ValidationMessageFor(m => m.BrandId, null, new { @class = "text-danger" })
-                </div>
-
-                <div class="form-group py-1  col-12 col-md-6 col-lg-4">
-                    @Html.LabelFor(model => model.ProductVariant.Price, "Price", new { @class = "control-label" })
-                    @Html.TextBoxFor(model => model.ProductVariant.Price, new { @class = "form-control", placeholder = "Enter Price" })
-                    @Html.ValidationMessageFor(m => m.ProductVariant.Price, null, new { @class = "text-danger" })
-                </div>
-
-                <div class="form-group py-1  col-12 col-md-6 col-lg-4">
-                    @Html.LabelFor(model => model.ProductVariant!.SKU, "SKU", new { @class = "control-label" })
-                    @Html.TextBoxFor(model => model.ProductVariant!.SKU, new { @class = "form-control", placeholder = "Enter SKU" })
-                    @Html.ValidationMessageFor(m => m.ProductVariant!.SKU, null, new { @class = "text-danger" })
-                </div>
-
-                <div class="form-group py-1 col-12 col-md-6 col-lg-4">
-                    @Html.LabelFor(model => model.ProductVariant!.Quantity, "Quantity", new { @class = "control-label" })
-                    @Html.TextBoxFor(model => model.ProductVariant!.Quantity, new { @class = "form-control", placeholder = "Enter Quantity" })
-                    @Html.ValidationMessageFor(m => m.ProductVariant!.Quantity, null, new { @class = "text-danger" })
-                </div>
-
-                <div class="form-group py-1  col-12 col-md-6 col-lg-4">
-                    <label class="control-label d-block" for="CategoryId">Category</label>
-                    @Html.DropDownListFor(x => x.CategoryId,Model.CategoryList, new { @class = "form-control select2", id = "categoryDropdown" })
-                    @Html.ValidationMessageFor(m => m.CategoryId, null, new { @class = "text-danger" })
-                </div>
-
-                <div class="form-group py-1 col-12 col-md-6 col-lg-4">
-                    @Html.LabelFor(model => model.ProductVariant!.IsActive, "Is Active", new { @class = "control-label" })
-                    @Html.EditorFor(model => model.ProductVariant!.IsActive, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(m => m.ProductVariant!.IsActive, null, new { @class = "text-danger" })
-                </div>
-
-                <div class="form-group py-1  col-12 col-md-6 col-lg-4">
-                    @Html.LabelFor(model => model.Description, "Description", new { @class = "control-label" })
-                    @Html.TextAreaFor(model => model.Description, new
-                    {
-                        @class = "form-control",
-                                        placeholder = "Enter Description",
-                                        rows = "1",
-                                        style = "resize: none; overflow: hidden; height: auto"
-                                        })
-                    @Html.ValidationMessageFor(m => m.Description, null, new { @class = "text-danger" })
+                <div class="btn-group">
+                    <a href="/seller/products" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Products
+                    </a>
+                    <button type="button" class="btn btn-outline-info" id="saveAsDraftBtn">
+                        <i class="fas fa-solid file-pen me-2"></i>Save as Draft
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <p class="d-inline-flex gap-1 ">
-        <div class="crfrm" type="button" data-bs-toggle="collapse" data-bs-target="#advanceDetails" aria-expanded="false" aria-controls="advanceDetails">
-            Advance Details
-        </div>
-    </p>
-    <div class="collapse" id="advanceDetails">
-        <div class="frm">
-            <div class="row" id="additionalDetails">
-            </div>
-        </div>
-    </div>
+    <form id="addProductForm" asp-action="AddProduct" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <!-- Main Product Information -->
+            <div class="col-lg-8">
+                <!-- Step 1: Basic Information -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <span class="badge bg-primary me-2">1</span>Basic Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 mb-3">                                                                
+                                <label asp-for="ProductVariant.VarientName" class="form-label fw-semibold">
+                                    Product Name <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="ProductVariant.VarientName" class="form-control" placeholder="Enter product name" />
+                                <span asp-validation-for="ProductVariant.VarientName" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CategoryId" class="form-label fw-semibold">
+                                    Category <span class="text-danger">*</span>
+                                </label>
+                                @Html.DropDownListFor(x => x.CategoryId, Model.CategoryList, new { @class = "form-select select2", id = "categoryDropdown" })                                
+                                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="BrandId" class="form-label fw-semibold">
+                                    Brand <span class="text-danger">*</span>
+                                </label>
+                                @Html.DropDownListFor(x => x.BrandId, Model.BrandList, "-- Select Brand --", new { @class = "form-select select2" })                                
+                                <span asp-validation-for="BrandId" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ProductVariant.Price" class="form-label fw-semibold">
+                                    Base Price <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input asp-for="ProductVariant.Price" type="number" step="0.01" class="form-control" placeholder="0.00" />
+                                </div>
+                                <span asp-validation-for="ProductVariant.Price" class="text-danger"></span>
+                                <small class="form-text text-muted">Default price for variants (can be adjusted per variant)</small>
+                            </div>
 
-    <p class="d-inline-flex gap-1 ">
-        <div class="crfrm" type="button" data-bs-toggle="collapse" data-bs-target="#add-images" aria-expanded="false" aria-controls="add-images">
-            Image
-        </div>
-    </p>
-    <div class="collapse " id="add-images">
-        <div class="frm">
-            <div class="row" id="image-row">
-                <div class="d-flex justify-content-evenly">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ProductVariant.Weight" class="form-label fw-semibold">Weight</label>
+                                <div class="input-group">
+                                    <input asp-for="ProductVariant.Weight" class="form-control" placeholder="Enter weight" />
+                                    <select asp-for="ProductVariant.WeightUnit" class="form-select">
+                                        <option value="g">g</option>
+                                        <option value="kg">kg</option>
+                                        <option value="ml">ml</option>
+                                        <option value="l">l</option>
+                                        <option value="m">m</option>
+                                    </select>
+                                </div>
+                                <span asp-validation-for="ProductVariant.Weight" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ProductVariant.SKU" class="form-label fw-semibold">SKU</label>
+                                <input asp-for="ProductVariant.SKU" class="form-control" placeholder="e.g., SHIRT-RED-M" />
+                                <span asp-validation-for="ProductVariant.SKU" class="text-danger"></span>
+                                <small class="form-text text-muted">Leave empty to auto-generate</small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ProductVariant.Barcode" class="form-label fw-semibold">Barcode</label>
+                                <input asp-for="ProductVariant.Barcode" class="form-control" placeholder="e.g., 8901234567890" />
+                                <span asp-validation-for="ProductVariant.Barcode" class="text-danger"></span>
+                            </div>
+
+                            
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="Description" class="form-label fw-semibold">Description</label>
+                                <textarea asp-for="Description" class="form-control" rows="4" 
+                                          placeholder="Enter detailed product description..."></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Product Attributes -->
+                <div class="card mb-4" id="attributesCard" style="display: none;">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <span class="badge bg-primary me-2">2</span>Product Attributes
+                        </h5>
+                        <small class="text-muted">Select attributes to create product variants automatically</small>
+                    </div>
+                    <div class="card-body">
+                        <div id="attributesList">
+                            <!-- Attributes will be loaded here based on category -->
+                        </div>
+                        
+                        <div class="alert alert-info mt-3" id="variantPreview" style="display: none;">
+                            <h6><i class="fas fa-info-circle me-2"></i>Variant Preview</h6>
+                            <p class="mb-2">Based on your selections, <strong><span id="variantCount">0</span></strong> variants will be created:</p>
+                            <div id="variantList" class="small"></div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="createSingleVariant">
+                                <label class="form-check-label" for="createSingleVariant">
+                                    Create as single product (no variants)
+                                </label>
+                            </div>
+                            <button type="button" class="btn btn-success" id="generateVariantsBtn" disabled>
+                                <i class="fas fa-cogs me-2"></i>Generate Variants
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Generated Variants -->
+                <div class="card" id="variantsCard" style="display: none;">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <span class="badge bg-primary me-2">3</span>Generated Variants
+                        </h5>
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="regenerateBtn">
+                            <i class="fas fa-redo me-1"></i>Regenerate
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="variantsContainer">
+                            <!-- Generated variants will appear here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Progress Card -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">Creation Progress</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="progress-step" data-step="1">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="step-number active">1</div>
+                                <span class="ms-2">Basic Information</span>
+                                <i class="fas fa-check text-success ms-auto" style="display: none;"></i>
+                            </div>
+                        </div>
+                        <div class="progress-step" data-step="2">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="step-number">2</div>
+                                <span class="ms-2">Select Attributes</span>
+                                <i class="fas fa-check text-success ms-auto" style="display: none;"></i>
+                            </div>
+                        </div>
+                        <div class="progress-step" data-step="3">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="step-number">3</div>
+                                <span class="ms-2">Configure Variants</span>
+                                <i class="fas fa-check text-success ms-auto" style="display: none;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Publication Status -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">Publication Status</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" asp-for="IsActive" id="isActiveSwitch">
+                            <label class="form-check-label" for="isActiveSwitch">
+                                Publish immediately
+                            </label>
+                        </div>
+                        <small class="form-text text-muted">
+                            If unchecked, product will be saved as inactive
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Quick Tips -->
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-lightbulb me-2"></i>Tips
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0 small">
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Select category first to see available attributes
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Choose multiple attribute values to create variants
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Adjust prices and stock for each variant
+                            </li>
+                            <li class="mb-0">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Upload different images per variant
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <input type="file" name="ProductVariant.ProuctImages" id="productImages" accept="image/*" multiple />
 
-
-    <div class=" details-col">
-        <div class="form-group my-2">
-            <input type="submit" value="Create" class="btn btn-primary" />
+        <!-- Submit Buttons -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="/seller/products" class="btn btn-outline-secondary btn-lg">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-success btn-lg" id="createProductBtn" disabled>
+                        <i class="fas fa-save me-2"></i>Save
+                    </button>
+                </div>
+            </div>
         </div>
-    </div>
-</form>
-
-
-<div>
-    <a asp-action="Index">Back to List</a>
+    </form>
 </div>
-<div id="imagePreviewContainer"></div>
 
-<script src="~/js/product-create.js"></script>
+<!-- Hidden data for JavaScript -->
+<script type="text/javascript">
+    // Category attributes configuration
+    const categoryAttributes = {
+        1: { // Clothing
+            name: "Clothing",
+            attributes: {
+                size: {
+                    name: "Size",
+                    type: "checkbox",
+                    options: [
+                        { id: 1, name: "XS", value: "XS" },
+                        { id: 2, name: "S", value: "S" },
+                        { id: 3, name: "M", value: "M" },
+                        { id: 4, name: "L", value: "L" },
+                        { id: 5, name: "XL", value: "XL" },
+                        { id: 6, name: "XXL", value: "XXL" }
+                    ]
+                },
+                color: {
+                    name: "Color",
+                    type: "checkbox",
+                    options: [
+                        { id: 7, name: "Red", value: "Red" },
+                        { id: 8, name: "Blue", value: "Blue" },
+                        { id: 9, name: "Black", value: "Black" },
+                        { id: 10, name: "White", value: "White" },
+                        { id: 11, name: "Green", value: "Green" },
+                        { id: 12, name: "Yellow", value: "Yellow" }
+                    ]
+                },
+                material: {
+                    name: "Material",
+                    type: "checkbox",
+                    options: [
+                        { id: 13, name: "Cotton", value: "Cotton" },
+                        { id: 14, name: "Polyester", value: "Polyester" },
+                        { id: 15, name: "Silk", value: "Silk" },
+                        { id: 16, name: "Denim", value: "Denim" }
+                    ]
+                }
+            }
+        },
+        2: { // Electronics
+            name: "Electronics",
+            attributes: {
+                storage: {
+                    name: "Storage",
+                    type: "checkbox",
+                    options: [
+                        { id: 17, name: "64GB", value: "64GB" },
+                        { id: 18, name: "128GB", value: "128GB" },
+                        { id: 19, name: "256GB", value: "256GB" },
+                        { id: 20, name: "512GB", value: "512GB" },
+                        { id: 21, name: "1TB", value: "1TB" }
+                    ]
+                },
+                color: {
+                    name: "Color",
+                    type: "checkbox",
+                    options: [
+                        { id: 22, name: "Space Gray", value: "Space Gray" },
+                        { id: 23, name: "Silver", value: "Silver" },
+                        { id: 24, name: "Gold", value: "Gold" },
+                        { id: 25, name: "Midnight", value: "Midnight" }
+                    ]
+                }
+            }
+        },
+        3: { // Home & Garden
+            name: "Home & Garden",
+            attributes: {
+                size: {
+                    name: "Size",
+                    type: "checkbox",
+                    options: [
+                        { id: 26, name: "Small", value: "Small" },
+                        { id: 27, name: "Medium", value: "Medium" },
+                        { id: 28, name: "Large", value: "Large" }
+                    ]
+                },
+                color: {
+                    name: "Color",
+                    type: "checkbox",
+                    options: [
+                        { id: 29, name: "Brown", value: "Brown" },
+                        { id: 30, name: "Natural", value: "Natural" },
+                        { id: 31, name: "White", value: "White" },
+                        { id: 32, name: "Black", value: "Black" }
+                    ]
+                }
+            }
+        }
+    };
+</script>
+
+<style>
+.step-number {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e9ecef;
+    color: #6c757d;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.step-number.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.step-number.completed {
+    background-color: #198754;
+    color: white;
+}
+
+.attribute-group {
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.attribute-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.attribute-option {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.attribute-option:hover {
+    background-color: #f8f9fa;
+}
+
+.attribute-option.selected {
+    background-color: #e7f3ff;
+    border-color: #0d6efd;
+}
+
+.variant-item {
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: #f8f9fa;
+}
+
+.variant-header {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.image-upload-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 0.375rem;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.image-upload-area:hover {
+    border-color: #0d6efd;
+    background-color: #f8f9fa;
+}
+
+.image-preview {
+    position: relative;
+    display: inline-block;
+    margin: 0.25rem;
+}
+
+.image-preview img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 0.25rem;
+    border: 2px solid #dee2e6;
+}
+
+.remove-image {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.form-label.fw-semibold {
+    color: #495057;
+}
+</style>
+
+
+
+<script>
+$(document).ready(function() {
+    let selectedAttributes = {};
+    let generatedVariants = [];
+
+    // Auto-generate URL slug from product name
+    $('#ProductName').on('input', function() {
+        if ($('#Url').val() === '') {
+            const slug = $(this).val()
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-')
+                .trim('-');
+            $('#Url').val(slug);
+        }
+        updateProgress();
+    });
+
+    // Category selection handler
+    $('#categorySelect').change(function() {
+        const categoryId = $(this).val();
+        if (categoryId) {
+            loadCategoryAttributes(categoryId);
+            updateProgress();
+        } else {
+            $('#attributesCard').hide();
+            selectedAttributes = {};
+        }
+    });
+
+    // Load category attributes
+    function loadCategoryAttributes(categoryId) {
+        const category = categoryAttributes[categoryId];
+        if (!category) {
+            $('#attributesCard').hide();
+            return;
+        }
+
+        let attributesHtml = '';
+        
+        Object.keys(category.attributes).forEach(attrKey => {
+            const attribute = category.attributes[attrKey];
+            attributesHtml += `
+                <div class="attribute-group">
+                    <h6 class="mb-2">${attribute.name}</h6>
+                    <div class="attribute-options" data-attribute="${attrKey}">
+            `;
+
+            attribute.options.forEach(option => {
+                attributesHtml += `
+                    <div class="attribute-option" data-option-id="${option.id}" data-value="${option.value}">
+                        <input type="checkbox" class="form-check-input me-2" 
+                               id="attr_${attrKey}_${option.id}" 
+                               data-attribute="${attrKey}" 
+                               data-option-id="${option.id}"
+                               data-value="${option.value}">
+                        <label class="form-check-label" for="attr_${attrKey}_${option.id}">${option.name}</label>
+                    </div>
+                `;
+            });
+
+            attributesHtml += '</div></div>';
+        });
+
+        $('#attributesList').html(attributesHtml);
+        $('#attributesCard').show();
+        selectedAttributes = {};
+        updateVariantPreview();
+
+        // Bind attribute selection handlers
+        $('.attribute-option input[type="checkbox"]').change(function() {
+            const attributeName = $(this).data('attribute');
+            const optionId = $(this).data('option-id');
+            const value = $(this).data('value');
+
+            if (!selectedAttributes[attributeName]) {
+                selectedAttributes[attributeName] = [];
+            }
+
+            if ($(this).is(':checked')) {
+                selectedAttributes[attributeName].push({ id: optionId, value: value });
+                $(this).closest('.attribute-option').addClass('selected');
+            } else {
+                selectedAttributes[attributeName] = selectedAttributes[attributeName]
+                    .filter(item => item.id !== optionId);
+                $(this).closest('.attribute-option').removeClass('selected');
+                
+                if (selectedAttributes[attributeName].length === 0) {
+                    delete selectedAttributes[attributeName];
+                }
+            }
+
+            updateVariantPreview();
+            updateProgress();
+        });
+    }
+
+    // Update variant preview
+    function updateVariantPreview() {
+        const combinations = generateCombinations(selectedAttributes);
+        const hasSingleVariant = $('#createSingleVariant').is(':checked');
+        
+        if (hasSingleVariant || Object.keys(selectedAttributes).length === 0) {
+            $('#variantPreview').hide();
+            $('#generateVariantsBtn').prop('disabled', false).text('Create Single Product');
+        } else if (combinations.length > 0) {
+            $('#variantCount').text(combinations.length);
+            
+            let variantListHtml = '';
+            combinations.slice(0, 10).forEach(combo => {
+                const name = Object.values(combo).map(v => v.value).join(' - ');
+                variantListHtml += `<span class="badge bg-light text-dark me-2 mb-1">${name}</span>`;
+            });
+            
+            if (combinations.length > 10) {
+                variantListHtml += `<span class="text-muted">... and ${combinations.length - 10} more</span>`;
+            }
+            
+            $('#variantList').html(variantListHtml);
+            $('#variantPreview').show();
+            $('#generateVariantsBtn').prop('disabled', false).text('Generate Variants');
+        } else {
+            $('#variantPreview').hide();
+            $('#generateVariantsBtn').prop('disabled', true);
+        }
+    }
+
+    // Generate combinations
+    function generateCombinations(attributes) {
+        const keys = Object.keys(attributes);
+        if (keys.length === 0) return [];
+
+        const combinations = [];
+        
+        function generate(index, current) {
+            if (index === keys.length) {
+                combinations.push({ ...current });
+                return;
+            }
+
+            const key = keys[index];
+            attributes[key].forEach(option => {
+                current[key] = option;
+                generate(index + 1, current);
+            });
+        }
+
+        generate(0, {});
+        return combinations;
+    }
+
+    // Single variant checkbox handler
+    $('#createSingleVariant').change(function() {
+        if ($(this).is(':checked')) {
+            $('.attribute-option input[type="checkbox"]').prop('checked', false).trigger('change');
+            selectedAttributes = {};
+        }
+        updateVariantPreview();
+    });
+
+    // Generate variants button
+    $('#generateVariantsBtn').click(function() {
+        const hasSingleVariant = $('#createSingleVariant').is(':checked');
+        
+        if (hasSingleVariant || Object.keys(selectedAttributes).length === 0) {
+            generateSingleVariant();
+        } else {
+            generateMultipleVariants();
+        }
+        
+        $('#variantsCard').show();
+        updateProgress();
+    });
+
+    // Generate single variant
+    function generateSingleVariant() {
+        const basePrice = parseFloat($('#Price').val()) || 0;
+        const productName = $('#ProductName').val();
+        
+        const variantHtml = `
+            <div class="variant-item" data-variant-index="0">
+                <div class="variant-header">
+                    <h6><i class="fas fa-box me-2"></i>Default Product</h6>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-semibold">SKU <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="Variants[0].Sku" 
+                               value="${generateSku(productName)}" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-semibold">Price <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" step="0.01" class="form-control" 
+                                   name="Variants[0].Price" value="${basePrice}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-semibold">Stock Quantity <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" name="Variants[0].Quantity" 
+                               value="0" min="0" required>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label fw-semibold">Product Images</label>
+                        <div class="image-upload-area" onclick="$('#images_0').click()">
+                            <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                            <p>Click to upload images</p>
+                            <input type="file" id="images_0" name="Variants[0].ImageFiles" 
+                                   accept="image/*" multiple style="display: none;">
+                        </div>
+                        <div class="image-previews mt-2" id="preview_0"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        $('#variantsContainer').html(variantHtml);
+        bindVariantEvents();
+    }
+
+    // Generate multiple variants
+    function generateMultipleVariants() {
+        const combinations = generateCombinations(selectedAttributes);
+        const basePrice = parseFloat($('#Price').val()) || 0;
+        const productName = $('#ProductName').val();
+        
+        let variantsHtml = '';
+        
+        combinations.forEach((combo, index) => {
+            const variantName = Object.values(combo).map(v => v.value).join(' - ');
+            const sku = generateSku(productName, Object.values(combo).map(v => v.value));
+            
+            variantsHtml += `
+                <div class="variant-item" data-variant-index="${index}">
+                    <div class="variant-header">
+                        <h6><i class="fas fa-box me-2"></i>${variantName}</h6>
+                    </div>
+                    <div class="row">
+                        <input type="hidden" name="Variants[${index}].VariantName" value="${variantName}">
+            `;
+            
+            // Add hidden inputs for attributes
+            Object.keys(combo).forEach(attrKey => {
+                variantsHtml += `<input type="hidden" name="Variants[${index}].Attributes[${attrKey}]" value="${combo[attrKey].id}">`;
+            });
+            
+            variantsHtml += `
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Stock Quantity <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" name="Variants[${index}].Quantity" 
+                                   value="0" min="0" required>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-semibold">Product Images</label>
+                            <div class="image-upload-area" onclick="$('#images_${index}').click()">
+                                <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                                <p>Click to upload images for ${variantName}</p>
+                                <input type="file" id="images_${index}" name="Variants[${index}].ImageFiles" 
+                                       accept="image/*" multiple style="display: none;">
+                            </div>
+                            <div class="image-previews mt-2" id="preview_${index}"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        $('#variantsContainer').html(variantsHtml);
+        bindVariantEvents();
+    }
+
+    // Generate SKU
+    function generateSku(productName, attributes = []) {
+        const baseSku = productName.substring(0, 3).toUpperCase();
+        const attrSku = attributes.length > 0 ? 
+            attributes.map(attr => attr.substring(0, 3).toUpperCase()).join('-') : 
+            'DEF';
+        const timestamp = Date.now().toString().slice(-4);
+        return `${baseSku}-${attrSku}-${timestamp}`;
+    }
+
+    // Bind variant events
+    function bindVariantEvents() {
+        // Image upload handlers
+        $('input[type="file"][name*="ImageFiles"]').change(function() {
+            const index = $(this).attr('id').split('_')[1];
+            const files = this.files;
+            const previewContainer = $(`#preview_${index}`);
+            
+            previewContainer.empty();
+            
+            Array.from(files).forEach((file, fileIndex) => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const preview = $(`
+                            <div class="image-preview">
+                                <img src="${e.target.result}" alt="Preview">
+                                <button type="button" class="remove-image" onclick="removeImage(${index}, ${fileIndex})">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        `);
+                        previewContainer.append(preview);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    }
+
+    // Remove image preview
+    window.removeImage = function(variantIndex, imageIndex) {
+        // Note: This is a simplified approach. In production, you'd need to handle FileList manipulation
+        $(`#preview_${variantIndex} .image-preview`).eq(imageIndex).remove();
+    };
+
+    // Regenerate variants
+    $('#regenerateBtn').click(function() {
+        $('#generateVariantsBtn').click();
+    });
+
+    // Update progress
+    function updateProgress() {
+        // Step 1: Basic Information
+        const hasBasicInfo = $('#ProductName').val() && $('#categorySelect').val() && 
+                           $('#BrandId').val() && $('#Price').val();
+        updateStepStatus(1, hasBasicInfo);
+
+        // Step 2: Attributes
+        const hasAttributes = Object.keys(selectedAttributes).length > 0 || $('#createSingleVariant').is(':checked');
+        updateStepStatus(2, hasAttributes);
+
+        // Step 3: Variants
+        const hasVariants = $('#variantsContainer').children().length > 0;
+        updateStepStatus(3, hasVariants);
+
+        // Enable/disable create button
+        $('#createProductBtn').prop('disabled', !hasBasicInfo || !hasVariants);
+    }
+
+    // Update step status
+    function updateStepStatus(step, completed) {
+        const stepElement = $(`.progress-step[data-step="${step}"]`);
+        const stepNumber = stepElement.find('.step-number');
+        const checkIcon = stepElement.find('.fas.fa-check');
+
+        if (completed) {
+            stepNumber.removeClass('active').addClass('completed');
+            checkIcon.show();
+        } else {
+            stepNumber.removeClass('completed');
+            checkIcon.hide();
+            if (step === getCurrentStep()) {
+                stepNumber.addClass('active');
+            }
+        }
+    }
+
+    // Get current step
+    function getCurrentStep() {
+        if ($('#variantsContainer').children().length > 0) return 3;
+        if ($('#attributesCard').is(':visible')) return 2;
+        return 1;
+    }
+
+    // Save as draft
+    $('#saveAsDraftBtn').click(function() {
+        $('#isActiveSwitch').prop('checked', false);
+        $('#addProductForm').submit();
+    });
+
+    // Form validation
+    $('#addProductForm').submit(function(e) {
+        let isValid = true;
+        const errors = [];
+
+        // Basic validation
+        if (!$('#ProductName').val().trim()) {
+            errors.push('Product name is required');
+            isValid = false;
+        }
+
+        if (!$('#categorySelect').val()) {
+            errors.push('Category is required');
+            isValid = false;
+        }
+
+        if (!$('#BrandId').val()) {
+            errors.push('Brand is required');
+            isValid = false;
+        }
+
+        if (!$('#Price').val() || parseFloat($('#Price').val()) <= 0) {
+            errors.push('Valid base price is required');
+            isValid = false;
+        }
+
+        // Variant validation
+        const variants = $('#variantsContainer .variant-item');
+        if (variants.length === 0) {
+            errors.push('At least one variant must be generated');
+            isValid = false;
+        }
+
+        variants.each(function(index) {
+            const sku = $(this).find('input[name*="Sku"]').val();
+            const price = $(this).find('input[name*="Price"]').val();
+            const quantity = $(this).find('input[name*="Quantity"]').val();
+
+            if (!sku) {
+                errors.push(`Variant ${index + 1}: SKU is required`);
+                isValid = false;
+            }
+
+            if (!price || parseFloat(price) <= 0) {
+                errors.push(`Variant ${index + 1}: Valid price is required`);
+                isValid = false;
+            }
+
+            if (!quantity || parseInt(quantity) < 0) {
+                errors.push(`Variant ${index + 1}: Valid quantity is required`);
+                isValid = false;
+            }
+        });
+
+        if (!isValid) {
+            e.preventDefault();
+            alert('Please fix the following errors:\n• ' + errors.join('\n• '));
+            return false;
+        }
+
+        // Show loading state
+        $('#createProductBtn').prop('disabled', true)
+            .html('<i class="fas fa-spinner fa-spin me-2"></i>Creating Product...');
+        
+        return true;
+    });
+
+    // Update button text based on active status
+    $('#isActiveSwitch').change(function() {
+        if ($(this).is(':checked')) {
+            $('#createProductBtn').html('<i class="fas fa-check me-2"></i>Create & Publish Product');
+        } else {
+            $('#createProductBtn').html('<i class="fas fa-save me-2"></i>Save');
+        }
+    });
+
+    // Auto-focus and validation triggers
+    $('#ProductName, #categorySelect, #BrandId, #Price').on('input change', function() {
+        updateProgress();
+    });
+
+    // Initialize
+    updateProgress();
+});
+
+// Utility functions
+function showAlert(message, type = 'info') {
+    const alertClass = type === 'success' ? 'alert-success' : 
+                      type === 'error' ? 'alert-danger' : 'alert-info';
+    
+    const alert = $(`
+        <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `);
+    
+    $('body').append(alert);
+    
+    setTimeout(() => {
+        alert.fadeOut(() => alert.remove());
+    }, 5000);
+}
+
+// Handle back navigation warning
+window.addEventListener('beforeunload', function(e) {
+    if ($('#variantsContainer').children().length > 0) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+</script>

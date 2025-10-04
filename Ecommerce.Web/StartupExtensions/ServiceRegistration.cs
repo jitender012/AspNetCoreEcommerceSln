@@ -20,11 +20,9 @@ namespace eCommerce.Web.StartupExtensions
         {
 
             //Services dependency injection
-            services.AddScoped<IFileUploadService, FileUploadService>();
-            services.AddScoped<IBrandService, BrandService>();
+            services.AddScoped<IFileUploadService, FileUploadService>();           
             services.AddScoped<IWarehouseService, WarehouseService>();
-            services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICategoryService, CategoryService>();            
             services.AddScoped<IFeatureCategoryService, FeatureCategoryService>();
             services.AddScoped<IProductFeatureService, ProductFeatureService>();
             services.AddScoped<IFeatureOptionService, FeatureOptionService>();
@@ -44,6 +42,7 @@ namespace eCommerce.Web.StartupExtensions
             services.AddScoped<IProductFeatureRepository, ProductFeatureRepository>();
             services.AddScoped<IProductVariantRepository, ProductVariantRepository>();
             services.AddScoped<IProductFeatureRepository, ProductFeatureRepository>();           
+            services.AddScoped<IMeasurementUnitRepository, MeasurementUnitRepository>();
         }
     }
 }

@@ -84,7 +84,7 @@ namespace eCommerce.Web.Areas.Admin.Controllers
                 try
                 {
                     var folderPath = "Images/CategoryImages";
-                    var fileNames = await _fileUploadService.UploadFilesAsync(data.ImageFile, folderPath);
+                    var fileNames = await _fileUploadService.UploadImageAsync(data.ImageFile, folderPath);
                     categoryDTO.CategoryImage = fileNames.FirstOrDefault();
                 }
                 catch (InvalidOperationException ex)
@@ -186,7 +186,7 @@ namespace eCommerce.Web.Areas.Admin.Controllers
                 try
                 {
                     var folderPath = "Images/CategoryImages";
-                    var fileNames = await _fileUploadService.UploadFilesAsync(data.ImageFile, folderPath);
+                    var fileNames = await _fileUploadService.UploadImageAsync(data.ImageFile, folderPath);
                     data.CategoryImage = fileNames.FirstOrDefault();
                 }
                 catch (InvalidOperationException ex)

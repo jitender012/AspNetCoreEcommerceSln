@@ -21,6 +21,9 @@
 
   <ItemGroup>
     <Folder Include="Features\FeatureFolders\Commands\" />
+    <Folder Include="Features\MeasurementUnitFeature\Commands\" />
+    <Folder Include="Features\MeasurementUnitFeature\Validators\" />
+    <Folder Include="Features\ProductConfigurationFeature\Validators\" />
     <Folder Include="Features\ProductImageFeatures\Queries\" />
     <Folder Include="Features\ProductImageFeatures\Validators\" />
     <Folder Include="Features\ProductImageFeatures\Commands\" />

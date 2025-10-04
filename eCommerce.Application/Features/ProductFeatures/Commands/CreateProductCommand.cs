@@ -10,7 +10,7 @@ namespace eCommerce.Application.Features.ProductFeatures.Commands
 {
     public record CreateProductCommand(ProductSaveDTO dto) : IRequest<Guid>;
 
-    public class CreateProductHandler(IProductRepository _productRepository, IUserContextService _userContextService, ILogger<CreateProductHandler> _logger, IMapper _mapper) : IRequestHandler<CreateProductCommand, Guid>
+    public class CreateProductHandler(IProductRepository _productRepository, IUserContextService _userContextService, ILogger<CreateProductHandler> _logger) : IRequestHandler<CreateProductCommand, Guid>
     {
 
         public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
@@ -40,19 +40,18 @@ namespace eCommerce.Application.Features.ProductFeatures.Commands
 
             var productVariant = new ProductVariant
             {
-                ProductIvarientId = Guid.NewGuid(),
+                ProductVariantId = Guid.NewGuid(),
                 VarientName = data.ProductVariant.VarientName,
-                ProductId = product.ProductId,
-                Quantity = data.ProductVariant.Quantity,
+                ProductId = product.ProductId,                
                 Sku = data.ProductVariant.SKU,
                 Price = data.ProductVariant.Price,
-                IsActive = data.ProductVariant.IsActive,
+                Status = data.ProductVariant.Status,
                 Product = product
             };
 
             var productImages = data.ProductVariant.ImageUrls.Select(x => new ProductImage
             {
-                ProductVariantId = productVariant.ProductIvarientId,
+                ProductVariantId = productVariant.ProductVariantId,
                 ImageUrl = x,
                 CreatedAt = DateTime.Now,
                 IsPrimary = false,

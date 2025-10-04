@@ -416,7 +416,7 @@ namespace eCommerce.Infrastructure.Migrations
 
                     b.HasKey("FeatureCategoryId");
 
-                    b.ToTable("FeatureCategory", (string)null);
+                    b.ToTable("FeatureCategory", "Product");
                 });
 
             modelBuilder.Entity("eCommerce.Domain.Entities.FeatureOption", b =>
@@ -546,6 +546,33 @@ namespace eCommerce.Infrastructure.Migrations
                     b.HasIndex("WarehouseId");
 
                     b.ToTable("Inventory", "Inventory");
+                });
+
+            modelBuilder.Entity("eCommerce.Domain.Entities.MeasurementUnit", b =>
+                {
+                    b.Property<int>("MeasurementUnitId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MeasurementUnitId"));
+
+                    b.Property<string>("UnitName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("UnitSymbol")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int>("UnitType")
+                        .HasMaxLength(50)
+                        .HasColumnType("int");
+
+                    b.HasKey("MeasurementUnitId");
+
+                    b.ToTable("MeasurementUnit", "Product");
                 });
 
             modelBuilder.Entity("eCommerce.Domain.Entities.Notification", b =>
@@ -907,6 +934,21 @@ namespace eCommerce.Infrastructure.Migrations
                     b.ToTable("ProductCategoryFeature", "Product");
                 });
 
+            modelBuilder.Entity("eCommerce.Domain.Entities.ProductCategoryProductFeature", b =>
+                {
+                    b.Property<int>("ProductCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductFeatureId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductCategoryId", "ProductFeatureId");
+
+                    b.HasIndex("ProductFeatureId");
+
+                    b.ToTable("ProductCategoryProductFeature", "Product");
+                });
+
             modelBuilder.Entity("eCommerce.Domain.Entities.ProductConfiguration", b =>
                 {
                     b.Property<int>("ProductConfigurationId")
@@ -918,14 +960,14 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Property<int>("FeatureOptionId")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("ProductVarientId")
+                    b.Property<Guid>("ProductVariantId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ProductConfigurationId");
 
                     b.HasIndex("FeatureOptionId");
 
-                    b.HasIndex("ProductVarientId");
+                    b.HasIndex("ProductVariantId");
 
                     b.ToTable("ProductConfiguration", "Product");
                 });
@@ -992,6 +1034,9 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Property<bool?>("IsManadatory")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("MeasurementUnitId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -1000,6 +1045,8 @@ namespace eCommerce.Infrastructure.Migrations
                     b.HasKey("ProductFeaturesId");
 
                     b.HasIndex("FeatureCategoryId");
+
+                    b.HasIndex("MeasurementUnitId");
 
                     b.ToTable("ProductFeatures", "Product");
                 });
@@ -1040,12 +1087,12 @@ namespace eCommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("eCommerce.Domain.Entities.ProductVariant", b =>
                 {
-                    b.Property<Guid>("ProductIvarientId")
+                    b.Property<Guid>("ProductVariantId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("ProductIVarientId");
 
-                    b.Property<bool?>("IsActive")
-                        .HasColumnType("bit");
+                    b.Property<string>("Barcode")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10, 2)");
@@ -1053,21 +1100,24 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("Quantity")
-                        .HasColumnType("int");
-
                     b.Property<string>("Sku")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("SKU");
 
+                    b.Property<int?>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<string>("VarientName")
                         .HasMaxLength(100)
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("ProductIvarientId")
+                    b.HasKey("ProductVariantId")
                         .HasName("PK_ProductItems");
 
                     b.HasIndex("ProductId");
@@ -1849,6 +1899,25 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Navigation("ProductCategory");
                 });
 
+            modelBuilder.Entity("eCommerce.Domain.Entities.ProductCategoryProductFeature", b =>
+                {
+                    b.HasOne("eCommerce.Domain.Entities.ProductCategory", "ProductCategory")
+                        .WithMany()
+                        .HasForeignKey("ProductCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("eCommerce.Domain.Entities.ProductFeature", "ProductFeature")
+                        .WithMany()
+                        .HasForeignKey("ProductFeatureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductCategory");
+
+                    b.Navigation("ProductFeature");
+                });
+
             modelBuilder.Entity("eCommerce.Domain.Entities.ProductConfiguration", b =>
                 {
                     b.HasOne("eCommerce.Domain.Entities.FeatureOption", "FeatureOption")
@@ -1859,7 +1928,7 @@ namespace eCommerce.Infrastructure.Migrations
 
                     b.HasOne("eCommerce.Domain.Entities.ProductVariant", "ProductVarient")
                         .WithMany("ProductConfigurations")
-                        .HasForeignKey("ProductVarientId")
+                        .HasForeignKey("ProductVariantId")
                         .IsRequired()
                         .HasConstraintName("FK_ProductConfiguration_ProductVarient");
 
@@ -1885,7 +1954,13 @@ namespace eCommerce.Infrastructure.Migrations
                         .WithMany("ProductFeatures")
                         .HasForeignKey("FeatureCategoryId");
 
+                    b.HasOne("eCommerce.Domain.Entities.MeasurementUnit", "MeasurementUnit")
+                        .WithMany()
+                        .HasForeignKey("MeasurementUnitId");
+
                     b.Navigation("FeatureCategory");
+
+                    b.Navigation("MeasurementUnit");
                 });
 
             modelBuilder.Entity("eCommerce.Domain.Entities.ProductImage", b =>

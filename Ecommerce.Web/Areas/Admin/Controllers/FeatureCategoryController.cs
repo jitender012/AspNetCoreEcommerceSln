@@ -1,59 +1,69 @@
 ﻿using AutoMapper;
 using eCommerce.Application.DTO.ProductDTOs;
+using eCommerce.Application.Features.FeatureCategoryFeatures.Commands;
+using eCommerce.Application.Features.FeatureCategoryFeatures.Dtos;
+using eCommerce.Application.Features.FeatureCategoryFeatures.Queries;
 using eCommerce.Application.ServiceContracts.AdminServiceContracts;
 using eCommerce.Application.ServiceContracts.ProductServiceContracts;
+using eCommerce.Application.Services.AdminServices;
 using eCommerce.Application.Services.ProductServices;
+using eCommerce.Domain.Entities;
+using eCommerce.Web.Areas.Admin.Models.FeatureCategory;
 using eCommerce.Web.Areas.Admin.Models.Product;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace eCommerce.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class FeatureCategoryController(IFeatureCategoryService featureCategoryService, ICategoryService categoryService, IProductFeatureService featureService, IMapper mapper) : Controller
+    public class FeatureCategoryController : Controller
     {
-        private readonly IFeatureCategoryService _featureCategoryService = featureCategoryService;
-        private readonly ICategoryService _categoryService = categoryService;
-        private readonly IProductFeatureService _featureService = featureService;
-        private readonly IMapper _mapper = mapper;
+        private readonly IFeatureCategoryService _featureCategoryService;
+        private readonly ICategoryService _categoryService;
+        private readonly IProductFeatureService _featureService;
+        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
+        public FeatureCategoryController(IFeatureCategoryService featureCategoryService, ICategoryService categoryService, IProductFeatureService featureService, IMapper mapper, IMediator mediator)
+        {
+            _featureCategoryService = featureCategoryService;
+            _categoryService = categoryService;
+            _featureService = featureService;
+            _mapper = mapper;
+            _mediator = mediator;
+        }
 
         public async Task<IActionResult> Index()
         {
-            var featureCategories = await _featureCategoryService.GetAllAsync();
-            List<FeatureCategoryViewModel> featureCategoriesVM = _mapper.Map<List<FeatureCategoryViewModel>>(featureCategories);
+            var featureCategoriesDto = await _mediator.Send(new GetFeatureCategoriesQuery());
+            var featureCategoriesVM = _mapper.Map<List<FeatureCategoryListVm>>(featureCategoriesDto);
 
             return View(featureCategoriesVM);
         }
-
-        public async Task<IActionResult> Create()
-        {
-            await PopulateProductCategoryDropdown();
-            return View();
-        }
-
-        [ValidateAntiForgeryToken]
+             
         [HttpPost]
-        public async Task<IActionResult> Create(FeatureCategoryViewModel data)
+        public async Task<JsonResult> Create(FeatureCategorySaveVm data)
         {
-            await PopulateProductCategoryDropdown();
-
             if (!ModelState.IsValid)
             {
-                return View(data);
+                return Json(new { success = false, message = "Invalid data." });
             }
 
-            var featureCategoryDTO = _mapper.Map<FeatureCategoryDTO>(data);
-            await _featureCategoryService.AddAsync(featureCategoryDTO);
+            var featureCategorySaveDto = _mapper.Map<FeatureCategorySaveDto>(data);
+            var result = await _mediator.Send(new CreateFeatureCategoryCommand(featureCategorySaveDto));
 
-            return RedirectToAction("Index");
+            if (result <= 0)
+                return Json(new { success = false, message = "Internal Error." });
+            else
+                return Json(new { success = true, message = "Created Successfully." });
         }
 
         public async Task<IActionResult> Details(int FeatureCategoryId)
         {
-            var viewData = await _featureCategoryService.GetDetailsAsync(FeatureCategoryId);
-            viewData.ProductCategories = await _categoryService.GetByFeatureCategoryIdAsync(FeatureCategoryId);
-            await PopulateProductCategoryDropdown();
-            return View(viewData);
+            var featureCategoryDTO = await _mediator.Send(new GetFeatureCategoryByIdQuery(FeatureCategoryId));
+            var featureCategoryDetailsVM = _mapper.Map<FeatureCategoryDetailsVm>(featureCategoryDTO);
+
+            return View(featureCategoryDetailsVM);
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -101,7 +111,7 @@ namespace eCommerce.Web.Areas.Admin.Controllers
                 return Json(new { success = false, message = "Invalid input." });
             }
 
-            var result = await _featureCategoryService.DeleteAsync(id);
+            var result = await _mediator.Send(new DeleteFeatureCategoryCommand(id));
 
             if (!result)
                 return Json(new { success = result, message = "Internal Error." });

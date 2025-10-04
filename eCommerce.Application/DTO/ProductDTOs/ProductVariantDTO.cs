@@ -1,4 +1,5 @@
 ﻿using eCommerce.Application.Services;
+using eCommerce.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace eCommerce.Application.DTO.ProductDTOs
         public int? Quantity { get; set; }
         public string Sku { get; set; } = null!;
         public decimal Price { get; set; }
-        public bool? IsActive { get; set; }
+        public ProductStatus Status { get; set; }
 
         public IEnumerable<ProductImagesDTO>? ProductImagesDTO { get; set; }
         public IEnumerable<FeatureOptionDTO>? FeatureOptions{ get; set; }        

@@ -1,42 +1,379 @@
-﻿@model eCommerce.Web.Areas.Admin.Models.Brand.BrandViewModel
-
-@{
-    ViewData["Title"] = "Create";
+﻿@{
+    ViewData["Title"] = "Add Brand";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h4>Create Brand</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group">
-                <label asp-for="BrandName" class="control-label">Brand Name</label>                
-                @Html.TextBoxFor(model => model.BrandName, new { @class = "form-control", placeholder = "Enter brand name" })                
-                <span asp-validation-for="BrandName" class="text-danger"></span>
+@model BrandSaveVM
+
+<div class="container-fluid py-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="fas fa-plus-circle me-2"></i>
+                        Add New Brand
+                    </h1>
+                    <p class="text-muted mb-0">Create a new brand for product catalog</p>
+                </div>
+                <div>
+                    <a href="/admin/brand/index" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Brands
+                    </a>
+                </div>
             </div>
-           
-            <div class="form-group">
-                <label asp-for="BrandDescription" class="control-label">Brand Description</label>
-                
-                @Html.TextAreaFor(model => model.BrandDescription, new { @class = "form-control", placeholder = "Enter brand description" })
-                <span asp-validation-for="" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ImageFile" class="control-label"> Upload Image</label>
-                <input type="file" name="ImageFile" asp-for="BrandImage" class="form-control" />                
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
+    @using (Html.BeginForm("Create", "Brand", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Brand Information Card -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-info-circle me-2"></i>Brand Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 mb-4">
+                                <label asp-for="BrandName" class="form-label fw-semibold">
+                                    Brand Name <span class="text-danger">*</span>
+                                </label>
+                                @Html.TextBoxFor(x => x.BrandName, new { @class = "form-control form-control-lg", placeholder = "Enter brand name (e.g., Nike, Apple, Samsung)", maxlength = "100" })
+                                @Html.ValidationMessageFor(x => x.BrandName, "", new { @class = "text-danger" })
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    This will be displayed across the website
+                                </small>
+                            </div>
+
+                            <div class="col-md-12 mb-4">
+                                <label asp-for="BrandDescription" class="form-label fw-semibold">
+                                    Brand Description
+                                </label>
+                                @Html.TextAreaFor(x => x.BrandDescription, new { @class = "form-control", rows = "5", placeholder = "Enter brand description, story, or additional information...", maxlength = "500" })
+                                @Html.ValidationMessageFor(x => x.BrandDescription, "", new { @class = "text-danger" })
+                                <div class="d-flex justify-content-between mt-1">
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Optional: Add a brief description about the brand
+                                    </small>
+                                    <small class="text-muted">
+                                        <span id="charCount">0</span> / 500 characters
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Brand Logo Card -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-image me-2"></i>Brand Logo
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label asp-for="ImageFile" class="form-label fw-semibold">
+                                    Upload Logo
+                                </label>
+
+                                <!-- Upload Area -->
+                                <div class="upload-area" id="uploadArea">
+
+                                    <input type="file" name="ImageFile" class="d-none"
+                                           id="imageFileInput" accept="image/*" />
+                                    @Html.ValidationMessageFor(model => model.ImageFile, "", new { @class = "text-danger" })
+                                    <div class="upload-content text-center" id="uploadContent">
+                                        <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                                        <h5>Drop your logo here or click to browse</h5>
+                                        <p class="text-muted mb-3">
+                                            Supported formats: JPG, PNG, GIF, SVG<br>
+                                            Maximum size: 5MB<br>
+                                            Recommended: 500x500px (Square)
+                                        </p>
+                                        <button type="button" class="btn btn-primary" onclick="$('#imageFileInput').click()">
+                                            <i class="fas fa-folder-open me-2"></i>Choose File
+                                        </button>
+                                    </div>
+
+                                    <!-- Preview Area -->
+                                    <div class="preview-area" id="previewArea" style="display: none;">
+                                        <div class="text-center">
+                                            <img id="imagePreview" src="" alt="Preview" class="img-fluid mb-3"
+                                                 style="max-height: 300px; max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <button type="button" class="btn btn-outline-primary"
+                                                        onclick="$('#imageFileInput').click()">
+                                                    <i class="fas fa-sync-alt me-2"></i>Change Logo
+                                                </button>
+                                                <button type="button" class="btn btn-outline-danger" id="removeImageBtn">
+                                                    <i class="fas fa-trash me-2"></i>Remove
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Status Card -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-toggle-on me-2"></i>Publication Status
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check form-switch">
+
+                            @Html.CheckBoxFor(x => x.IsActive, new { @class = "form-check-input",value ="true", id = "isActiveSwitch", style = "width: 3em; height: 1.5em;" })
+                        </div>
+                        <hr>
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            <span>This brand is visible to sellers and customers</span>
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Guidelines Card -->
+                <div class="card mb-4 border-info">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-lightbulb me-2"></i>Logo Guidelines
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0 small">
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Use high-resolution images
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Transparent background preferred
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Square or horizontal orientation
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Maintain aspect ratio
+                            </li>
+                            <li class="mb-0">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Avoid text-heavy logos
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Action Buttons Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg" id="saveBtn">
+                                <i class="fas fa-save me-2"></i>
+                                Create Brand
+                            </button>
+                            <a href="/admin/brand/index" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<style>
+    .upload-area {
+        border: 3px dashed #dee2e6;
+        border-radius: 12px;
+        padding: 3rem;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+        cursor: pointer;
+    }
 
+        .upload-area:hover {
+            border-color: #0d6efd;
+            background-color: #e7f3ff;
+        }
+
+        .upload-area.drag-over {
+            border-color: #0d6efd;
+            background-color: #e7f3ff;
+            transform: scale(1.02);
+        }
+
+    .preview-area img {
+        transition: transform 0.2s ease;
+    }
+
+        .preview-area img:hover {
+            transform: scale(1.02);
+        }
+
+    .form-control-lg {
+        font-size: 1.1rem;
+        padding: 0.75rem 1rem;
+    }
+
+    .card {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: box-shadow 0.3s ease;
+    }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+    .form-check-input:checked {
+        background-color: #198754;
+        border-color: #198754;
+    }
+
+    #charCount {
+        font-weight: bold;
+        color: #0d6efd;
+    }
+</style>
+
+
+<script>
+    $(document).ready(function() {
+        // Load existing image if editing
+        const existingImage = $('#existingImage').val();
+        if (existingImage) {
+            showPreview(existingImage);
+        }
+
+        // Character count for description
+        $('#BrandDescription').on('input', function() {
+            const count = $(this).val().length;
+            $('#charCount').text(count);
+
+            if (count > 450) {
+                $('#charCount').addClass('text-warning');
+            } else {
+                $('#charCount').removeClass('text-warning');
+            }
+        });
+
+        // Initialize character count
+        $('#BrandDescription').trigger('input');
+
+        // File input change handler
+        $('#imageFileInput').change(function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validate file size (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    $(this).val('');
+                    return;
+                }
+
+                // Validate file type
+                if (!file.type.match('image.*')) {
+                    alert('Please select a valid image file');
+                    $(this).val('');
+                    return;
+                }
+
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    showPreview(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Show preview
+        function showPreview(imageSrc) {
+            $('#imagePreview').attr('src', imageSrc);
+            $('#uploadContent').hide();
+            $('#previewArea').show();
+        }
+
+        // Remove image
+        $('#removeImageBtn').click(function() {
+            $('#imageFileInput').val('');
+            $('#existingImage').val('');
+            $('#uploadContent').show();
+            $('#previewArea').hide();
+        });
+
+        // Drag and drop handlers
+        const uploadArea = $('#uploadArea');
+
+        uploadArea.on('dragover', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(this).addClass('drag-over');
+        });
+
+        uploadArea.on('dragleave', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(this).removeClass('drag-over');
+        });
+
+        uploadArea.on('drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(this).removeClass('drag-over');
+
+            const files = e.originalEvent.dataTransfer.files;
+            if (files.length > 0) {
+                $('#imageFileInput')[0].files = files;
+                $('#imageFileInput').trigger('change');
+            }
+        });
+
+        // Click on upload area
+        uploadArea.click(function(e) {
+            if (e.target === this || $(e.target).closest('.upload-content').length) {
+                $('#imageFileInput').click();
+            }
+        });
+
+        // Status switch handler
+        $('#isActiveSwitch').on('change', function() {
+            if ($(this).is(':checked')) {
+                $('#statusText').text('Active').removeClass('text-danger').addClass('text-success');
+            } else {
+                $('#statusText').text('Inactive').removeClass('text-success').addClass('text-danger');
+            }
+        });
+
+        // Form submission
+        $('#brandForm').submit(function(e) {
+            const brandName = $('#BrandName').val().trim();
+
+            // Show loading state
+            $('#saveBtn').prop('disabled', true)
+                .html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+        });
+
+    });
+
+</script>

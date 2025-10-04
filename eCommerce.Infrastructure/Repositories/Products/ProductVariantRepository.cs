@@ -39,7 +39,7 @@ namespace eCommerce.Infrastructure.Repositories.Products
                 await _context.ProductVariants.AddAsync(productVariant);
                 await _context.SaveChangesAsync();
 
-                return productVariant.ProductIvarientId;
+                return productVariant.ProductVariantId;
             }
             catch (Exception ex)
             {

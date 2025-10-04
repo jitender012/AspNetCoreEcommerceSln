@@ -44,32 +44,13 @@ namespace eCommerce.Infrastructure.Repositories.Products
         #endregion
 
         #region InsertOperations
-        public async Task<int> InsertAsync(FeatureCategory featureCategory, int productCategoryId)
+        public async Task<int> InsertAsync(FeatureCategory featureCategory)
         {
-            using var transaction = await _context.Database.BeginTransactionAsync();
-            try
-            {
-                await _context.FeatureCategories.AddAsync(featureCategory);
-                await _context.SaveChangesAsync();
+            await _context.FeatureCategories.AddAsync(featureCategory);
+            await _context.SaveChangesAsync();
 
-                ProductCategoryFeature pcf = new()
-                {
-                    FeatureCategoryId = featureCategory.FeatureCategoryId,
-                    ProductCategoryId = productCategoryId,
-                };
 
-                await _context.ProductCategoryFeatures.AddAsync(pcf);
-                await _context.SaveChangesAsync();
-
-                await transaction.CommitAsync();
-
-                return pcf.FeatureCategoryId;
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                throw new Exception("Something went wrong.", ex);
-            }
+            return featureCategory.FeatureCategoryId;
         }
 
         public async Task InsertMultipleProductFeatureCategoryAsync(IEnumerable<FeatureCategory> categories)
@@ -152,7 +133,12 @@ namespace eCommerce.Infrastructure.Repositories.Products
                 }
 
                 _logger.LogInformation("Fetching  Feature Category with ID {FeatureCategoryId}", id);
-                var FeatureCategory = await _context.FeatureCategories.FindAsync(id);
+                var FeatureCategory = await _context.FeatureCategories
+                    .Where(x=> x.FeatureCategoryId == id)
+                    .Include(x => x.ProductFeatures)
+                    .Include(x=> x.ProductCategoryFeatures)
+                        .ThenInclude(pc => pc.ProductCategory)
+                    .FirstOrDefaultAsync();
 
                 if (FeatureCategory == null)
                 {

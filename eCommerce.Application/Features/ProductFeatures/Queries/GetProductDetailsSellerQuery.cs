@@ -26,7 +26,7 @@ namespace eCommerce.Application.Features.ProductFeatures.Queries
                 foreach (var variantDto in productDto.ProductVariants)
                 {
                     var variant = product.ProductVariants
-                        .First(v => v.ProductIvarientId == variantDto.ProductIvarientId);
+                        .First(v => v.ProductVariantId == variantDto.ProductIvarientId);
 
                     variantDto.Features = variant.ProductConfigurations
                         .Select(pc => new ProductFeatureDto

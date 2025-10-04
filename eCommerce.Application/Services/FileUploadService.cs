@@ -10,7 +10,7 @@ namespace eCommerce.Application.Services
 {
     public class FileUploadService : IFileUploadService
     {
-        public async Task<List<string>> UploadFilesAsync(IEnumerable<IFormFile> files, string folderPath)
+        public async Task<List<string>> UploadImageAsync(IEnumerable<IFormFile> files, string folderPath)
         {
             if (files == null || !files.Any())
                 throw new ArgumentException("No files to upload");

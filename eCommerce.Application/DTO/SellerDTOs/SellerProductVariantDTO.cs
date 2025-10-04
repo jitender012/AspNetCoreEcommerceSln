@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eCommerce.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,6 @@ namespace eCommerce.Application.DTO.VendorDTOs
         public string? VarientName { get; set; }
         public int? Quantity { get; set; }
         public decimal Price { get; set; }
-        public bool? IsActive { get; set; }
+        public ProductStatus Status{ get; set; }
     }
 }

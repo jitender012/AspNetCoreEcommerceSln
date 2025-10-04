@@ -1,143 +1,637 @@
-﻿@model FeatureCategoryDetailsDTO
-@{
+﻿@{
+    ViewData["Title"] = "Feature Category Details - " + Model.Name;    
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-<script src="~/js/jquery code/adminjs/featurecategory.js"></script>
-<div class="container">
-    <div class="card">
-        <div class="card-header">
-            <div class=" d-flex justify-content-between  align-items-center">
-                <h4>Feature Category Details</h4>
-                <a href="@Url.Action("Edit", new { id = Model.FeatureCategoryId })" class="link-dark">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                </a>
-            </div>
-        </div>
 
-        <div class="card-body">
-            <div class="row ">
-                <div class="col-4 ">
-                    <label class="form-label">Name</label>
-                    <input type="text" readonly value="@Model.Name" class="form-control" />
-                </div>
-                <div class="col-4 ">
-                    <label class="form-label">Created By</label>
-                    <input type="text" readonly value="@Model.CreatedBy" class="form-control" />
-                </div>
-                <div class="col-4 ">
-                    <label class="form-label">Is Mandatory</label>
-                    <input type="checkbox" disabled @(Model.IsMandatory ? "checked" : "") class="form-check" />
-                </div>
-            </div>
-            <hr />
-            <div class="row mt-3">
-                <div class="col-6">
-                    <div id="featureList" data-id="@Model.FeatureCategoryId">
-                        @await Html.PartialAsync("_FeatureListPartial", Model.ProductFeatures)
-                    </div>
-                    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#addFeaturesForm">
-                        +
-                    </button>
-                </div>
+@model FeatureCategoryDetailsVm
 
-                <div class="col-6">
-                    <div id="productCategoryList" data-id="@Model.FeatureCategoryId">
-                        @await Html.PartialAsync("_ProductCategoryList", Model.ProductCategories)
+<div class="container-fluid py-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div class="mb-2">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="/admin/feature-categories">Feature Categories</a></li>
+                            <li class="breadcrumb-item active">@Model.Name</li>
+                        </ol>
+                    </nav>
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-folder me-2"></i>@Model.Name
+                    </h1>
+                    @if (Model.IsMandatory == true)
+                    {
+                        <span class="badge bg-warning text-dark">
+                            <i class="fas fa-star me-1"></i>Mandatory Category
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">
+                            <i class="far fa-circle me-1"></i>Optional Category
+                        </span>
+                    }
+                </div>
+                <div class="d-flex gap-2 mb-2">
+                    <a href="/admin/feature-categories" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to List
+                    </a>
+                    <a href="/admin/feature-categories/@Model.FeatureCategoryId/edit" class="btn btn-primary">
+                        <i class="fas fa-edit me-2"></i>Edit Category
+                    </a>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <form asp-action="ToggleMandatory" asp-route-id="@Model.FeatureCategoryId" method="post" class="d-inline">
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="fas fa-star me-2"></i>
+                                        @(Model.IsMandatory == true ? "Set as Optional" : "Set as Mandatory")
+                                    </button>
+                                </form>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="#" onclick="deleteCategory(); return false;">
+                                    <i class="fas fa-trash me-2"></i>Delete Category
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#link-product-category-modal">
-                        +
-                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-</div>
-
-<div class="card-footer">
-    @Html.ActionLink("Back to List", "Index")
-</div>
-
-
-
-<!-- Modal -->
-<div class="modal fade" id="addFeaturesForm" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addFeaturesFormLabel">Add Feature</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form class="create-form" method="post" enctype="multipart/form-data">
-
-                    <div class="form-group">
-                        <label class="control-label">Feature Name</label>
-                        <input type="text" class="form-control" name="Name" placeholder="Enter Feature name" />
-                    </div>
-                    <input type="hidden" name="FeatureCategoryId" value="@Model.FeatureCategoryId" />
-
-                    <div class="form-group">
-                        <label class="control-label">Input Type</label>
-                        <select class="form-control" name="InputType">
-                            <option>--Select Input Type--</option>
-                            <option value="0">Dropdown</option>
-                            <option value="1">Textbox</option>
-                            <option value="2">Number</option>
-                            <option value="3">Boolean</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label">Is Mandatory</label>
-                        <input type="checkbox" class="form-check-input" name="IsMandatory" />
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <div class="form-group">
-                            <input type="submit" value="Add" class="btn btn-primary" />
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <!-- Basic Information Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Basic Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="text-muted small mb-1">Category ID</label>
+                            <p class="mb-0 fw-semibold">@Model.FeatureCategoryId</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="text-muted small mb-1">Category Name</label>
+                            <p class="mb-0 fw-semibold">@Model.Name</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="text-muted small mb-1">Status</label>
+                            <p class="mb-0">
+                                @if (Model.IsMandatory == true)
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-star me-1"></i>Mandatory
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">
+                                        <i class="far fa-circle me-1"></i>Optional
+                                    </span>
+                                }
+                            </p>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
 
-
-
-<div class="modal fade" id="link-product-category-modal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Link Product Category</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form class="link-product-category-form" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="FeatCatId" value="@Model.FeatureCategoryId" />
-
-                    <div class="form-group">
-                        <label class="control-label">Product Categories</label>
-                        <select class="form-control" name="ProductCategoryId">
-                            <option>--Select Product Category--</option>
-                            @foreach (var item in ViewBag.ProductCategories)
+            <!-- Features Card -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-list-alt me-2"></i>Features 
+                        <span class="badge bg-primary ms-2">@(Model.ProductFeatures?.Count ?? 0)</span>
+                    </h5>
+                    <button type="button" class="btn btn-sm btn-primary" onclick="linkFeatures()">
+                        <i class="fas fa-plus me-1"></i>Link Features
+                    </button>
+                </div>
+                <div class="card-body">
+                    @if (Model.ProductFeatures != null && Model.ProductFeatures.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var feature in Model.ProductFeatures)
                             {
-                                <option value="@item.Value">@item.Text</option>
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-tag text-primary me-3"></i>
+                                        <div>
+                                            <h6 class="mb-0">@feature.Name</h6>
+                                            <small class="text-muted">Feature ID: @feature.Id</small>
+                                        </div>
+                                    </div>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="/admin/features/@feature.Id" class="btn btn-outline-info">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-outline-danger" 
+                                                onclick="unlinkFeature(@feature.Id, '@feature.Name')">
+                                            <i class="fas fa-unlink"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             }
-                        </select>
-                    </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <h6 class="text-muted">No features linked yet</h6>
+                            <p class="text-muted">Link existing features to organize them under this category</p>
+                            <button type="button" class="btn btn-primary" onclick="linkFeatures()">
+                                <i class="fas fa-plus me-2"></i>Link First Feature
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <div class="form-group">
-                            <input type="submit" value="Add" class="btn btn-primary" />
+            <!-- Product Categories Card -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-layer-group me-2"></i>Assigned Product Categories
+                        <span class="badge bg-success ms-2">@(Model.ProductCategories?.Count ?? 0)</span>
+                    </h5>
+                    <button type="button" class="btn btn-sm btn-success" onclick="linkProductCategories()">
+                        <i class="fas fa-plus me-1"></i>Assign Categories
+                    </button>
+                </div>
+                <div class="card-body">
+                    @if (Model.ProductCategories != null && Model.ProductCategories.Any())
+                    {
+                        <div class="row g-3">
+                            @foreach (var category in Model.ProductCategories)
+                            {
+                                <div class="col-md-6">
+                                    <div class="card border">
+                                        <div class="card-body p-3">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-light rounded p-2 me-2">
+                                                        <i class="fas fa-th-large text-success"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0">@category.Name</h6>
+                                                        <small class="text-muted">ID: @category.Id</small>
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                        onclick="unlinkProductCategory(@category.Id, '@category.Name')">
+                                                    <i class="fas fa-unlink"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-layer-group fa-3x text-muted mb-3"></i>
+                            <h6 class="text-muted">No product categories assigned</h6>
+                            <p class="text-muted">Assign this feature category to product categories where it should appear</p>
+                            <button type="button" class="btn btn-success" onclick="linkProductCategories()">
+                                <i class="fas fa-plus me-2"></i>Assign First Category
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Quick Stats Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Statistics
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Linked Features:</span>
+                            <strong>@(Model.ProductFeatures?.Count ?? 0)</strong>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-primary" style="width: @((Model.ProductFeatures?.Count ?? 0) * 10)%"></div>
                         </div>
                     </div>
-                </form>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Assigned Categories:</span>
+                            <strong>@(Model.ProductCategories?.Count ?? 0)</strong>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-success" style="width: @((Model.ProductCategories?.Count ?? 0) * 10)%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Status:</span>
+                            @if (Model.IsMandatory == true)
+                            {
+                                <span class="badge bg-warning text-dark">Mandatory</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Optional</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="/admin/feature-categories/@Model.FeatureCategoryId/edit" class="btn btn-primary">
+                            <i class="fas fa-edit me-2"></i>Edit Category
+                        </a>
+                        <button type="button" class="btn btn-outline-primary" onclick="linkFeatures()">
+                            <i class="fas fa-plus me-2"></i>Link Features
+                        </button>
+                        <button type="button" class="btn btn-outline-success" onclick="linkProductCategories()">
+                            <i class="fas fa-link me-2"></i>Assign Categories
+                        </button>
+                        <hr class="my-2">
+                        <form asp-action="ToggleMandatory" asp-route-id="@Model.FeatureCategoryId" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-outline-warning w-100">
+                                <i class="fas fa-star me-2"></i>
+                                @(Model.IsMandatory == true ? "Set as Optional" : "Set as Mandatory")
+                            </button>
+                        </form>
+                        <button type="button" class="btn btn-outline-danger" onclick="deleteCategory()">
+                            <i class="fas fa-trash me-2"></i>Delete Category
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help Card -->
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-question-circle me-2"></i>About Feature Categories
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="small mb-2"><strong>Purpose:</strong></p>
+                    <p class="small mb-3">Feature categories help organize product features into logical groups like "Display", "Storage", "Warranty", etc.</p>
+                    
+                    <p class="small mb-2"><strong>How it works:</strong></p>
+                    <ul class="small mb-0">
+                        <li class="mb-2">Link multiple features to this category</li>
+                        <li class="mb-2">Assign to product categories where needed</li>
+                        <li class="mb-0">@(Model.IsMandatory == true ? "Mandatory categories require at least one feature" : "Optional categories are not required")</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Link Features Modal -->
+<div class="modal fade" id="linkFeaturesModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-link me-2"></i>Link Features to @Model.Name
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="searchFeatures" 
+                           placeholder="Search features...">
+                </div>
+                <div id="availableFeaturesContainer" style="max-height: 400px; overflow-y: auto;">
+                    <!-- Features will be loaded here -->
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveFeaturesBtn">
+                    <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Link Product Categories Modal -->
+<div class="modal fade" id="linkProductCategoriesModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-link me-2"></i>Assign Product Categories to @Model.Name
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="searchProductCategories" 
+                           placeholder="Search product categories...">
+                </div>
+                <div id="availableProductCategoriesContainer" style="max-height: 400px; overflow-y: auto;">
+                    <!-- Product Categories will be loaded here -->
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="saveProductCategoriesBtn">
+                    <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.list-group-item {
+    transition: background-color 0.2s ease;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+.card {
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.progress {
+    background-color: #e9ecef;
+}
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+
+<script>
+const featureCategoryId = @Model.FeatureCategoryId;
+let selectedFeatures = @Html.Raw(Json.Serialize(Model.ProductFeatures?.Select(f => f.Id) ?? new List<int>()));
+let selectedProductCategories = @Html.Raw(Json.Serialize(Model.ProductCategories?.Select(c => c.Id) ?? new List<int>()));
+
+// Link Features
+function linkFeatures() {
+    $('#linkFeaturesModal').modal('show');
+    loadAvailableFeatures();
+}
+
+// Load available features
+function loadAvailableFeatures() {
+    $.ajax({
+        url: '/admin/api/features/available',
+        type: 'GET',
+        success: function(features) {
+            let html = '<div class="list-group">';
+            
+            features.forEach(function(feature) {
+                const isChecked = selectedFeatures.includes(feature.id);
+                html += `
+                    <div class="list-group-item">
+                        <div class="form-check">
+                            <input class="form-check-input feature-checkbox" type="checkbox" 
+                                   value="${feature.id}" id="feature_${feature.id}" 
+                                   ${isChecked ? 'checked' : ''}>
+                            <label class="form-check-label" for="feature_${feature.id}">
+                                <strong>${feature.name}</strong>
+                                <br><small class="text-muted">ID: ${feature.id}</small>
+                            </label>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            $('#availableFeaturesContainer').html(html);
+        }
+    });
+}
+
+// Search features
+$('#searchFeatures').on('input', function() {
+    const searchTerm = $(this).val().toLowerCase();
+    $('#availableFeaturesContainer .list-group-item').each(function() {
+        const text = $(this).text().toLowerCase();
+        $(this).toggle(text.includes(searchTerm));
+    });
+});
+
+// Save features
+$('#saveFeaturesBtn').click(function() {
+    const selected = [];
+    $('.feature-checkbox:checked').each(function() {
+        selected.push(parseInt($(this).val()));
+    });
+
+    $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+
+    $.ajax({
+        url: '/admin/api/feature-categories/' + featureCategoryId + '/features',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ featureIds: selected }),
+        success: function() {
+            showAlert('Features linked successfully!', 'success');
+            setTimeout(() => location.reload(), 1500);
+        },
+        error: function() {
+            showAlert('Failed to link features.', 'error');
+            $('#saveFeaturesBtn').prop('disabled', false)
+                .html('<i class="fas fa-save me-2"></i>Save Changes');
+        }
+    });
+});
+
+// Unlink feature
+function unlinkFeature(featureId, featureName) {
+    if (confirm(`Unlink feature "${featureName}" from this category?`)) {
+        $.ajax({
+            url: '/admin/api/feature-categories/' + featureCategoryId + '/features/' + featureId,
+            type: 'DELETE',
+            success: function() {
+                showAlert('Feature unlinked successfully!', 'success');
+                location.reload();
+            },
+            error: function() {
+                showAlert('Failed to unlink feature.', 'error');
+            }
+        });
+    }
+}
+
+// Link Product Categories
+function linkProductCategories() {
+    $('#linkProductCategoriesModal').modal('show');
+    loadAvailableProductCategories();
+}
+
+// Load available product categories
+function loadAvailableProductCategories() {
+    $.ajax({
+        url: '/admin/api/product-categories',
+        type: 'GET',
+        success: function(categories) {
+            let html = '<div class="row">';
+            
+            categories.forEach(function(category, index) {
+                const isChecked = selectedProductCategories.includes(category.id);
+                if (index % 2 === 0 && index !== 0) html += '</div><div class="row">';
+                
+                html += `
+                    <div class="col-md-6 mb-2">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="form-check">
+                                    <input class="form-check-input product-category-checkbox" 
+                                           type="checkbox" value="${category.id}" 
+                                           id="cat_${category.id}" ${isChecked ? 'checked' : ''}>
+                                    <label class="form-check-label" for="cat_${category.id}">
+                                        <strong>${category.name}</strong>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            $('#availableProductCategoriesContainer').html(html);
+        }
+    });
+}
+
+// Search product categories
+$('#searchProductCategories').on('input', function() {
+    const searchTerm = $(this).val().toLowerCase();
+    $('#availableProductCategoriesContainer .col-md-6').each(function() {
+        const text = $(this).text().toLowerCase();
+        $(this).toggle(text.includes(searchTerm));
+    });
+});
+
+// Save product categories
+$('#saveProductCategoriesBtn').click(function() {
+    const selected = [];
+    $('.product-category-checkbox:checked').each(function() {
+        selected.push(parseInt($(this).val()));
+    });
+
+    $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+
+    $.ajax({
+        url: '/admin/api/feature-categories/' + featureCategoryId + '/product-categories',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ productCategoryIds: selected }),
+        success: function() {
+            showAlert('Product categories assigned successfully!', 'success');
+            setTimeout(() => location.reload(), 1500);
+        },
+        error: function() {
+            showAlert('Failed to assign product categories.', 'error');
+            $('#saveProductCategoriesBtn').prop('disabled', false)
+                .html('<i class="fas fa-save me-2"></i>Save Changes');
+        }
+    });
+});
+
+// Unlink product category
+function unlinkProductCategory(categoryId, categoryName) {
+    if (confirm(`Unassign product category "${categoryName}"?`)) {
+        $.ajax({
+            url: '/admin/api/feature-categories/' + featureCategoryId + '/product-categories/' + categoryId,
+            type: 'DELETE',
+            success: function() {
+                showAlert('Product category unassigned successfully!', 'success');
+                location.reload();
+            },
+            error: function() {
+                showAlert('Failed to unassign product category.', 'error');
+            }
+        });
+    }
+}
+
+// Delete category
+function deleteCategory() {
+    if (confirm('Are you sure you want to delete this category? All relationships will be removed.')) {
+        $.ajax({
+            url: '/admin/api/feature-categories/' + featureCategoryId,
+            type: 'DELETE',
+            success: function() {
+                window.location.href = '/admin/feature-categories';
+            },
+            error: function() {
+                showAlert('Failed to delete category.', 'error');
+            }
+        });
+    }
+}
+
+// Show alert
+function showAlert(message, type) {
+    const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+    const iconClass = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+    
+    const alert = $(`
+        <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;" role="alert">
+            <i class="fas ${iconClass} me-2"></i>${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `);
+    
+    $('body').append(alert);
+    
+    setTimeout(function() {
+        alert.fadeOut(function() {
+            $(this).remove();
+        });
+    }, 5000);
+}
+</script>

@@ -1,17 +1,13 @@
 ﻿using AutoMapper;
-using eCommerce.Application.DTO;
 using eCommerce.Application.Features.BrandFeature.Commands;
 using eCommerce.Application.Features.BrandFeature.Dtos;
 using eCommerce.Application.Features.BrandFeature.Queries;
-using eCommerce.Application.ServiceContracts.AdminServiceContracts;
 using eCommerce.Application.ServiceContracts.UtilityServiceContracts;
 using eCommerce.Web.Areas.Admin.Models.Brand;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eCommerce.Web.Areas.Admin.Controllers
 {
@@ -19,29 +15,46 @@ namespace eCommerce.Web.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class BrandController : Controller
     {
-        private readonly IBrandService _brandService;
         private readonly IFileUploadService _fileUploadService;
         private readonly IMapper _mapper;
 
         private readonly IMediator _mediator;
-        public BrandController(IBrandService brandService, IFileUploadService fileUploadService, IMediator mediator, IMapper mapper)
+        private readonly IValidator<BrandSaveDTO> _validator;
+        public BrandController(IFileUploadService fileUploadService, IMediator mediator, IMapper mapper, IValidator<BrandSaveDTO> validator)
         {
             _fileUploadService = fileUploadService;
-            _brandService = brandService;
 
             _mediator = mediator;
             _mapper = mapper;
+            _validator = validator;
         }
         public async Task<IActionResult> Index()
         {
             var brands = await _mediator.Send(new GetAllBrandsQuery());
-            var brandsVM = _mapper.Map<List<BrandDto>, List<BrandViewModel>>(brands);
+            var brandsVM = _mapper.Map<List<BrandListDTO>, List<BrandListVM>>(brands);
             return View(brandsVM);
+        }
+
+        public async Task<IActionResult> Details(Guid brandId)
+        {
+            if (brandId.Equals(null))
+            {
+                TempData["ErrorMessage"] = "Invalid Brand Id.";
+                return View("Error");
+            }
+            var brand = await _mediator.Send(new GetBrandByIdQuery(brandId));
+
+            BrandDetailsVM brandVM = _mapper.Map<BrandDetailsVM>(brand);
+            return View(brandVM);
         }
 
         public IActionResult Create()
         {
-            return View();
+            BrandSaveVM brand = new BrandSaveVM
+            {
+                IsActive = true
+            };
+            return View(brand);
         }
 
         #region Commented Code
@@ -100,84 +113,56 @@ namespace eCommerce.Web.Areas.Admin.Controllers
         //}
         #endregion
 
-
         [HttpPost]
-        public async Task<IActionResult> Create(BrandViewModel data, IEnumerable<IFormFile> ImageFile)
+        public async Task<IActionResult> Create(BrandSaveVM model)
         {
-            if (!ModelState.IsValid)
-                return View(data);
 
-            // Map ViewModel to DTO           
-            var createBrandDto = new CreateBrandDto
+            // Map VM to DTO
+            var dto = _mapper.Map<BrandSaveDTO>(model);
+
+            // Upload Image
+            if (model.ImageFile != null)
             {
-                BrandDescription = data.BrandDescription,
-                BrandName = data.BrandName,
-            };
+                var folderPath = "Images/BrandImages";
+                var fileNames = await _fileUploadService.UploadImageAsync(new List<IFormFile> { model.ImageFile }, folderPath);
+                dto.BrandImage = fileNames.FirstOrDefault();
+            }
 
-            try
+            // Validate DTO
+            var validationResult = await _validator.ValidateAsync(dto);
+            if (!validationResult.IsValid)
             {
-                if (ImageFile.Any())
-                {
-                    var folderPath = "Images/BrandImages";
-                    var fileNames = await _fileUploadService.UploadFilesAsync(ImageFile, folderPath);
-                    createBrandDto.BrandImage = fileNames.FirstOrDefault();
-                }
-                var command = new CreateBrandCommand(createBrandDto);
-                var brandId = await _mediator.Send(command);
+                foreach (var error in validationResult.Errors)
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
 
+                return View(model);
+            }
+
+            // Send CQRS Command
+            var command = new CreateBrandCommand(dto);
+            var result = await _mediator.Send(command);
+            if (result != Guid.Empty)
+            {
                 TempData["Success"] = "Brand created successfully!";
+
                 return RedirectToAction("Index");
             }
-            catch (InvalidOperationException ex)
-            {
-                ModelState.AddModelError("brandImg", ex.Message);
-                TempData["Error"] = "Invalid file format or size. Please try again.";
-                return View(data);
-            }
-            catch (ValidationException ex)
-            {
-                foreach (var error in ex.Errors)
-                    ModelState.AddModelError(string.Empty, error.ErrorMessage);
-
-                return View(data);
-            }
+            return View(model);
         }
-
-
-        public async Task<IActionResult> Details(Guid brandId)
+        public async Task<IActionResult> Edit(Guid id)
         {
-            if (brandId.Equals(null))
+            var brand = await _mediator.Send(new GetBrandForEditQuery(id));
+            if (brand == null)
             {
-                TempData["ErrorMessage"] = "Invalid Brand Id.";
-                return View("Error");
+                return NotFound();
             }
-            var brand = await _brandService.GetBrandByIdAsync(brandId);
+
+            BrandSaveVM brandVM = _mapper.Map<BrandSaveVM>(brand);
             return View(brand);
         }
 
-        public async Task<IActionResult> Edit(Guid brandId)
-        {
-            if (brandId.Equals(null))
-            {
-                TempData["ErrorMessage"] = "Invalid Brand Id.";
-                return View("Error");
-            }
-
-            var brand = await _brandService.GetBrandByIdAsync(brandId);
-
-            UpdateBrandViewModel brandViewModel = new UpdateBrandViewModel
-            {
-                BrandId = brandId,
-                BrandName = brand.BrandName,
-                BrandDescription = brand.BrandDescription,
-                BrandImage = brand.BrandImage,
-            };
-
-            return View(brandViewModel);
-        }
-
         [HttpPost]
-        public async Task<IActionResult> Edit(UpdateBrandViewModel data, IEnumerable<IFormFile> ImageFile)
+        public async Task<IActionResult> Edit(BrandSaveVM data, IEnumerable<IFormFile> ImageFile)
         {
             if (!ModelState.IsValid) return View(data);
 
@@ -187,7 +172,7 @@ namespace eCommerce.Web.Areas.Admin.Controllers
                 try
                 {
                     var folderPath = "Images/BrandImages";
-                    var fileNames = await _fileUploadService.UploadFilesAsync(ImageFile, folderPath);
+                    var fileNames = await _fileUploadService.UploadImageAsync(ImageFile, folderPath);
                     data.BrandImage = fileNames.FirstOrDefault();
                 }
                 catch (Exception)
@@ -208,29 +193,18 @@ namespace eCommerce.Web.Areas.Admin.Controllers
             return View(data);
 
         }
-
-        public async Task<JsonResult> Delete(Guid brandId)
+        [HttpDelete]
+        public async Task<JsonResult> Delete(Guid id)
         {
-            if (brandId == Guid.Empty)
+            if (id == Guid.Empty)
             {
                 return Json(new { success = false, message = "Invalid brand ID." });
             }
-            var brand = await _brandService.GetBrandByIdAsync(brandId);
-
-            if (brand == null)
-            {
-                return Json(new { success = false, message = "brand not found." });
-            }
-            try
-            {
-                await _brandService.DeleteBrandAsync(brand.BrandId);
+            var result = await _mediator.Send(new DeleteBrandCommand(id));
+            if (result)
                 return Json(new { success = true, message = "brand deleted successfully!" });
-            }
-            catch (Exception)
-            {
-                //_logger.LogError(ex, "Error occurred while deleting brand with ID: {BrandId}", id);
+            else
                 return Json(new { success = false, message = "An error occurred while deleting the brand. Please try again." });
-            }
         }
     }
 }

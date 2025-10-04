@@ -42,6 +42,8 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
 
     public virtual DbSet<Inventory> Inventories { get; set; }
 
+    public virtual DbSet<MeasurementUnit> MeasurementUnits { get; set; }
+
     public virtual DbSet<Notification> Notifications { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
@@ -57,6 +59,8 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
     public virtual DbSet<ProductCategory> ProductCategories { get; set; }
 
     public virtual DbSet<ProductCategoryFeature> ProductCategoryFeatures { get; set; }
+
+    public virtual DbSet<ProductCategoryProductFeature> ProductCategoryProductFeature { get; set; }
 
     public virtual DbSet<ProductConfiguration> ProductConfigurations { get; set; }
 
@@ -88,6 +92,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
 
     public virtual DbSet<Wishlist> Wishlists { get; set; }
 
+
     //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
     //        => optionsBuilder.UseSqlServer("Server=DESKTOP-O303CQ1\\SQLEXPRESS;Database=eCommerceDB;Integrated Security=True;TrustServerCertificate=True;");
@@ -95,7 +100,6 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
 
 
         modelBuilder.Entity<Address>(entity =>
@@ -121,8 +125,6 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
 
 
         });
-
-
 
         modelBuilder.Entity<AuditLog>(entity =>
         {
@@ -245,7 +247,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
 
         modelBuilder.Entity<FeatureCategory>(entity =>
         {
-            entity.ToTable("FeatureCategory");
+            entity.ToTable("FeatureCategory", "Product");            
 
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
@@ -423,7 +425,6 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasConstraintName("FK_Payment_Orders");
         });
 
-
         modelBuilder.Entity<Product>(entity =>
         {
             entity.HasKey(e => e.ProductId).HasName("PK__products__47027DF541B41370");
@@ -454,7 +455,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
 
             entity.HasOne(d => d.Brand)
                 .WithMany(p => p.Products)
-                .HasForeignKey(d => d.BrandId)                
+                .HasForeignKey(d => d.BrandId)
                 .HasConstraintName("FK_Products_Brands");
 
             entity.HasOne(p => p.CreatedByNavigation)
@@ -523,6 +524,12 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .IsUnique();
         });
 
+        modelBuilder.Entity<ProductCategoryProductFeature>(entity =>
+        {
+            entity.ToTable("ProductCategoryProductFeature", "Product");
+            entity.HasKey(e => new { e.ProductCategoryId, e.ProductFeatureId });
+        });
+
         modelBuilder.Entity<ProductConfiguration>(entity =>
         {
             entity.ToTable("ProductConfiguration", "Product");
@@ -533,7 +540,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasConstraintName("FK_ProductConfiguration_FeatureOption");
 
             entity.HasOne(d => d.ProductVarient).WithMany(p => p.ProductConfigurations)
-                .HasForeignKey(d => d.ProductVarientId)
+                .HasForeignKey(d => d.ProductVariantId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ProductConfiguration_ProductVarient");
         });
@@ -588,11 +595,11 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
 
         modelBuilder.Entity<ProductVariant>(entity =>
         {
-            entity.HasKey(e => e.ProductIvarientId).HasName("PK_ProductItems");
+            entity.HasKey(e => e.ProductVariantId).HasName("PK_ProductItems");
 
             entity.ToTable("ProductVariant", "Product");
 
-            entity.Property(e => e.ProductIvarientId)
+            entity.Property(e => e.ProductVariantId)
                 .ValueGeneratedNever()
                 .HasColumnName("ProductIVarientId");
             entity.Property(e => e.Price)
@@ -826,6 +833,14 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasForeignKey(d => d.ProductVariantId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Wishlist_Products");
+        });
+
+        modelBuilder.Entity<MeasurementUnit>(entity =>
+        {
+            entity.ToTable("MeasurementUnit", "Product");
+            modelBuilder.Entity<MeasurementUnit>()
+                .Property(u => u.MeasurementUnitId)
+                .ValueGeneratedOnAdd();
         });
 
         OnModelCreatingPartial(modelBuilder);

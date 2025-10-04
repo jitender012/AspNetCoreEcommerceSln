@@ -18,10 +18,10 @@ namespace eCommerce.Domain.RepositoryContracts
         /// The task result contains the Brand entity if found; otherwise, null.
         /// </returns>
         //Task<Brand?> GetBrandById(Guid id);
-        //Task<List<Brand>> GetAllBrands();
+        Task<List<Brand>> GetAllBrands();
         //Task<Guid> CreateAsync(Brand brand);
         //Task UpdateAsync(Brand brand);
-        //Task<bool> DeleteAsync(Guid brandId);
-
+        Task<bool> SoftDeleteAsync(Guid brandId);
+        Task<bool> ExistsByNameAsync(string brandName);
     }
 }

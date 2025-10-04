@@ -17,19 +17,14 @@ namespace eCommerce.Infrastructure.Repositories.Products
         }
 
         #region Common Methods
-        public async Task<int> InsertAsync(ProductFeature productFeature)
-        {
-            await _context.ProductFeatures.AddAsync(productFeature);
-            await _context.SaveChangesAsync();
-
-            return productFeature.ProductFeaturesId;
-        }
-
         public async Task<IEnumerable<ProductFeature>> FetchAllAsync()
         {
             try
             {
-                return await _context.ProductFeatures.ToListAsync();
+                return await _context.ProductFeatures
+                    .Include(x => x.FeatureCategory)
+                    .Include(x => x.MeasurementUnit)
+                    .ToListAsync();
             }
             catch (Exception)
             {
@@ -53,7 +48,7 @@ namespace eCommerce.Infrastructure.Repositories.Products
                 var productFeature = await _context.ProductFeatures
                     .Where(x => x.ProductFeaturesId == id)
                     .Include(x => x.FeatureCategory)
-                    .Include(x=>x.FeatureOptions)
+                    .Include(x => x.FeatureOptions)
                     .FirstOrDefaultAsync();
 
                 if (productFeature == null)
@@ -72,6 +67,16 @@ namespace eCommerce.Infrastructure.Repositories.Products
 
         }
 
+
+        public async Task<int> InsertAsync(ProductFeature productFeature)
+        {
+            await _context.ProductFeatures.AddAsync(productFeature);
+            await _context.SaveChangesAsync();
+
+            return productFeature.ProductFeaturesId;
+        }
+
+    
         public async Task<bool> ModifyAsync(ProductFeature productFeature)
         {
             try
@@ -203,7 +208,7 @@ namespace eCommerce.Infrastructure.Repositories.Products
             try
             {
                 return await _context.ProductFeatures
-                    .Where(x=>x.FeatureCategoryId == featureCategoryId)
+                    .Where(x => x.FeatureCategoryId == featureCategoryId)
                     .ToListAsync();
             }
             catch (Exception)
