@@ -11,8 +11,8 @@ namespace eCommerce.Application.Features.ProductCategoryFeatures.Handlers
 {
     public class DeleteCategoryHandler  : IRequestHandler<DeleteCategoryCommand, bool>
     {
-        private readonly ICategoryRepository _categoryRepository;
-        public DeleteCategoryHandler(ICategoryRepository categoryRepository)
+        private readonly IProductCategoryRepository _categoryRepository;
+        public DeleteCategoryHandler(IProductCategoryRepository categoryRepository)
         {
             _categoryRepository = categoryRepository;
         }

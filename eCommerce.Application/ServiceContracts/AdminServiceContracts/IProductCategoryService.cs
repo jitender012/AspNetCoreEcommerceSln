@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace eCommerce.Application.ServiceContracts.AdminServiceContracts
 {
-    public interface ICategoryService
+    public interface IProductCategoryService
     {
         /// <summary>
         /// 
@@ -19,7 +19,7 @@ namespace eCommerce.Application.ServiceContracts.AdminServiceContracts
         Task<List<CategoryDTO>> GetChildCategoriesAsync();
         Task<List<CategoryDTO>> GetAllCategoriesHierarchicalAsync();
         Task<CategoryDTO> GetCategoryByIdAsync(int id);
-        Task<List<CategoryDTO>> GetByFeatureCategoryIdAsync(int id);
+        //Task<List<CategoryDTO>> GetByFeatureCategoryIdAsync(int id);
 
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace eCommerce.Application.ServiceContracts.AdminServiceContracts
         Task<int> AddCategoryAsync(CategoryDTO data);
         Task<bool> UpdateCategoryAsync(CategoryDTO data);
         Task<bool> DeleteCategoryAsync(int id);
-        Task<List<CategoryDTO>> GetUnlinkedProductCategories(int featureCategoryId);
+        //Task<List<CategoryDTO>> GetUnlinkedProductCategories(int featureCategoryId);
 
     }
 }

@@ -9,7 +9,8 @@ namespace eCommerce.Domain.RepositoryContracts.Products
 {
     public interface IProductConfigurationRepository
     {
-
+        Task<bool> LinkFeatureToCategoryAsync(List<ProductCategoryProductFeature> productCategoryProductFeatures);
+        Task<bool> UnlinkFeatureFromCategoryAsync(List<ProductCategoryProductFeature> productCategoryProductFeatures);        
 
     }
 }

@@ -1,0 +1,382 @@
+﻿@{
+    ViewData["Title"] = "Category Details - " + Model.CategoryName;
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+@model ProductCategoryDetailsDto
+
+<div class="container-fluid py-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div class="mb-2">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="/admin/product-categories">Product Categories</a></li>
+                            <li class="breadcrumb-item active">@Model.CategoryName</li>
+                        </ol>
+                    </nav>
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-th-large me-2"></i>@Model.CategoryName
+                        <input type="hidden" value="@Model.ProductCategoryId" id="categoryId" />
+                    </h1>
+                    @if (Model.IsActive == true)
+                    {
+                        <span class="badge bg-success">
+                            <i class="fas fa-check-circle me-1"></i>Active
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">
+                            <i class="fas fa-pause-circle me-1"></i>Inactive
+                        </span>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.ParentCategoryName))
+                    {
+                        <span class="badge bg-info ms-1">
+                            <i class="fas fa-arrow-up me-1"></i>Sub-category of @Model.ParentCategoryName
+                        </span>
+                    }
+                </div>
+                <div class="d-flex gap-2 mb-2">
+                    <a href="/admin/product-categories" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to List
+                    </a>
+                    <a href="/admin/product-categories/@Model.ProductCategoryId/edit" class="btn btn-primary">
+                        <i class="fas fa-edit me-2"></i>Edit Category
+                    </a>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="/admin/product-categories/create?parentId=@Model.ProductCategoryId">
+                                    <i class="fas fa-plus me-2"></i>Add Sub-Category
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/admin/products?categoryId=@Model.ProductCategoryId">
+                                    <i class="fas fa-box me-2"></i>View Products
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="#" onclick="deleteCategory(); return false;">
+                                    <i class="fas fa-trash me-2"></i>Delete Category
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <!-- Basic Information Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Basic Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            @if (!string.IsNullOrEmpty(Model.CategoryImage))
+                            {
+                                <img src="@Model.CategoryImage" alt="@Model.CategoryName"
+                                     class="img-fluid rounded shadow-sm"
+                                     style="max-height: 150px; width: 100%; object-fit: cover;">
+                            }
+                            else
+                            {
+                                <div class="bg-light rounded d-flex align-items-center justify-content-center"
+                                     style="height: 150px;">
+                                    <i class="fas fa-th-large fa-3x text-muted"></i>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="text-muted small mb-1">Category ID</label>
+                                    <p class="mb-0 fw-semibold">@Model.ProductCategoryId</p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="text-muted small mb-1">Category Name</label>
+                                    <p class="mb-0 fw-semibold">@Model.CategoryName</p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="text-muted small mb-1">Parent Category</label>
+                                    <p class="mb-0">
+                                        @if (!string.IsNullOrEmpty(Model.ParentCategoryName))
+                                        {
+                                            <a href="/admin/product-categories/@Model.ParentCategoryId">
+                                                @Model.ParentCategoryName
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Root Category</span>
+                                        }
+                                    </p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="text-muted small mb-1">Status</label>
+                                    <p class="mb-0">
+                                        @if (Model.IsActive == true)
+                                        {
+                                            <span class="badge bg-success">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Inactive</span>
+                                        }
+                                    </p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="text-muted small mb-1">Created On</label>
+                                    <p class="mb-0">@Model.CreatedOn.ToString("MMMM dd, yyyy hh:mm tt")</p>
+                                </div>
+                                @if (Model.UpdatedOn.HasValue)
+                                {
+                                    <div class="col-md-6 mb-3">
+                                        <label class="text-muted small mb-1">Last Updated</label>
+                                        <p class="mb-0">@Model.UpdatedOn.Value.ToString("MMMM dd, yyyy hh:mm tt")</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Management Card -->
+            <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <div>
+                    <strong>Note:</strong> Modifying features in this product category will also affect all its descendant categories.
+                    You can still make individual changes in child categories if needed.
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-tags me-2"></i>Feature Management
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Manage which features are available for products in this category.
+                        Features are organized by categories for better organization.
+                    </p>
+
+                    @if (Model.FeatureCategories != null && Model.FeatureCategories.Any())
+                    {
+                        <!-- Search Bar -->
+                        <div class="mb-4">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text"
+                                       class="form-control"
+                                       id="featureSearchInput"
+                                       placeholder="Search by feature name or category name...">
+                                <button class="btn btn-outline-secondary"
+                                        type="button"
+                                        id="clearSearchBtn"
+                                        style="display: none;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted d-block mt-2" id="searchResults"></small>
+                        </div>
+
+                        <div class="accordion" id="featureCategoriesAccordion">
+                            @foreach (var featureCategory in Model.FeatureCategories)
+                            {
+                                var collapseId = "collapse_" + featureCategory.FeatureCategoryId;
+                                var headingId = "heading_" + featureCategory.FeatureCategoryId;
+                                var linkedCount = featureCategory.Features.Count(f => f.IsLinked);
+                                var totalCount = featureCategory.Features.Count;
+                                <div class="accordion-item mb-3 border rounded"
+                                     data-category-name="@featureCategory.FeatureCategoryName.ToLower()">
+                                    <h2 class="accordion-header" id="@headingId">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#@collapseId">
+                                            <div class="d-flex justify-content-between align-items-center w-100 me-3">
+                                                <div>
+                                                    <i class="fas fa-folder me-2 text-primary"></i>
+                                                    <strong>@featureCategory.FeatureCategoryName</strong>
+                                                </div>
+                                                <div>
+                                                    <span class="badge bg-success me-2">@linkedCount Linked</span>
+                                                    <span class="badge bg-secondary">@(totalCount - linkedCount) Available</span>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </h2>
+                                    <div id="@collapseId" class="accordion-collapse collapse"
+                                         data-bs-parent="#featureCategoriesAccordion">
+                                        <div class="accordion-body">
+                                            <div class="row" id="accordionData_@featureCategory.FeatureCategoryId">
+                                                @await Html.PartialAsync("_FeatureManagementPartial", featureCategory)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+                            <h6 class="text-muted">No feature categories available</h6>
+                            <p class="text-muted">Create feature categories first to manage features for this product category.</p>
+                            <a href="/admin/feature-categories/create" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Create Feature Category
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Quick Stats Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Statistics
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Sub-Categories:</span>
+                            <strong>@* @Model.DescendantCategories.Count *@ 3</strong>
+                        </div>
+                        @*   <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-primary"
+                                 style="width: @(Math.Min(Model.DescendantCategories.Count * 10, 100))%"></div>
+                        </div> *@
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Linked Features:</span>
+                            <strong>
+                                @* @(Model.FeatureCategories?.Sum(fc => fc.Features.Count(f => f.IsLinked)) ?? 0) *@
+                            </strong>
+                        </div>
+                        @*  <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success"
+                                 style="width: @{
+                                     var totalFeatures = Model.FeatureCategories?.Sum(fc => fc.Features.Count) ?? 1;
+                                     var linkedFeatures = Model.FeatureCategories?.Sum(fc => fc.Features.Count(f => f.IsLinked)) ?? 0;
+                                     var percentage = totalFeatures > 0 ? (linkedFeatures * 100 / totalFeatures) : 0;
+                                                                        }
+"></div>
+                        </div> *@
+                    </div>
+                    <div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Feature Categories:</span>
+                            @* <strong>@(Model.FeatureCategories?.Count ?? 0)</strong> *@
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="/admin/product-categories/@Model.ProductCategoryId/edit"
+                           class="btn btn-primary">
+                            <i class="fas fa-edit me-2"></i>Edit Category
+                        </a>
+                        <a href="/admin/product-categories/create?parentId=@Model.ProductCategoryId"
+                           class="btn btn-outline-primary">
+                            <i class="fas fa-plus me-2"></i>Add Sub-Category
+                        </a>
+                        <a href="/admin/products?categoryId=@Model.ProductCategoryId"
+                           class="btn btn-outline-info">
+                            <i class="fas fa-box me-2"></i>View Products
+                        </a>
+                        <hr class="my-2">
+                        <button type="button" class="btn btn-outline-danger" onclick="deleteCategory()">
+                            <i class="fas fa-trash me-2"></i>Delete Category
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help Card -->
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-question-circle me-2"></i>Feature Management
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="small mb-2"><strong>How it works:</strong></p>
+                    <ul class="small mb-0">
+                        <li class="mb-2">Features are grouped by categories (Display, Storage, etc.)</li>
+                        <li class="mb-2">Click the <i class="fas fa-link text-success"></i> button to link a feature</li>
+                        <li class="mb-2">Click the <i class="fas fa-unlink text-danger"></i> button to unlink a feature</li>
+                        <li class="mb-0">Linked features will be available when creating products in this category</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+    .category-tree {
+        border-left: 2px solid #e9ecef;
+        padding-left: 10px;
+    }
+
+    .tree-item {
+        transition: all 0.2s ease;
+    }
+
+        .tree-item:hover {
+            transform: translateX(5px);
+        }
+
+    .list-group-item {
+        transition: background-color 0.2s ease;
+    }
+
+        .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
+
+    .accordion-button:not(.collapsed) {
+        background-color: #e7f3ff;
+        color: #0d6efd;
+    }
+</style>
+
+<script src="~/js/adminjs/product-category-details.js"></script>

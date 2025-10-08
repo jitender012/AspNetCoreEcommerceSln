@@ -1,4 +1,6 @@
-﻿namespace eCommerce.Web.Areas.Admin.Models.Category
+﻿using eCommerce.Application.DTO;
+
+namespace eCommerce.Web.Areas.Admin.Models.Category
 {
     public class CategoryViewModel
     {
@@ -11,6 +13,7 @@
 
         public IEnumerable<IFormFile>? ImageFile { get; set; }
 
+        public List<CategoryDTO> categoryDTOs { get; set; } = new List<CategoryDTO>();
     }
     public class CategoryDropDownModel
     {

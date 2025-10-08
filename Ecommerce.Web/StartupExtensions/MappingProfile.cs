@@ -13,6 +13,7 @@ using eCommerce.Domain.Entities;
 using eCommerce.Web.Areas.Admin.Models.Brand;
 using eCommerce.Web.Areas.Admin.Models.FeatureCategory;
 using eCommerce.Web.Areas.Admin.Models.Product;
+using eCommerce.Web.Areas.Admin.Models.ProductCategory;
 using eCommerce.Web.Areas.Admin.Models.ProductFeature;
 using eCommerce.Web.Areas.Vendor.Models;
 using eCommerce.Web.Models;
@@ -38,7 +39,7 @@ namespace eCommerce.Web.StartupExtensions
             CreateMap<Product, ProductDto>();
 
             #region Common Models
-            
+
             CreateMap(typeof(IdNameDto<>), typeof(IdNameVm<>)).ReverseMap();
 
             CreateMap<FeatureCategoryDTO, FeatureCategoryViewModel>();
@@ -120,19 +121,25 @@ namespace eCommerce.Web.StartupExtensions
             CreateMap<MeasurementUnit, MeasurementUnitDTO>();
 
             CreateMap<FeatureCategory, FeatureCategoryListDTO>();
-            CreateMap<FeatureCategory, FeatureCategoryDetailsDTO>()
-                .ForMember(dest => dest.ProductFeatures,
-                    opt => opt.MapFrom(src => src.ProductFeatures
-                    .Select(f => new IdNameDto<int> { Id = f.ProductFeaturesId, Name = f.Name }).ToList()
-                    ))
-                .ForMember(dest => dest.ProductCategories,
-                    opt => opt.MapFrom(src => src.ProductCategoryFeatures
-                    .Select(x => new IdNameDto<int>
-                        {
-                            Id = x.ProductCategory.ProductCategoryId,
-                            Name = x.ProductCategory.CategoryName
-                        })));
+            //CreateMap<FeatureCategory, FeatureCategoryDetailsDTO>()
+            //    .ForMember(dest => dest.ProductFeatures,
+            //        opt => opt.MapFrom(src => src.ProductFeatures
+            //        .Select(f => new IdNameDto<int> { Id = f.ProductFeaturesId, Name = f.Name }).ToList()
+            //        ))
+            //    .ForMember(dest => dest.ProductCategories,
+            //        opt => opt.MapFrom(src => src.ProductCategoryFeatures
+            //        .Select(x => new IdNameDto<int>
+            //            {
+            //                Id = x.ProductCategory.ProductCategoryId,
+            //                Name = x.ProductCategory.CategoryName
+            //            })));
             CreateMap<FeatureCategorySaveDto, FeatureCategory>();
+
+            CreateMap<ProductCategory, ProductCategoryListDto>()
+                .ForMember(dest => dest.ParentCategoryName,
+                           opt => opt.MapFrom(src => src.ParentCategory != null
+                                   ? src.ParentCategory.CategoryName
+                                   : null));           
 
 
             //----DTO to VM and VM to DTO----
@@ -151,6 +158,7 @@ namespace eCommerce.Web.StartupExtensions
             CreateMap<FeatureCategoryDetailsDTO, FeatureCategoryDetailsVm>();
             CreateMap<FeatureCategorySaveVm, FeatureCategorySaveDto>();
 
+            CreateMap<ProductCategoryListDto, ProductCategoryListVm>();
             #endregion
 
             #region For Seller Models

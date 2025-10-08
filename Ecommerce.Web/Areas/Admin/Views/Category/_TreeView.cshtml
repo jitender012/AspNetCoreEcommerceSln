@@ -1,0 +1,16 @@
+﻿@* @using eCommerce.Application.Features.ProductCategoryFeatures.Dtos
+@model List<CategoryDto>
+
+@if (Model != null && Model.Any())
+{
+    <ul>
+        @foreach (var category in Model)
+        {
+            <li>
+                <input type="checkbox" />
+                @category.CategoryName
+                @await Html.PartialAsync("_TreeView", category.Children)
+            </li>
+        }
+    </ul>
+} *@

@@ -1,10 +1,14 @@
-﻿using eCommerce.Application.DTO;
+﻿using AutoMapper;
+using eCommerce.Application.DTO;
+using eCommerce.Application.Features.FeatureCategoryFeatures.Dtos;
+using eCommerce.Application.Features.FeatureCategoryFeatures.Queries;
 using eCommerce.Application.Features.ProductCategoryFeatures.Commands;
 using eCommerce.Application.Features.ProductCategoryFeatures.Dtos;
 using eCommerce.Application.Features.ProductCategoryFeatures.Queries;
 using eCommerce.Application.ServiceContracts.AdminServiceContracts;
 using eCommerce.Application.ServiceContracts.UtilityServiceContracts;
 using eCommerce.Web.Areas.Admin.Models.Category;
+using eCommerce.Web.Areas.Admin.Models.ProductCategory;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,30 +22,53 @@ namespace eCommerce.Web.Areas.Admin.Controllers
     public class CategoryController : Controller
     {
 
-        private readonly ICategoryService _categoryService;
+        private readonly IProductCategoryService _categoryService;
         private readonly IFileUploadService _fileUploadService;
         private readonly IMediator _mediator;
-        public CategoryController(ICategoryService categoryService, IFileUploadService fileUploadService, IMediator mediator)
+        private readonly IMapper _mapper;
+        public CategoryController(IProductCategoryService categoryService, IFileUploadService fileUploadService, IMediator mediator, IMapper mapper)
         {
             _categoryService = categoryService;
             _fileUploadService = fileUploadService;
             _mediator = mediator;
+            _mapper = mapper;
         }
 
         // GET: Categories
         public async Task<IActionResult> Index()
         {
 
-            var categoriesDto = await _mediator.Send(new GetAllCategories());                        
+            var productCategoryListDto = await _mediator.Send(new GetProductCategoryListQuery());
 
-            var categoryViewModels = categoriesDto.Select(x => new CategoryViewModel
-            {
-                CategoryId = x.ProductCategoryId,
-                CategoryName = x.CategoryName,
-                CategoryImage = x.CategoryImage,                
-                ParentCategoryName = x.ParentCategoryName
-            });
-            return View(categoryViewModels);
+            var productCategoryListVm = _mapper.Map<List<ProductCategoryListVm>>(productCategoryListDto);
+            return View(productCategoryListVm);
+        }
+
+
+        // GET: Category/Details/5
+        [HttpGet]
+        public async Task<ActionResult> Details(int categoryId)
+        {
+            var model = await _mediator.Send(new GetProductCategoryDetailsQuery(categoryId));            
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> LoadFeatureManagement(int categoryId, int featureCategoryId)
+        {
+            var model = await _mediator.Send(new GetProductCategoryDetailsQuery(categoryId));
+
+             FeatureCategoriesWithLinkStatusDto? featureCategoriesWithLink = model.FeatureCategories
+                .Where(fc => fc.FeatureCategoryId == featureCategoryId).FirstOrDefault();
+
+            return PartialView("_FeatureManagementPartial", featureCategoriesWithLink);
+        }
+
+
+        public async Task<JsonResult> GetAllFeaturesWithCategory(int id)
+        {
+            var featureCategoryListDto = await _mediator.Send(new GetFeatureCategoriesWithLinkStatusQuery(id));
+            return Json(new { data = featureCategoryListDto });
         }
 
         // GET: Category/Create
@@ -52,8 +79,11 @@ namespace eCommerce.Web.Areas.Admin.Controllers
             var dropdownItems = new List<SelectListItem>();
             PopulateMainCategoryDropdown(categories, dropdownItems);
             ViewBag.Categories = dropdownItems;
-
-            return View();
+            CategoryViewModel categoryViewModel = new CategoryViewModel()
+            {
+                categoryDTOs = categories
+            };
+            return View(categoryViewModel);
         }
 
         // POST: Category/Create        
@@ -116,23 +146,6 @@ namespace eCommerce.Web.Areas.Admin.Controllers
             }
         }
 
-
-        // GET: Category/Details/5
-        public async Task<ActionResult> Details(int id)
-        {
-            if (id < 0)
-            {
-                TempData["ErrorMessage"] = "Invalid category Id.";
-                return View("Error");
-            }
-            var category = await _categoryService.GetCategoryByIdAsync(id);
-            if (category == null)
-            {
-                TempData["ErrorMessage"] = "Category not found.";
-                return View("Error");
-            }
-            return View(category);
-        }
 
         // GET: Category/Edit/5
         public async Task<ActionResult> Edit(int id)

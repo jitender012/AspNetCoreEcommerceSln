@@ -7,9 +7,9 @@ namespace eCommerce.Application.Features.ProductCategoryFeatures.Handlers
 {
     public class UpdateCategoryHandler : IRequestHandler<UpdateCategoryCommand, bool>
     {
-        private readonly ICategoryRepository _categoryRepository;
+        private readonly IProductCategoryRepository _categoryRepository;
         private readonly IUserContextService _userContextService;
-        public UpdateCategoryHandler(ICategoryRepository categoryRepository, IUserContextService userContextService)
+        public UpdateCategoryHandler(IProductCategoryRepository categoryRepository, IUserContextService userContextService)
         {
             _categoryRepository = categoryRepository;
             _userContextService = userContextService;

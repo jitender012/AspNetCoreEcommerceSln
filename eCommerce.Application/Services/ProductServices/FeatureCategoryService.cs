@@ -34,28 +34,28 @@ namespace eCommerce.Application.Services.ProductServices
             _logger.LogInformation("");
             return featureCategoryDTOs;
         }
-        public async Task<List<FeatureCategoryDTO>> GetByProductCategoryIdAsync(int id)
-        {
-            IEnumerable<FeatureCategory> featureCategories = await _featureCategoryRepository.FetchByProductCategoryIdAsync(id);
-            List<FeatureCategoryDTO> featureCategoryDTOs = featureCategories.Select(temp => new FeatureCategoryDTO
-            {
-                Name = temp.Name,
-                FeatureCategoryId = temp.FeatureCategoryId,
-                CreatedBy = temp.CreatedBy,
-                IsMandatory = temp.IsMandatory,
-                ProductFeatures = temp.ProductFeatures
-                                        .Select(x => new ProductFeatureDTO
-                                        {
-                                            Name = x.Name,
-                                            CreatedBy = x.CreatedBy,
-                                            ProductFeatureId = x.ProductFeaturesId,
-                                            IsManadatory = x.IsManadatory,
-                                        }).ToList()
-            }).ToList();
+        //public async Task<List<FeatureCategoryDTO>> GetByProductCategoryIdAsync(int id)
+        //{
+        //    IEnumerable<FeatureCategory> featureCategories = await _featureCategoryRepository.FetchByProductCategoryIdAsync(id);
+        //    List<FeatureCategoryDTO> featureCategoryDTOs = featureCategories.Select(temp => new FeatureCategoryDTO
+        //    {
+        //        Name = temp.Name,
+        //        FeatureCategoryId = temp.FeatureCategoryId,
+        //        CreatedBy = temp.CreatedBy,
+        //        IsMandatory = temp.IsMandatory,
+        //        ProductFeatures = temp.ProductFeatures
+        //                                .Select(x => new ProductFeatureDTO
+        //                                {
+        //                                    Name = x.Name,
+        //                                    CreatedBy = x.CreatedBy,
+        //                                    ProductFeatureId = x.ProductFeaturesId,
+        //                                    IsManadatory = x.IsManadatory,
+        //                                }).ToList()
+        //    }).ToList();
 
-            _logger.LogInformation("");
-            return featureCategoryDTOs;
-        }
+        //    _logger.LogInformation("");
+        //    return featureCategoryDTOs;
+        //}
         public async Task<FeatureCategoryDTO> GetByIdAsync(int id)
         {
             var featureCategory = await _featureCategoryRepository.FindByIdAsync(id);
@@ -139,13 +139,13 @@ namespace eCommerce.Application.Services.ProductServices
             
             return await _featureCategoryRepository.LinkFeatCatToProdCat(featureCategoryId, productCategoryId); 
         }
-        public async Task<bool> UnlinkFeatCatProdCat(int productCategoryId, int featureCategoryId)
-        {
-            if (productCategoryId <= 0 && featureCategoryId <= 0) throw new ArgumentNullException(nameof(productCategoryId), nameof(featureCategoryId));
+        //public async Task<bool> UnlinkFeatCatProdCat(int productCategoryId, int featureCategoryId)
+        //{
+        //    if (productCategoryId <= 0 && featureCategoryId <= 0) throw new ArgumentNullException(nameof(productCategoryId), nameof(featureCategoryId));
 
-            await _featureCategoryRepository.UnlinkCategoryFeature(productCategoryId, featureCategoryId);
-            return true;
-        }
+        //    await _featureCategoryRepository.UnlinkCategoryFeature(productCategoryId, featureCategoryId);
+        //    return true;
+        //}
 
       
         public async Task<bool> DeleteAsync(int id)

@@ -20,11 +20,11 @@ namespace eCommerce.Web.Areas.Admin.Controllers
     public class FeatureCategoryController : Controller
     {
         private readonly IFeatureCategoryService _featureCategoryService;
-        private readonly ICategoryService _categoryService;
+        private readonly IProductCategoryService _categoryService;
         private readonly IProductFeatureService _featureService;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
-        public FeatureCategoryController(IFeatureCategoryService featureCategoryService, ICategoryService categoryService, IProductFeatureService featureService, IMapper mapper, IMediator mediator)
+        public FeatureCategoryController(IFeatureCategoryService featureCategoryService, IProductCategoryService categoryService, IProductFeatureService featureService, IMapper mapper, IMediator mediator)
         {
             _featureCategoryService = featureCategoryService;
             _categoryService = categoryService;
@@ -76,7 +76,7 @@ namespace eCommerce.Web.Areas.Admin.Controllers
                 return NotFound();
 
             var featureCategoryVM = _mapper.Map<FeatureCategoryViewModel>(featureCategoryDTO);
-            await PopulateProductCategoryDropdown();
+            //await PopulateProductCategoryDropdown();
             return View(featureCategoryVM);
         }
 
@@ -85,7 +85,7 @@ namespace eCommerce.Web.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                await PopulateProductCategoryDropdown();
+                //await PopulateProductCategoryDropdown();
                 return View(data);
             }
 
@@ -95,7 +95,7 @@ namespace eCommerce.Web.Areas.Admin.Controllers
             if (!result)
             {
                 ModelState.AddModelError("", "Failed to update feature category.");
-                await PopulateProductCategoryDropdown();
+                //await PopulateProductCategoryDropdown();
                 return View(data);
             }
 
@@ -136,33 +136,33 @@ namespace eCommerce.Web.Areas.Admin.Controllers
             return Json(new { success = true, message = "Linked" });
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UnlinkCategoryFeature(int CategoryId, int FeatureCategoryId)
-        {
-            if (CategoryId <= 0 || FeatureCategoryId <= 0)
-            {
-                return Json(new { success = false, message = "Invalid id" });
-            }
-            bool isSuccess = await _featureCategoryService.UnlinkFeatCatProdCat(CategoryId, FeatureCategoryId);
-            if (!isSuccess)
-            {
-                return Json(new { success = false, message = "Internal error." });
-            }
-            return Json(new { success = true, message = "Successfully removed." });
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> UnlinkCategoryFeature(int CategoryId, int FeatureCategoryId)
+        //{
+        //    if (CategoryId <= 0 || FeatureCategoryId <= 0)
+        //    {
+        //        return Json(new { success = false, message = "Invalid id" });
+        //    }
+        //    bool isSuccess = await _featureCategoryService.UnlinkFeatCatProdCat(CategoryId, FeatureCategoryId);
+        //    if (!isSuccess)
+        //    {
+        //        return Json(new { success = false, message = "Internal error." });
+        //    }
+        //    return Json(new { success = true, message = "Successfully removed." });
+        //}
 
-        private async Task PopulateProductCategoryDropdown(int featureCategoryId = 0)
-        {
-            var productCategories = featureCategoryId > 0 ? await _categoryService.GetAllAsync() : await _categoryService.GetUnlinkedProductCategories(featureCategoryId);
+        //private async Task PopulateProductCategoryDropdown(int featureCategoryId = 0)
+        //{
+        //    var productCategories = featureCategoryId > 0 ? await _categoryService.GetAllAsync() : await _categoryService.GetUnlinkedProductCategories(featureCategoryId);
 
-            var dropdownItems = productCategories.Select(x => new SelectListItem
-            {
-                Value = x.CategoryId.ToString(),
-                Text = x.CategoryName
-            }).ToList();
+        //    var dropdownItems = productCategories.Select(x => new SelectListItem
+        //    {
+        //        Value = x.CategoryId.ToString(),
+        //        Text = x.CategoryName
+        //    }).ToList();
 
-            ViewBag.ProductCategories = dropdownItems;
-        }
+        //    ViewBag.ProductCategories = dropdownItems;
+        //}
 
         public async Task<IActionResult> GetFeatureList(int id)
         {
@@ -170,10 +170,10 @@ namespace eCommerce.Web.Areas.Admin.Controllers
             return PartialView("_FeatureListPartial", features);
         }
 
-        public async Task<IActionResult> GetProductCategoryList(int id)
-        {
-            var categories = await _categoryService.GetByFeatureCategoryIdAsync(id);
-            return PartialView("_ProductCategoryList", categories);
-        }
+        //public async Task<IActionResult> GetProductCategoryList(int id)
+        //{
+        //    var categories = await _categoryService.GetByFeatureCategoryIdAsync(id);
+        //    return PartialView("_ProductCategoryList", categories);
+        //}
     }
 }

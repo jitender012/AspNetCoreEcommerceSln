@@ -27,9 +27,7 @@ public partial class ProductCategory
 
     public virtual ICollection<ProductCategory> InverseParentCategory { get; set; } = new List<ProductCategory>();
 
-    public virtual ProductCategory? ParentCategory { get; set; }
-
-    public virtual ICollection<ProductCategoryFeature> ProductCategoryFeatures { get; set; } = new List<ProductCategoryFeature>();
+    public virtual ProductCategory? ParentCategory { get; set; }    
 
     public virtual ICollection<ProductCategoryProductFeature> ProductCategoryProductFeatures { get; set; } = new List<ProductCategoryProductFeature>();
 

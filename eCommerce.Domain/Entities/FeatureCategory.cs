@@ -15,12 +15,7 @@ public partial class FeatureCategory
     public int? DisplayOrder { get; set; }
 
     public string CreatedBy { get; set; } = null!;
-
-    /// <summary>
-    /// Links the product category to feature categories (many to many).
-    /// </summary>
-
-    public virtual ICollection<ProductCategoryFeature> ProductCategoryFeatures { get; set; } = new List<ProductCategoryFeature>();
+            
 
     /// <summary>
     /// Gets or sets the collection of features associated with the product category.

@@ -8,9 +8,9 @@ namespace eCommerce.Application.Features.ProductCategoryFeatures.Handlers
 {
     public class CreateCategoryHandler : IRequestHandler<CreateCategoryCommand, int>
     {
-        private readonly ICategoryRepository _categoryRepository;
+        private readonly IProductCategoryRepository _categoryRepository;
         private readonly IUserContextService _userContextService;
-        public CreateCategoryHandler(ICategoryRepository categoryRepository, IUserContextService userContextService)
+        public CreateCategoryHandler(IProductCategoryRepository categoryRepository, IUserContextService userContextService)
         {
             _categoryRepository = categoryRepository;
             _userContextService = userContextService;

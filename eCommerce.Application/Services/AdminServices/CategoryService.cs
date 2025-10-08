@@ -6,11 +6,11 @@ using eCommerce.Domain.RepositoryContracts;
 
 namespace eCommerce.Application.Services.AdminServices
 {
-    public class CategoryService : ICategoryService
+    public class CategoryService : IProductCategoryService
     {
-        private readonly ICategoryRepository _categoryRepository;
+        private readonly IProductCategoryRepository _categoryRepository;
         private readonly IUserContextService _userContext;
-        public CategoryService(ICategoryRepository categoryRepository, IUserContextService userContextService)
+        public CategoryService(IProductCategoryRepository categoryRepository, IUserContextService userContextService)
         {
             _categoryRepository = categoryRepository;
             _userContext = userContextService;
@@ -121,19 +121,19 @@ namespace eCommerce.Application.Services.AdminServices
             return catDTO;
         }
 
-        public async Task<List<CategoryDTO>> GetByFeatureCategoryIdAsync(int featureCategory)
-        {
-            var categories = await _categoryRepository.FetchByFeaureCategoryIdAsync(featureCategory);
+        //public async Task<List<CategoryDTO>> GetByFeatureCategoryIdAsync(int featureCategory)
+        //{
+        //    var categories = await _categoryRepository.FetchByFeaureCategoryIdAsync(featureCategory);
 
-            var catDTO = categories.Select(x => new CategoryDTO
-            {
-                CategoryId = x.ProductCategoryId,
-                CategoryImage = x.CategoryImage,
-                CategoryName = x.CategoryName,
-                ParentCategoryId = x.ParentCategoryId
-            }).ToList();
-            return catDTO;
-        }
+        //    var catDTO = categories.Select(x => new CategoryDTO
+        //    {
+        //        CategoryId = x.ProductCategoryId,
+        //        CategoryImage = x.CategoryImage,
+        //        CategoryName = x.CategoryName,
+        //        ParentCategoryId = x.ParentCategoryId
+        //    }).ToList();
+        //    return catDTO;
+        //}
         public async Task<List<CategoryDTO>> GetSubCategoriesAsync()
         {
             var categories = await _categoryRepository.GetSubCategories();
@@ -179,12 +179,12 @@ namespace eCommerce.Application.Services.AdminServices
             return categoryDTO;
         }
 
-        public async Task<List<CategoryDTO>> GetUnlinkedProductCategories(int featureCategoryId)
-        {
-            var categories = await _categoryRepository.FetchUnlinkedProductCategories(featureCategoryId);
-            var categoriesDTO = CategoryDTO.FromCategoryList(categories);
+        //public async Task<List<CategoryDTO>> GetUnlinkedProductCategories(int featureCategoryId)
+        //{
+        //    var categories = await _categoryRepository.FetchUnlinkedProductCategories(featureCategoryId);
+        //    var categoriesDTO = CategoryDTO.FromCategoryList(categories);
 
-            return categoriesDTO;
-        }
+        //    return categoriesDTO;
+        //}
     }
 }

@@ -7,15 +7,10 @@
 
     <link href="~/lib/datatables.net-bs5/datatables.bootstrap5.min.css" rel="stylesheet" />
     <link href="~/css/app.css" rel="stylesheet" />
-     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> 
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    @* <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-thin-straight/css/uicons-thin-straight.css'> *@
-    @* <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet"> *@
-    
-
-
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Ecommerce.Web.styles.css" asp-append-version="true" />
 </head>
@@ -34,105 +29,159 @@
                     <li class="sidebar-header">
                         Pages
                     </li>
-                    <li class="sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString()  == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">
+                    <li class="sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">
                         <a class="sidebar-link" href="~/Admin/Home/Index">
-                            <i class="align-middle" data-feather="home"></i> <span class="align-middle">Home</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Brand" ? "active" : "")">
-                        <a class="sidebar-link" href="~/Admin/Brand/Index">
-                            <i class="align-middle " data-feather="book"></i> <span class="align-middle">Brands</span>
+                            <i class="align-middle" data-feather="home"></i> <span class="align-middle">Dashboard</span>
                         </a>
                     </li>
 
-                    <li class="sidebar-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Category" ? "active" : "")">
-                        <a class="sidebar-link " href="~/Admin/Category/Index">
-                            <i class="align-middle" data-feather="check-square"></i><span class="align-middle">Categories</span>
-                        </a>
-                    </li>
+                    <li class=" sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "FeatureCategory" ? "active" : "")">
 
-                    <li class=" sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString()  == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "FeatureCategory" ? "active" : "")">
-                      
-                        <a data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="sidebar-link " href="#adminLeftNavCollapse1" role="button">
-                            <i class="align-middle" data-feather="settings"></i> <span class="align-middle ">Configuration </span>
+                        <a data-bs-toggle="collapse" data-bs-target="#productManagementCollapse" aria-expanded="false" aria-controls="productManagementCollapse" class="sidebar-link " href="#adminLeftNavCollapse1" role="button">
+                            <i class="align-middle" data-feather="settings"></i> <span class="align-middle ">Product Management </span>
                         </a>
-                        <div id="collapseOne" class="accordion-collapse collapse " data-bs-parent="#accordionExample">                       
-                            <div style="display: grid;justify-content: center;">                                                                                          
+                        <div id="productManagementCollapse" class="accordion-collapse collapse " data-bs-parent="#accordionExample">
+                            <div style="display: grid;justify-content: center;">
+                                <a class="sidebar-link" href="~/Admin/Brand/Index">
+                                    <i class="align-middle " data-feather="book"></i> <span class="align-middle">Brands</span>
+                                </a>
+                                <a class="sidebar-link " href="~/Admin/Category/Index">
+                                    <i class="align-middle" data-feather="check-square"></i><span class="align-middle">Product Categories</span>
+                                </a>
                                 <a class="sidebar-link " href="~/Admin/FeatureCategory/Index">
-                                    <span class="align-middle">Feature Category</span>
+                                    <span class="align-middle">Feature Categoies</span>
                                 </a>
                                 <a class="sidebar-link " href="~/Admin/ProductFeature/Index">
                                     <span class="align-middle">Product Features</span>
                                 </a>
+                                <a class="sidebar-link " href="~/Admin/ProductFeature/Index">
+                                    <span class="align-middle">Products</span>
+                                </a>
+                                <a class="sidebar-link " href="~/Admin/ProductFeature/Index">
+                                    <span class="align-middle">Product Gallery</span>
+                                </a>
+                                <a class="sidebar-link " href="~/Admin/ProductFeature/Index">
+                                    <span class="align-middle">Product Approvals</span>
+                                </a>
                             </div>
-                           
+
+                        </div>
+                    </li>
+                    <li class=" sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "UserManagement" ? "active" : "")">
+
+                        <a data-bs-toggle="collapse" data-bs-target="#userManagementCollapse" aria-expanded="false" aria-controls="userManagementCollapse" class="sidebar-link " href="#adminLeftNavCollapse1" role="button">
+                            <i class="align-middle" data-feather="settings"></i> <span class="align-middle ">User Management </span>
+                        </a>
+                        <div id="userManagementCollapse" class="accordion-collapse collapse " data-bs-parent="#accordionExample">
+                            <div style="display: grid;justify-content: center;">
+                                <a class="sidebar-link" href="~/Admin/Brand/Index">
+                                    <i class="align-middle " data-feather="book"></i> <span class="align-middle">Customers</span>
+                                </a>
+                                <a class="sidebar-link " href="~/Admin/Category/Index">
+                                    <i class="align-middle" data-feather="check-square"></i><span class="align-middle">Sellers</span>
+                                </a>
+                                <a class="sidebar-link " href="~/Admin/FeatureCategory/Index">
+                                    <span class="align-middle">Adimns / Roles</span>
+                                </a>
+                            </div>
+
                         </div>
                     </li>
 
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="pages-sign-up.html">
-                            <i class="align-middle" data-feather="user-plus"></i> <span class="align-middle">Sign Up</span>
+                    <li class=" sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "OrderManagement" ? "active" : "")">
+
+                        <a data-bs-toggle="collapse" data-bs-target="#orderManagementCollapse" aria-expanded="false" aria-controls="orderManagementCollapse" class="sidebar-link " href="#adminLeftNavCollapse1" role="button">
+                            <i class="align-middle" data-feather="settings"></i> <span class="align-middle ">Order Management </span>
                         </a>
+                        <div id="orderManagementCollapse" class="accordion-collapse collapse " data-bs-parent="#accordionExample">
+                            <div style="display: grid;justify-content: center;">
+                                <a class="sidebar-link" href="~/Admin/Brand/Index">
+                                    <i class="align-middle " data-feather="book"></i> <span class="align-middle">Orders List</span>
+                                </a>
+                                <a class="sidebar-link " href="~/Admin/Category/Index">
+                                    <i class="align-middle" data-feather="check-square"></i><span class="align-middle">Order Status</span>
+                                </a>
+                                <a class="sidebar-link " href="~/Admin/FeatureCategory/Index">
+                                    <span class="align-middle">Transactions</span>
+                                </a>
+                            </div>
+
+                        </div>
                     </li>
 
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="pages-blank.html">
-                            <i class="align-middle" data-feather="book"></i> <span class="align-middle">Blank</span>
+                    <li class=" sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "ContentManagement" ? "active" : "")">
+
+                        <a data-bs-toggle="collapse" data-bs-target="#contentManagementCollapse" aria-expanded="false" aria-controls="contentManagementCollapse" class="sidebar-link " href="#adminLeftNavCollapse1" role="button">
+                            <i class="align-middle" data-feather="settings"></i> <span class="align-middle ">Content Management </span>
                         </a>
+                        <div id="contentManagementCollapse" class="accordion-collapse collapse " data-bs-parent="#accordionExample">
+                            <div style="display: grid;justify-content: center;">
+                                <a class="sidebar-link" href="~/Admin/Brand/Index">
+                                    <i class="align-middle " data-feather="book"></i> <span class="align-middle">Bannerst</span>
+                                </a>
+                                <a class="sidebar-link " href="~/Admin/Category/Index">
+                                    <i class="align-middle" data-feather="check-square"></i><span class="align-middle">Announcements</span>
+                                </a>
+                                <a class="sidebar-link " href="~/Admin/FeatureCategory/Index">
+                                    <span class="align-middle">Site Pages</span>
+                                </a>
+                            </div>
+
+                        </div>
                     </li>
 
-                    <li class="sidebar-header">
-                        Tools & Components
-                    </li>
+                    <li class=" sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "SystemSettings" ? "active" : "")">
 
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="ui-buttons.html">
-                            <i class="align-middle" data-feather="square"></i> <span class="align-middle">Buttons</span>
+                        <a data-bs-toggle="collapse" data-bs-target="#systemSettingsCollapse" aria-expanded="false" aria-controls="systemSettingsCollapse" class="sidebar-link " href="#adminLeftNavCollapse1" role="button">
+                            <i class="align-middle" data-feather="settings"></i> <span class="align-middle ">System Settings </span>
                         </a>
+                        <div id="systemSettingsCollapse" class="accordion-collapse collapse " data-bs-parent="#accordionExample">
+                            <div style="display: grid;justify-content: center;">
+                                <a class="sidebar-link" href="~/Admin/Brand/Index">
+                                    <i class="align-middle " data-feather="book"></i> <span class="align-middle">General Settings</span>
+                                </a>
+                                <a class="sidebar-link " href="~/Admin/Category/Index">
+                                    <i class="align-middle" data-feather="check-square"></i><span class="align-middle">Tax</span>
+                                </a>
+                                <a class="sidebar-link " href="~/Admin/FeatureCategory/Index">
+                                    <span class="align-middle">Shipping Rules</span>
+                                </a>
+                            </div>
+
+                        </div>
                     </li>
 
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="ui-forms.html">
-                            <i class="align-middle" data-feather="check-square"></i> <span class="align-middle">Forms</span>
+                    <li class=" sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Reports" ? "active" : "")">
+
+                        <a data-bs-toggle="collapse" data-bs-target="#reportsCollapse" aria-expanded="false" aria-controls="reportsCollapse" class="sidebar-link " href="#adminLeftNavCollapse1" role="button">
+                            <i class="align-middle" data-feather="settings"></i> <span class="align-middle ">Reports</span>
                         </a>
-                    </li>
+                        <div id="reportsCollapse" class="accordion-collapse collapse " data-bs-parent="#accordionExample">
+                            <div style="display: grid;justify-content: center;">
+                                <a class="sidebar-link" href="~/Admin/Brand/Index">
+                                    <i class="align-middle " data-feather="book"></i> <span class="align-middle">Sales Report</span>
+                                </a>
+                                <a class="sidebar-link " href="~/Admin/Category/Index">
+                                    <i class="align-middle" data-feather="check-square"></i><span class="align-middle">Product Performance</span>
+                                </a>
+                                <a class="sidebar-link " href="~/Admin/FeatureCategory/Index">
+                                    <span class="align-middle">Seller Performance</span>
+                                </a>
+                                <a class="sidebar-link " href="~/Admin/FeatureCategory/Index">
+                                    <span class="align-middle">Customer Insights</span>
+                                </a>
+                            </div>
 
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="ui-cards.html">
-                            <i class="align-middle" data-feather="grid"></i> <span class="align-middle">Cards</span>
-                        </a>
+                        </div>
                     </li>
-
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="ui-typography.html">
-                            <i class="align-middle" data-feather="align-left"></i> <span class="align-middle">Typography</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="icons-feather.html">
-                            <i class="align-middle" data-feather="coffee"></i> <span class="align-middle">Icons</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-header">
-                        Plugins & Addons
-                    </li>
-
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="charts-chartjs.html">
-                            <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Charts</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="maps-google.html">
-                            <i class="align-middle" data-feather="map"></i> <span class="align-middle">Maps</span>
+                    <li class="sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "archive" ? "active" : "")">
+                        <a class="sidebar-link" href="~/Admin/Home/Index">
+                            <i class="align-middle" data-feather="home"></i> <span class="align-middle">Archive</span>
                         </a>
                     </li>
                 </ul>
 
-               
+
             </div>
         </nav>
 
@@ -237,7 +286,7 @@
                                             </div>
                                         </a>
                                     }
-                                    
+
                                 </div>
                                 <div class="dropdown-menu-footer">
                                     <a href="#" class="text-muted">Show all messages</a>

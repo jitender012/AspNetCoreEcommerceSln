@@ -71,20 +71,20 @@ namespace eCommerce.Infrastructure.Repositories.Products
             throw new NotImplementedException();
         }
 
-        public async Task<bool> UnlinkCategoryFeature(int productCategoryId, int featureCategoryId)
-        {
-            var record = await _context.ProductCategoryFeatures
-                            .Where(pcf => pcf.ProductCategoryId == productCategoryId && pcf.FeatureCategoryId == featureCategoryId)
-                            .FirstOrDefaultAsync();
-            if (record == null)
-            {
-                return false;
-            }
-            _context.ProductCategoryFeatures.Remove(record);
-            await _context.SaveChangesAsync();
+        //public async Task<bool> UnlinkCategoryFeature(int productCategoryId, int featureCategoryId)
+        //{
+        //    var record = await _context.ProductCategoryFeatures
+        //                    .Where(pcf => pcf.ProductCategoryId == productCategoryId && pcf.FeatureCategoryId == featureCategoryId)
+        //                    .FirstOrDefaultAsync();
+        //    if (record == null)
+        //    {
+        //        return false;
+        //    }
+        //    _context.ProductCategoryFeatures.Remove(record);
+        //    await _context.SaveChangesAsync();
 
-            return true;
-        }
+        //    return true;
+        //}
         #endregion
 
         #region ReadOperations
@@ -92,28 +92,14 @@ namespace eCommerce.Infrastructure.Repositories.Products
         {
             try
             {
-                return await _context.FeatureCategories
+                var featureCategories = await _context.FeatureCategories
                     .Where(x => x.IsDeleted == false)
+                    .Include(x => x.ProductFeatures)
+                        .ThenInclude(x => x.ProductCategoryProductFeatures)
+                    .Include(x => x.ProductFeatures)
+                    .ThenInclude(x => x.MeasurementUnit)
+                    .AsNoTracking()
                     .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Something went wrong when fetching information.", ex);
-            }
-        }
-
-        public async Task<IEnumerable<FeatureCategory>> FetchByProductCategoryIdAsync(int productCategoryId)
-        {
-            try
-            {
-                List<FeatureCategory> featureCategories = await _context.ProductCategoryFeatures
-                                       .Where(pfc => pfc.ProductCategoryId == productCategoryId)
-                                       .Include(f => f.FeatureCategory)
-                                           .ThenInclude(f => f.ProductFeatures)
-                                       .Select(f => f.FeatureCategory)
-                                       .ToListAsync();
-
-                //List<ProductFeature> productFeatures = await _context.ProductFeatures.Where(pf=>pf.ProductFeaturesId == featureCategories)
                 return featureCategories;
             }
             catch (Exception ex)
@@ -121,6 +107,26 @@ namespace eCommerce.Infrastructure.Repositories.Products
                 throw new Exception("Something went wrong when fetching information.", ex);
             }
         }
+
+        //public async Task<IEnumerable<FeatureCategory>> FetchByProductCategoryIdAsync(int productCategoryId)
+        //{
+        //    try
+        //    {
+        //        List<FeatureCategory> featureCategories = await _context.ProductCategoryFeatures
+        //                               .Where(pfc => pfc.ProductCategoryId == productCategoryId)
+        //                               .Include(f => f.FeatureCategory)
+        //                                   .ThenInclude(f => f.ProductFeatures)
+        //                               .Select(f => f.FeatureCategory)
+        //                               .ToListAsync();
+
+        //        //List<ProductFeature> productFeatures = await _context.ProductFeatures.Where(pf=>pf.ProductFeaturesId == featureCategories)
+        //        return featureCategories;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("Something went wrong when fetching information.", ex);
+        //    }
+        //}
 
         public async Task<FeatureCategory> FindByIdAsync(int id)
         {
@@ -134,10 +140,10 @@ namespace eCommerce.Infrastructure.Repositories.Products
 
                 _logger.LogInformation("Fetching  Feature Category with ID {FeatureCategoryId}", id);
                 var FeatureCategory = await _context.FeatureCategories
-                    .Where(x=> x.FeatureCategoryId == id)
+                    .Where(x => x.FeatureCategoryId == id)
                     .Include(x => x.ProductFeatures)
-                    .Include(x=> x.ProductCategoryFeatures)
-                        .ThenInclude(pc => pc.ProductCategory)
+                    //.Include(x=> x.ProductCategoryFeatures)
+                    //.ThenInclude(pc => pc.ProductCategory)
                     .FirstOrDefaultAsync();
 
                 if (FeatureCategory == null)
@@ -224,13 +230,13 @@ namespace eCommerce.Infrastructure.Repositories.Products
         {
             try
             {
-                var pcf = new ProductCategoryFeature()
-                {
-                    FeatureCategoryId = featureCategoryId,
-                    ProductCategoryId = productCategoryId
-                };
-                await _context.AddAsync(pcf);
-                await _context.SaveChangesAsync();
+                //var pcf = new ProductCategoryFeature()
+                //{
+                //    FeatureCategoryId = featureCategoryId,
+                //    ProductCategoryId = productCategoryId
+                //};
+                //await _context.AddAsync(pcf);
+                //await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception)

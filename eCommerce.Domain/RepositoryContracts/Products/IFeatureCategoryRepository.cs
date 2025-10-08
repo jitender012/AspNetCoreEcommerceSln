@@ -40,8 +40,8 @@ namespace eCommerce.Domain.RepositoryContracts.Products
         /// <param name="productCategory"></param>
         /// <returns></returns>
         Task<IEnumerable<FeatureCategory>> FetchAllAsync();
-        Task<IEnumerable<FeatureCategory>> FetchByProductCategoryIdAsync(int productCategory );
-        Task<bool> UnlinkCategoryFeature(int productCategoryId, int featureCategoryId);
+        //Task<IEnumerable<FeatureCategory>> FetchByProductCategoryIdAsync(int productCategory );
+        //Task<bool> UnlinkCategoryFeature(int productCategoryId, int featureCategoryId);
         Task<bool> LinkFeatCatToProdCat(int featureCategoryId, int productCategoryId);
 
         Task<FeatureCategory> FindByIdAsync(int id);

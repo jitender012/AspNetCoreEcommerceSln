@@ -8,9 +8,9 @@ namespace eCommerce.Application.Features.ProductCategoryFeatures.Handlers
 {
     public class GetAllCategoriesHandler : IRequestHandler<GetAllCategories, List<ProductCategoryDto>>
     {
-        private readonly ICategoryRepository _productCategoryRepository;
+        private readonly IProductCategoryRepository _productCategoryRepository;
         private readonly IMapper _mapper;
-        public GetAllCategoriesHandler(ICategoryRepository categoryRepository, IMapper mapper)
+        public GetAllCategoriesHandler(IProductCategoryRepository categoryRepository, IMapper mapper)
         {
             _productCategoryRepository = categoryRepository;
             _mapper = mapper;

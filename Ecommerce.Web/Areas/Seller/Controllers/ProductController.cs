@@ -18,16 +18,28 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace eCommerce.Web.Areas.Seller.Controllers
 {
     [Area("Seller")]
-    public class ProductController(IProductService productService, IMapper mapper, ILogger<ProductController> logger, ICategoryService categoryService, IFeatureCategoryService featureCategoryService, IMediator mediator, IFileUploadService fileUploadService) : Controller
+    public class ProductController : Controller
     {
-        private readonly IProductService _productService = productService;        
-        private readonly ICategoryService _categoryService = categoryService;
-        private readonly IFeatureCategoryService _featureCategoryService = featureCategoryService;
-
-        private readonly IMediator _mediator = mediator;
-
-        private readonly ILogger<ProductController> _logger = logger;
-        private readonly IMapper _mapper = mapper;
+        private readonly IProductCategoryService _categoryService;
+        private readonly IFeatureCategoryService _featureCategoryService;
+        private readonly IFileUploadService _fileUploadService;
+        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
+        private readonly ILogger<ProductController> _logger;
+        public ProductController(
+            IProductCategoryService categoryService,
+            IFeatureCategoryService featureCategoryService,
+            IMapper mapper, ILogger<ProductController> logger,
+            IMediator mediator,
+             IFileUploadService fileUploadService)
+        {            
+            _categoryService = categoryService;
+            _featureCategoryService = featureCategoryService;
+            _mapper = mapper;
+            _mediator = mediator;
+            _logger = logger;
+            _fileUploadService = fileUploadService;
+        }
 
         public async Task<IActionResult> Index()
         {
@@ -155,7 +167,7 @@ namespace eCommerce.Web.Areas.Seller.Controllers
                 if (images != null && images.Count > 0)
                 {
                     var folderPath = "Images/ProductImages";
-                    var fileNames = await fileUploadService.UploadImageAsync(images, folderPath);
+                    var fileNames = await _fileUploadService.UploadImageAsync(images, folderPath);
 
                     dto.ProductVariant.ImageUrls = fileNames;
                 }
@@ -212,11 +224,11 @@ namespace eCommerce.Web.Areas.Seller.Controllers
             ViewBag.CategoryList = dropdownItems;
         }
 
-        [HttpGet]
-        public async Task<JsonResult> GetFeatureCategoriesWithFeatures(int categoryId)
-        {
-            List<FeatureCategoryDTO>? categories = await _featureCategoryService.GetByProductCategoryIdAsync(categoryId);
-            return Json(categories);
-        }
+        //[HttpGet]
+        //public async Task<JsonResult> GetFeatureCategoriesWithFeatures(int categoryId)
+        //{
+        //    List<FeatureCategoryDTO>? categories = await _featureCategoryService.GetByProductCategoryIdAsync(categoryId);
+        //    return Json(categories);
+        //}
     }
 }

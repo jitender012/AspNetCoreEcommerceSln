@@ -1,33 +1,333 @@
 ﻿@{
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Dashboard";
 }
-<h1>This is admin's home page </h1>
 
-
-<div class="dropdown">
-    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Dropdown button
-    </button>
-    <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="#">Action</a></li>
-        <li><a class="dropdown-item" href="#">Another action</a></li>
-        <li><a class="dropdown-item" href="#">Something else here</a></li>
-    </ul>
-</div>
-
-
-<p class="d-inline-flex gap-1">
-    <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-        Link with href
-    </a>
-    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-        Button with data-bs-target
-    </button>
-</p>
-<div class="collapse" id="collapseExample">
-    <div class="card card-body">
-        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+<!-- Dashboard Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1">Welcome back, Admin 👋</h2>
+        <p class="text-muted mb-0">Here's what's happening with your store today</p>
+    </div>
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-outline-primary btn-sm">Today</button>
+        <button type="button" class="btn btn-primary btn-sm">This Week</button>
+        <button type="button" class="btn btn-outline-primary btn-sm">This Month</button>
     </div>
 </div>
 
+<!-- Stats Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4 col-lg-3">
+        <div class="card border-start border-primary border-4 shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted small mb-1">TOTAL ORDERS</p>
+                        <h3 class="mb-0">1,245</h3>
+                        <small class="text-success"><i class="fas fa-arrow-up"></i> 12.5%</small>
+                    </div>
+                    <div class="fs-1 text-primary">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="col-md-4 col-lg-3">
+        <div class="card border-start border-success border-4 shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted small mb-1">TOTAL CUSTOMERS</p>
+                        <h3 class="mb-0">8,549</h3>
+                        <small class="text-success"><i class="fas fa-arrow-up"></i> 8.2%</small>
+                    </div>
+                    <div class="fs-1 text-success">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-lg-3">
+        <div class="card border-start border-info border-4 shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted small mb-1">REVENUE (MONTH)</p>
+                        <h3 class="mb-0">$45,892</h3>
+                        <small class="text-success"><i class="fas fa-arrow-up"></i> 15.3%</small>
+                    </div>
+                    <div class="fs-1 text-info">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-lg-3">
+        <div class="card border-start border-danger border-4 shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted small mb-1">PENDING ORDERS</p>
+                        <h3 class="mb-0">127</h3>
+                        <small class="text-danger"><i class="fas fa-exclamation-circle"></i> Attention</small>
+                    </div>
+                    <div class="fs-1 text-danger">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row g-3 mb-4">
+    <!-- Sales Trend Chart -->
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-chart-line text-primary"></i> Sales Trend</h5>
+                <select class="form-select form-select-sm w-auto">
+                    <option>Last 7 Days</option>
+                    <option>Last 30 Days</option>
+                    <option>Last 3 Months</option>
+                </select>
+            </div>
+            <div class="card-body">
+                <canvas id="salesChart" height="80"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Status Chart -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-chart-pie text-primary"></i> Order Status</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="orderStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tables Row -->
+<div class="row g-3 mb-4">
+    <!-- Recent Orders -->
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-shopping-bag text-primary"></i> Recent Orders</h5>
+                <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>#ORD-1245</strong></td>
+                                <td>John Doe</td>
+                                <td><strong>$1,299.00</strong></td>
+                                <td><span class="badge bg-success">Completed</span></td>
+                                <td>Oct 8, 2025</td>
+                                <td><button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>#ORD-1244</strong></td>
+                                <td>Sarah Smith</td>
+                                <td><strong>$1,499.00</strong></td>
+                                <td><span class="badge bg-info">Processing</span></td>
+                                <td>Oct 8, 2025</td>
+                                <td><button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>#ORD-1243</strong></td>
+                                <td>Mike Johnson</td>
+                                <td><strong>$399.00</strong></td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td>Oct 7, 2025</td>
+                                <td><button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>#ORD-1242</strong></td>
+                                <td>Emma Wilson</td>
+                                <td><strong>$899.00</strong></td>
+                                <td><span class="badge bg-success">Completed</span></td>
+                                <td>Oct 7, 2025</td>
+                                <td><button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>#ORD-1241</strong></td>
+                                <td>David Brown</td>
+                                <td><strong>$1,099.00</strong></td>
+                                <td><span class="badge bg-danger">Cancelled</span></td>
+                                <td>Oct 6, 2025</td>
+                                <td><button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Sellers & Low Stock -->
+    <div class="col-lg-4">
+        <!-- New Sellers -->
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-store text-primary"></i> New Sellers</h5>
+                <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Alex Turner</strong>
+                            <small class="text-muted d-block">Tech Paradise</small>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-success me-1"><i class="fas fa-check"></i></button>
+                            <button class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Maria Garcia</strong>
+                            <small class="text-muted d-block">Fashion Hub</small>
+                        </div>
+                        <span class="badge bg-success">Approved</span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>James Miller</strong>
+                            <small class="text-muted d-block">Sports Zone</small>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-success me-1"><i class="fas fa-check"></i></button>
+                            <button class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Stock Products -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-exclamation-triangle text-warning"></i> Low Stock</h5>
+                <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Wireless Mouse</strong>
+                            <small class="text-danger d-block">SKU-001 • 5 left</small>
+                        </div>
+                        <button class="btn btn-sm btn-warning">Restock</button>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>USB-C Cable</strong>
+                            <small class="text-warning d-block">SKU-002 • 12 left</small>
+                        </div>
+                        <button class="btn btn-sm btn-warning">Restock</button>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Phone Case</strong>
+                            <small class="text-danger d-block">SKU-003 • 3 left</small>
+                        </div>
+                        <button class="btn btn-sm btn-warning">Restock</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Sales Trend Chart
+            new Chart($('#salesChart'), {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Sales',
+                        data: [12000, 19000, 15000, 25000, 22000, 30000, 28000],
+                        borderColor: '#0d6efd',
+                        backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => '$' + context.parsed.y.toLocaleString()
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: (value) => '$' + value.toLocaleString()
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Order Status Chart
+            new Chart($('#orderStatusChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'Processing', 'Pending', 'Cancelled'],
+                    datasets: [{
+                        data: [650, 320, 127, 148],
+                        backgroundColor: ['#198754', '#0dcaf0', '#ffc107', '#dc3545']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // Button group active state
+            $('.btn-group button').click(function() {
+                $(this).addClass('btn-primary').removeClass('btn-outline-primary')
+                    .siblings().addClass('btn-outline-primary').removeClass('btn-primary');
+            });
+        });
+    </script>
+}

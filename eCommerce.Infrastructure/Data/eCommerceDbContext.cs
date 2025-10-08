@@ -56,9 +56,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
 
     public virtual DbSet<ProductAttribute> ProductAttributes { get; set; }
 
-    public virtual DbSet<ProductCategory> ProductCategories { get; set; }
-
-    public virtual DbSet<ProductCategoryFeature> ProductCategoryFeatures { get; set; }
+    public virtual DbSet<ProductCategory> ProductCategories { get; set; }    
 
     public virtual DbSet<ProductCategoryProductFeature> ProductCategoryProductFeature { get; set; }
 
@@ -502,27 +500,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
             entity.HasOne(d => d.ParentCategory).WithMany(p => p.InverseParentCategory)
                 .HasForeignKey(d => d.ParentCategoryId)
                 .HasConstraintName("FK_Category_Category");
-        });
-
-        modelBuilder.Entity<ProductCategoryFeature>(entity =>
-        {
-            entity.HasKey(e => e.ProductCategoryFeatureId).HasName("PK_VariationCategory");
-
-            entity.ToTable("ProductCategoryFeature", "Product");
-
-            entity.HasOne(d => d.FeatureCategory).WithMany(p => p.ProductCategoryFeatures)
-                .HasForeignKey(d => d.FeatureCategoryId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ProductCategoryFeature_FeatureCategory");
-
-            entity.HasOne(d => d.ProductCategory).WithMany(p => p.ProductCategoryFeatures)
-                .HasForeignKey(d => d.ProductCategoryId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ProductCategoryFeature_ProductCategory");
-
-            entity.HasIndex(d => new { d.FeatureCategoryId, d.ProductCategoryId })
-                .IsUnique();
-        });
+        });        
 
         modelBuilder.Entity<ProductCategoryProductFeature>(entity =>
         {
