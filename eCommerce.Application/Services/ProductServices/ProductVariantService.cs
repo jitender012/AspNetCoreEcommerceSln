@@ -2,7 +2,7 @@
 using eCommerce.Application.ServiceContracts;
 using eCommerce.Application.ServiceContracts.ProductServiceContracts;
 using eCommerce.Domain.Entities;
-using eCommerce.Domain.RepositoryContracts.Products;
+using eCommerce.Domain.RepositoryContracts.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;

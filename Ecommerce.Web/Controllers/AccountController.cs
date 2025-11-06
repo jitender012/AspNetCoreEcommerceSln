@@ -2,6 +2,7 @@
 using eCommerce.Web.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace eCommerce.Web.Controllers
 {
@@ -116,12 +117,14 @@ namespace eCommerce.Web.Controllers
         #endregion
 
         #region LoginActions
+        [Route("login")]
         public IActionResult Login()
         {
             return View();
         }
 
         //Login post method
+        [Route("login")]
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel data)
         {
@@ -144,7 +147,7 @@ namespace eCommerce.Web.Controllers
 
                 if (!string.IsNullOrEmpty(area))
                 {
-                    return RedirectToAction("Index", "Home", new {area = area });
+                    return RedirectToAction("Index", "Home", new { area = area });
                 }
 
                 return RedirectToAction("Index", "Home");

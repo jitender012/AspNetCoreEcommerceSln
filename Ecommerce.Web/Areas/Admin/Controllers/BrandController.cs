@@ -7,20 +7,22 @@ using eCommerce.Web.Areas.Admin.Models.Brand;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eCommerce.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
+    [Route("brands")]
     public class BrandController : Controller
     {
         private readonly IFileUploadService _fileUploadService;
         private readonly IMapper _mapper;
 
         private readonly IMediator _mediator;
-        private readonly IValidator<BrandSaveDTO> _validator;
-        public BrandController(IFileUploadService fileUploadService, IMediator mediator, IMapper mapper, IValidator<BrandSaveDTO> validator)
+        private readonly IValidator<BrandSaveDto> _validator;
+        public BrandController(IFileUploadService fileUploadService, IMediator mediator, IMapper mapper, IValidator<BrandSaveDto> validator)
         {
             _fileUploadService = fileUploadService;
 
@@ -28,26 +30,27 @@ namespace eCommerce.Web.Areas.Admin.Controllers
             _mapper = mapper;
             _validator = validator;
         }
+
+        [Route("")]
         public async Task<IActionResult> Index()
         {
             var brands = await _mediator.Send(new GetAllBrandsQuery());
-            var brandsVM = _mapper.Map<List<BrandListDTO>, List<BrandListVM>>(brands);
+            var brandsVM = _mapper.Map<List<BrandListVM>>(brands);
             return View(brandsVM);
         }
 
+        [Route("{brandId}")]
         public async Task<IActionResult> Details(Guid brandId)
         {
-            if (brandId.Equals(null))
-            {
-                TempData["ErrorMessage"] = "Invalid Brand Id.";
-                return View("Error");
-            }
-            var brand = await _mediator.Send(new GetBrandByIdQuery(brandId));
+            var brandDto = await _mediator.Send(new GetBrandByIdQuery(brandId));
+            if (brandDto == null)
+                return NotFound();
 
-            BrandDetailsVM brandVM = _mapper.Map<BrandDetailsVM>(brand);
-            return View(brandVM);
+            var brandVm = _mapper.Map<BrandVM>(brandDto);
+            return View(brandVm);
         }
 
+        [Route("create")]
         public IActionResult Create()
         {
             BrandSaveVM brand = new BrandSaveVM
@@ -112,13 +115,14 @@ namespace eCommerce.Web.Areas.Admin.Controllers
         //    }
         //}
         #endregion
-
+        [Route("create")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(BrandSaveVM model)
         {
 
             // Map VM to DTO
-            var dto = _mapper.Map<BrandSaveDTO>(model);
+            var dto = _mapper.Map<BrandSaveDto>(model);
 
             // Upload Image
             if (model.ImageFile != null)
@@ -149,7 +153,8 @@ namespace eCommerce.Web.Areas.Admin.Controllers
             }
             return View(model);
         }
-        public async Task<IActionResult> Edit(Guid id)
+        [Route("edit/{brandId}")]
+        public async Task<IActionResult> Edit([FromRoute(Name = "brandId")] Guid id)
         {
             var brand = await _mediator.Send(new GetBrandForEditQuery(id));
             if (brand == null)
@@ -158,21 +163,25 @@ namespace eCommerce.Web.Areas.Admin.Controllers
             }
 
             BrandSaveVM brandVM = _mapper.Map<BrandSaveVM>(brand);
-            return View(brand);
+            return View(brandVM);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Edit(BrandSaveVM data, IEnumerable<IFormFile> ImageFile)
+        [HttpPost("edit")]
+        public async Task<IActionResult> Edit(BrandSaveVM data)
         {
             if (!ModelState.IsValid) return View(data);
-
+            IEnumerable<IFormFile> imageFiles = new List<IFormFile>();
+            if (data.ImageFile != null)
+            {
+                imageFiles = new List<IFormFile> { data.ImageFile };
+            }
             // Handle image upload
-            if (ImageFile.Any())
+            if (imageFiles.Any())
             {
                 try
                 {
                     var folderPath = "Images/BrandImages";
-                    var fileNames = await _fileUploadService.UploadImageAsync(ImageFile, folderPath);
+                    var fileNames = await _fileUploadService.UploadImageAsync(imageFiles, folderPath);
                     data.BrandImage = fileNames.FirstOrDefault();
                 }
                 catch (Exception)
@@ -183,16 +192,35 @@ namespace eCommerce.Web.Areas.Admin.Controllers
             }
 
             // Update brand in the database
-            var command = _mapper.Map<UpdateBrandCommand>(data);
-            var result = await _mediator.Send(command);
+            var brandSaveDto = _mapper.Map<BrandSaveDto>(data);
+            var result = await _mediator.Send(new UpdateBrandCommand(brandSaveDto));
 
             if (result)
+            {
+                TempData["Success"] = "Brand updated successfully!";
                 return RedirectToAction("Index");
+            }
 
             TempData["Error"] = "Update failed.";
             return View(data);
 
         }
+
+        [HttpPost("update-status/{brandid}")]
+        public async Task<IActionResult> UpdateStatus(Guid brandId)
+        {
+            var result = await _mediator.Send(new UpdateBrandStatusCommand(brandId));
+
+            if (result)
+            {
+                var updatedBrand = await _mediator.Send(new GetBrandByIdQuery(brandId));
+                var brandVm = _mapper.Map<BrandVM>(updatedBrand);
+                return PartialView("_BrandRowPartial", brandVm);
+            }
+            return BadRequest("Failed to update brand status.");
+        }
+
+        [Route("delete/{id}")]
         [HttpDelete]
         public async Task<JsonResult> Delete(Guid id)
         {
@@ -202,7 +230,10 @@ namespace eCommerce.Web.Areas.Admin.Controllers
             }
             var result = await _mediator.Send(new DeleteBrandCommand(id));
             if (result)
-                return Json(new { success = true, message = "brand deleted successfully!" });
+            {
+                TempData["Success"] = "Brand deleted successfully!";
+                return Json(new { success = true, message = "Brand deleted successfully!" });
+            }
             else
                 return Json(new { success = false, message = "An error occurred while deleting the brand. Please try again." });
         }

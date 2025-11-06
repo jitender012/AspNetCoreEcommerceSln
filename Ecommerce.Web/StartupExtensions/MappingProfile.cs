@@ -9,6 +9,8 @@ using eCommerce.Application.Features.ProductCategoryFeatures.Dtos;
 using eCommerce.Application.Features.ProductConfigurationFeature.DTOs;
 using eCommerce.Application.Features.ProductFeatures.Dtos;
 using eCommerce.Application.Features.ProductVariantFeatures.Dtos;
+using eCommerce.Application.Features.WarehouseFeature.Dtos;
+using eCommerce.Application.Features.WishlistFeature.Dtos;
 using eCommerce.Domain.Entities;
 using eCommerce.Web.Areas.Admin.Models.Brand;
 using eCommerce.Web.Areas.Admin.Models.FeatureCategory;
@@ -19,6 +21,7 @@ using eCommerce.Web.Areas.Vendor.Models;
 using eCommerce.Web.Models;
 using eCommerce.Web.ViewModels.ProductVariantVMs;
 using eCommerce.Web.ViewModels.ProductVMs;
+using Microsoft.EntityFrameworkCore.Migrations.Operations.Builders;
 
 namespace eCommerce.Web.StartupExtensions
 {
@@ -86,8 +89,11 @@ namespace eCommerce.Web.StartupExtensions
             // Domain to DTO and DTO to Domain
             CreateMap<Brand, BrandListDTO>()
                 .ForMember(x => x.ProductCount, opt => opt.MapFrom(src => src.Products.Count));
-            CreateMap<Brand, BrandDetailsDTO>();
-            CreateMap<BrandSaveDTO, Brand>();
+            CreateMap<Brand, BrandDetailsDto>()
+                .ForMember(dest => dest.TotalProducts, opt => opt.MapFrom(src => src.Products.Count))
+                .ForMember(dest => dest.ProductNames, opt => opt.MapFrom(src => src.Products.Select(p => p.ProductName).ToList()));
+            CreateMap<Brand, BrandSaveDto>();
+            CreateMap<BrandSaveDto, Brand>();
 
             CreateMap<ProductFeature, FeatureListDTO>()
                 .ForMember(dest => dest.FeatureCategoryName,
@@ -139,14 +145,15 @@ namespace eCommerce.Web.StartupExtensions
                 .ForMember(dest => dest.ParentCategoryName,
                            opt => opt.MapFrom(src => src.ParentCategory != null
                                    ? src.ParentCategory.CategoryName
-                                   : null));           
+                                   : null));
 
 
             //----DTO to VM and VM to DTO----
 
             CreateMap<BrandListDTO, BrandListVM>();
-            CreateMap<BrandDetailsDTO, BrandDetailsVM>();
-            CreateMap<BrandSaveVM, BrandSaveDTO>();
+            CreateMap<BrandDetailsDto, BrandVM>();
+            CreateMap<BrandSaveDto, BrandSaveVM>();            
+            CreateMap<BrandSaveVM, BrandSaveDto>();            
 
             CreateMap<FeatureListDTO, FeatureListVM>();
             CreateMap<FeatureDetailsDTO, FeatureDetailsVM>();
@@ -166,6 +173,10 @@ namespace eCommerce.Web.StartupExtensions
             CreateMap<ProductSaveDTO, Product>();
             CreateMap<ProductVariant, ProductVariantDto>();
 
+            CreateMap<WarehouseSaveDto, Warehouse>();
+            CreateMap<Warehouse, WarehouseDto>();
+            CreateMap<Warehouse, WarehouseListDto>();
+
             //DTO to VM and VM to DTO
             CreateMap<ProductVariantSaveVM, SellerProductVariantDTO>();
             CreateMap<ProductVariantSaveVM, SellerProductVariantDTO>().ReverseMap();
@@ -175,6 +186,24 @@ namespace eCommerce.Web.StartupExtensions
 
             #endregion
 
+            #region For Customer Models
+            // Domain to DTO and DTO to Domain
+            CreateMap<WishlistSaveDto, Wishlist>();
+            CreateMap<Wishlist, WishlistItemDto>()
+                .ForMember(dest => dest.ProductVariantId,
+                           opt => opt.MapFrom(src => src.ProductVariant.ProductVariantId))
+                .ForMember(dest => dest.VariantName,
+                           opt => opt.MapFrom(src => src.ProductVariant.VarientName))
+                .ForMember(dest => dest.ProductPrice,
+                           opt => opt.MapFrom(src => src.ProductVariant.Price))
+                .ForMember(dest => dest.ProductImageUrl,
+                           opt => opt.MapFrom(src => src.ProductVariant.ProductImages
+                               .FirstOrDefault() != null
+                               ? src.ProductVariant.ProductImages.FirstOrDefault()!.ImageUrl
+                               : string.Empty));
+
+            // DTO to VM and VM to DTO
+            #endregion
 
         }
     }

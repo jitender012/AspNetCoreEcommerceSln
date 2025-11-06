@@ -1,0 +1,65 @@
+﻿@model BrandVM
+
+
+<tr data-brand-id="@Model.BrandId"
+    data-status="@(Model.IsActive == true ? "active" : "inactive")"
+    data-name="@Model.BrandName.ToLower()">
+    <td>
+        <div class="form-check">
+            <input class="form-check-input brand-checkbox" type="checkbox"
+                   value="@Model.BrandId">
+        </div>
+    </td>
+    <td>
+        @if (!string.IsNullOrEmpty(Model.BrandImage))
+        {
+            <img src="@Model.BrandImage" alt="@Model.BrandName"
+                 class="rounded" style="width: 50px; height: 50px; object-fit: contain;">
+        }
+        else
+        {
+            <div class="bg-light rounded d-flex align-items-center justify-content-center"
+                 style="width: 50px; height: 50px;">
+                <i class="fas fa-image text-muted"></i>
+            </div>
+        }
+    </td>
+    <td>
+        <h6 class="mb-1">@Model.BrandName</h6>
+        <small class="text-muted">ID: @Model.BrandId.ToString().Substring(0, 8)...</small>
+    </td>
+    <td>
+        <span class="badge bg-info">- products</span>
+    </td>
+    <td id="brand-status-@Model.BrandId">
+        @if (Model.IsActive == true)
+        {
+            <span class="badge bg-success">Active</span>
+        }
+        else
+        {
+            <span class="badge bg-secondary">Inactive</span>
+        }
+    </td>
+    <td>
+        <span class="text-muted">@Model.CreatedAt.ToString("MMM dd, yyyy")</span>
+        <br>
+        <small class="text-muted">@Model.CreatedAt.ToString("hh:mm tt")</small>
+    </td>
+    <td>
+        <div class="btn-group btn-group-sm">
+            <a href="brands/@Model.BrandId" class="btn btn-outline-info" title="View"><i class="fas fa-eye"></i></a>
+            <a href="brands/edit/@Model.BrandId" class="btn btn-outline-primary" title="Edit"><i class="fas fa-edit"></i></a>
+            <button type="button" class="btn btn-outline-success"
+                    onclick="toggleBrandStatus('@Model.BrandId', @((Model.IsActive).ToString().ToLower()))"
+                    title="@(Model.IsActive == true ? "Deactivate" : "Activate")">
+                <i id="toggle-@Model.BrandId" class="fas fa-@(Model.IsActive == true ? "toggle-on" : "toggle-off")"></i>
+            </button>
+            <button type="button" class="btn btn-outline-danger"
+                    onclick="deleteBrand('@Model.BrandId')"
+                    title="Delete">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    </td>
+</tr>

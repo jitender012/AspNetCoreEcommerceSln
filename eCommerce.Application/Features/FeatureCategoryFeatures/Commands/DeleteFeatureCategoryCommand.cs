@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
-using eCommerce.Domain.RepositoryContracts.Products;
+using eCommerce.Domain.RepositoryContracts.Common;
 using MediatR;
 
 namespace eCommerce.Application.Features.FeatureCategoryFeatures.Commands

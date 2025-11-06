@@ -9,11 +9,11 @@ public partial class CartItem
 
     public Guid CartId { get; set; }
 
-    public Guid ProductIvariantd { get; set; }
+    public Guid ProductVariantId { get; set; }
 
     public int Quantity { get; set; }
 
-    public decimal Price { get; set; }
+    public decimal UnitPrice { get; set; }
 
     public decimal TotalPrice { get; set; }
 
@@ -21,5 +21,5 @@ public partial class CartItem
 
     public virtual Cart Cart { get; set; } = null!;
 
-    public virtual ProductVariant ProductIvariantdNavigation { get; set; } = null!;
+    public virtual ProductVariant ProductVariant { get; set; } = null!;
 }

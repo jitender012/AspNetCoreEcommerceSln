@@ -4,15 +4,17 @@ using eCommerce.Application.ServiceContracts;
 using eCommerce.Domain.Entities;
 using eCommerce.Domain.RepositoryContracts;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace eCommerce.Application.Features.BrandFeature.Commands
 {
-    public record UpdateBrandCommand(BrandSaveDTO dto) : IRequest<bool>;   
+    public record UpdateBrandCommand(BrandSaveDto dto) : IRequest<bool>;
 
     public class UpdateBrandHandler : IRequestHandler<UpdateBrandCommand, bool>
     {
@@ -28,17 +30,24 @@ namespace eCommerce.Application.Features.BrandFeature.Commands
 
         public async Task<bool> Handle(UpdateBrandCommand request, CancellationToken cancellationToken)
         {
-            var brandDto = request.dto;
-            var existingBrand = await _brandRepository.SingleOrDefaultAsync(x => x.BrandId == brandDto.BrandId);
-            if (existingBrand == null) return false;
-            
-            var brand =_mapper.Map<Brand>(brandDto);
+            var brandSaveDto = request.dto;
+            try
+            {
+                var brand = _mapper.Map<Brand>(brandSaveDto);
+                brand.UpdatedBy = _userContextService.GetUserId();
+                brand.UpdatedAt = DateTime.UtcNow;
 
-            brand.UpdatedBy = _userContextService.GetUserId();            
-            brand.UpdatedAt = DateTime.UtcNow;
-
-            await _brandRepository.UpdateAsync(brand);
-            return true;
+                await _brandRepository.UpdateAsync(brand);
+                return true;
+            }
+            catch (KeyNotFoundException)
+            {
+                return false;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception("Database update failed.", ex);
+            }
         }
     }
 }

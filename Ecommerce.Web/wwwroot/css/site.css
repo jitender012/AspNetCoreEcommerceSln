@@ -49,3 +49,59 @@ textarea:focus {
 input:focus{
     /*outline:2px solid black;*/
 }
+
+.upload-area {
+    border: 3px dashed #dee2e6;
+    border-radius: 12px;
+    padding: 3rem;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+    .upload-area:hover {
+        border-color: #0d6efd;
+        background-color: #e7f3ff;
+    }
+
+    .upload-area.drag-over {
+        border-color: #0d6efd;
+        background-color: #e7f3ff;
+        transform: scale(1.02);
+    }
+
+.preview-area img {
+    transition: transform 0.2s ease;
+}
+
+    .preview-area img:hover {
+        transform: scale(1.02);
+    }
+
+.form-control-lg {
+    font-size: 1.1rem;
+    padding: 0.75rem 1rem;
+}
+
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+    .card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+.form-check-input:checked {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+#charCount {
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+.h-bg {
+    background-color: #f5f7fb;
+}

@@ -5,9 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eCommerce.Infrastructure.Repositories
 {
-    public class BrandRepository : BaseRepository<Brand>, IBrandRepository
+    public class BrandRepository : IBrandRepository
     {
-        public BrandRepository(eCommerceDbContext context) : base(context) { }
+        private readonly eCommerceDbContext _context;
+        public BrandRepository(eCommerceDbContext context)
+        {
+            _context = context;
+        }
 
         #region brandRepo methods
         //public async Task<Guid> CreateAsync(Brand brand)
@@ -22,7 +26,7 @@ namespace eCommerce.Infrastructure.Repositories
         {
             return await _context.Brands
                 .Where(x => x.IsDeleted == false)
-                .Include(x=>x.Products)
+                .Include(x => x.Products)
                 .ToListAsync();
         }
 
@@ -67,6 +71,44 @@ namespace eCommerce.Infrastructure.Repositories
             return await _context.Brands.AnyAsync(b => b.BrandName.ToLower() == normalized);
         }
 
+        public async Task<Brand?> GetBrandById(Guid id)
+        {
+            return await _context.Brands
+                .Include(x => x.Products)
+                .Where(b => b.BrandId == id)
+                .FirstOrDefaultAsync();
+        }
 
+        public async Task<Guid> InsertBrandAsync(Brand brand)
+        {
+            await _context.Brands.AddAsync(brand);
+            await _context.SaveChangesAsync();
+            return brand.BrandId;
+        }
+
+        public async Task UpdateAsync(Brand brand)
+        {
+            var existingBrand = await _context.Brands.FindAsync(brand.BrandId);
+            if (existingBrand == null)
+                throw new KeyNotFoundException("Brand not found");
+
+            _context.Entry(existingBrand).CurrentValues.SetValues(brand);
+            _context.Entry(existingBrand).Property(x => x.CreatedAt).IsModified = false;
+            _context.Entry(existingBrand).Property(x => x.CreatedBy).IsModified = false;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateStatusAsync(Guid brandId)
+        {
+            var brand = await _context.Brands.FindAsync(brandId);
+            if (brand == null)
+                throw new KeyNotFoundException("Brand not found");
+            
+            if (brand.IsActive.HasValue)
+            {
+               brand.IsActive = !brand.IsActive.Value;
+            }
+            await _context.SaveChangesAsync();
+        }
     }
 }

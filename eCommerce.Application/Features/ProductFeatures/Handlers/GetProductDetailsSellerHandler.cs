@@ -2,7 +2,7 @@
 using eCommerce.Application.Features.ProductFeatures.Dtos;
 using eCommerce.Application.Features.ProductFeatures.Queries;
 using eCommerce.Application.Features.ProductVariantFeatures.Dtos;
-using eCommerce.Domain.RepositoryContracts.Products;
+using eCommerce.Domain.RepositoryContracts.Common;
 using MediatR;
 using System;
 using System.Collections.Generic;

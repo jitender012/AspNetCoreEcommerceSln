@@ -2,7 +2,6 @@
     initializeFilters();
     initializeBulkActions();
     initializeViewToggle();
-    initializeBrandForm();
 });
 
 // Initialize filters
@@ -90,142 +89,6 @@ function initializeViewToggle() {
         $('#gridView').show();
         $('#listView').hide();
     });
-}
-
-// Initialize brand form
-function initializeBrandForm() {
-    $('#brandImage').on('change', function () {
-        const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                $('#previewImg').attr('src', e.target.result);
-                $('#imagePreview').show();
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    $('#brandForm').on('submit', function (e) {
-        e.preventDefault();
-
-        const formData = new FormData(this);
-
-        $('#saveBrandBtn').prop('disabled', true)
-            .html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
-
-        $.ajax({
-            url: 'admin/brand/Create',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                $('#addBrandModal').modal('hide');
-                showAlert('Brand saved successfully!', 'success');
-                setTimeout(() => location.reload(), 1500);
-            },
-            error: function () {
-                showAlert('Failed to save brand.', 'error');
-                $('#saveBrandBtn').prop('disabled', false)
-                    .html('<i class="fas fa-save me-2"></i>Save Brand');
-            }
-        });
-    });
-}
-
-// View brand details
-function viewBrand(brandId) {
-    $.ajax({
-        url: '/admin/api/brands/' + brandId,
-        type: 'GET',
-        success: function (brand) {
-            let content = `
-                    <div class="row">
-                        <div class="col-md-4 text-center">
-                            ${brand.brandImage ?
-                    `<img src="${brand.brandImage}" class="img-fluid mb-3" style="max-height: 200px;">` :
-                    '<div class="bg-light p-5 mb-3"><i class="fas fa-image fa-3x text-muted"></i></div>'}
-                        </div>
-                        <div class="col-md-8">
-                            <h4>${brand.brandName}</h4>
-                            <table class="table table-sm">
-                                <tr><td class="fw-bold">Brand ID:</td><td>${brand.brandId}</td></tr>
-                                <tr><td class="fw-bold">Status:</td><td>${brand.isActive ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-secondary">Inactive</span>'}</td></tr>
-                                <tr><td class="fw-bold">Products:</td><td>${brand.productCount} products</td></tr>
-                                <tr><td class="fw-bold">Created:</td><td>${new Date(brand.createdAt).toLocaleString()}</td></tr>
-                            </table>
-                        </div>
-                    </div>
-                `;
-            $('#brandDetailsContent').html(content);
-            $('#viewBrandModal').modal('show');
-        }
-    });
-}
-
-// Edit brand
-function editBrand(brandId) {
-    $.ajax({
-        url: '/admin/api/brands/' + brandId,
-        type: 'GET',
-        success: function (brand) {
-            $('#modalTitle').text('Edit Brand');
-            $('#brandId').val(brand.brandId);
-            $('#brandName').val(brand.brandName);
-            $('#isActive').prop('checked', brand.isActive);
-
-            if (brand.brandImage) {
-                $('#previewImg').attr('src', brand.brandImage);
-                $('#imagePreview').show();
-            }
-
-            $('#addBrandModal').modal('show');
-        }
-    });
-}
-
-// Toggle brand status
-function toggleBrandStatus(brandId, currentStatus) {
-    const newStatus = currentStatus === 'true' ? false : true;
-
-    $.ajax({
-        url: '/admin/api/brands/' + brandId + '/status',
-        type: 'POST',
-        data: { isActive: newStatus },
-        success: function () {
-            showAlert('Brand status updated successfully!', 'success');
-            location.reload();
-        },
-        error: function () {
-            showAlert('Failed to update brand status.', 'error');
-        }
-    });
-}
-
-// View products
-function viewProducts(brandId) {
-    window.location.href = '/admin/products?brandId=' + brandId;
-}
-
-// Delete brand
-function deleteBrand(brandId) {    
-    showConfirmModal("Are you sure you want to delete this brand? ", () => {
-        $.ajax({
-            url: '/admin/brand/delete/' + brandId,
-            type: 'DELETE',
-            success: function () {
-                $(`[data-brand-id="${brandId}"]`).fadeOut(function () {
-                    $(this).remove();
-                });
-                showToast('Brand deleted successfully!', 'success');
-            },
-            error: function () {
-                showToast('Failed to delete brand.', 'danger');
-            }
-        });
-    })
-
 }
 
 // Bulk actions
@@ -317,16 +180,6 @@ function showAlert(message, type) {
     }, 5000);
 }
 
-// Reset modal on close
-$('#addBrandModal').on('hidden.bs.modal', function () {
-    $('#modalTitle').text('Add New Brand');
-    $('#brandForm')[0].reset();
-    $('#brandId').val('');
-    $('#imagePreview').hide();
-    $('#previewImg').attr('src', '');
-    $('#saveBrandBtn').prop('disabled', false)
-        .html('<i class="fas fa-save me-2"></i>Save Brand');
-});
 
 // Sorting functionality
 $('#sortBy').on('change', function () {
@@ -372,3 +225,173 @@ $(document).on('keydown', function (e) {
         updateBulkActions();
     }
 });
+
+
+//------------- create/edit brand js --------------
+
+$(function () {
+    // Load existing image if editing
+    const existingImage = $('#existingImagePath').val();
+    if (existingImage) {
+        showPreview(existingImage);
+    }
+
+    // Character count for description
+    $('#BrandDescription').on('input', function () {
+        const count = $(this).val().length;
+        $('#charCount').text(count);
+
+        if (count > 450) {
+            $('#charCount').addClass('text-warning');
+        } else {
+            $('#charCount').removeClass('text-warning');
+        }
+    });
+
+    // Initialize character count
+    $('#BrandDescription').trigger('input');
+
+    // File input change handler
+    $('#imageFileInput').on('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Validate file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size must be less than 5MB');
+                $(this).val('');
+                return;
+            }
+
+            // Validate file type
+            if (!file.type.match('image.*')) {
+                alert('Please select a valid image file');
+                $(this).val('');
+                return;
+            }
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                showPreview(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Show preview
+    function showPreview(imageSrc) {
+        $('#imagePreview').attr('src', imageSrc);
+        $('#uploadContent').hide();
+        $('#previewArea').show();
+    }
+
+    // Remove image
+    $('#removeImageBtn').on('click', function () {
+        $('#imageFileInput').val('');
+        $('#existingImage').val('');
+        $('#uploadContent').show();
+        $('#previewArea').hide();
+    });
+
+    // Drag and drop handlers
+    const uploadArea = $('#uploadArea');
+
+    uploadArea.on('dragover', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).addClass('drag-over');
+    });
+
+    uploadArea.on('dragleave', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).removeClass('drag-over');
+    });
+
+    uploadArea.on('drop', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).removeClass('drag-over');
+
+        const files = e.originalEvent.dataTransfer.files;
+        if (files.length > 0) {
+            $('#imageFileInput')[0].files = files;
+            $('#imageFileInput').trigger('change');
+        }
+    });
+
+    // Click on upload area
+    uploadArea.on('click', function (e) {
+        if (e.target === this || $(e.target).closest('.upload-content').length) {
+            $('#imageFileInput').trigger('click');
+        }
+    });
+
+    // Status switch handler
+    $('#isActiveSwitch').on('change', function () {
+        if ($(this).is(':checked')) {
+            $('#statusText').text('Active').removeClass('text-danger').addClass('text-success');
+        } else {
+            $('#statusText').text('Inactive').removeClass('text-success').addClass('text-danger');
+        }
+    });
+
+    // Form submission
+    $('#brandForm').on('submit', function (e) {
+        const brandName = $('#BrandName').val().trim();
+
+        // Show loading state
+        $('#saveBtn').prop('disabled', true)
+            .html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+    });
+
+});
+
+//toggle brand status
+function toggleBrandStatus(brandId, isActive) {
+    const $row = $(`tr[data-brand-id='${brandId}']`);
+    if ($row.length > 0) {
+        console.log("element is there")
+    }
+    $.ajax({
+        url: `/brands/update-status/${brandId}`,
+        type: 'POST',
+        success: function (html) {
+            $row.replaceWith(html);
+            showToast('Brand status updated successfully.', 'success');
+        },
+        error: function (xhr) {
+            const error = xhr.responseJSON?.message || 'Failed to update brand status.';
+            showToast(error, 'danger');
+        }
+    });
+}
+
+//delete brand
+function deleteBrand(brandId) {
+    showConfirmModal("Delete this Brand?", () => {
+        $.ajax({
+            url: `/brands/delete/${brandId}`,
+            type: 'DELETE',
+            success: function (response) {
+                const $row = $(`tr[data-brand-id='${brandId}']`);
+
+                if (response) {
+                    if ($row.length) {
+                        showToast(response.message, "success")
+                        $row.fadeOut(400, function () {
+                            $(this).remove();
+                        });
+                    }
+                    else {
+                        window.location.href = "/brands";
+                    }
+                }
+                else {
+                    showToast(response.message, "danger")
+                }
+            }
+        })
+    })
+
+}

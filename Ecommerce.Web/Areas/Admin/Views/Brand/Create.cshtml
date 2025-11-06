@@ -18,7 +18,7 @@
                     <p class="text-muted mb-0">Create a new brand for product catalog</p>
                 </div>
                 <div>
-                    <a href="/admin/brand/index" class="btn btn-outline-secondary">
+                    <a href="/brands" class="btn btn-outline-secondary">
                         <i class="fas fa-arrow-left me-2"></i>Back to Brands
                     </a>
                 </div>
@@ -27,6 +27,7 @@
     </div>
     @using (Html.BeginForm("Create", "Brand", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
+        @Html.AntiForgeryToken()
         <div class="row">
             <!-- Main Content -->
             <div class="col-lg-8">
@@ -152,7 +153,7 @@
 
                 <!-- Guidelines Card -->
                 <div class="card mb-4 border-info">
-                    <div class="card-header bg-info text-white">
+                    <div class="card-header h-bg text-white">
                         <h6 class="card-title mb-0">
                             <i class="fas fa-lightbulb me-2"></i>Logo Guidelines
                         </h6>
@@ -191,7 +192,7 @@
                                 <i class="fas fa-save me-2"></i>
                                 Create Brand
                             </button>
-                            <a href="/admin/brand/index" class="btn btn-outline-secondary">
+                            <a href="/brands" class="btn btn-outline-secondary">
                                 <i class="fas fa-times me-2"></i>Cancel
                             </a>
                         </div>
@@ -202,178 +203,4 @@
     }
 </div>
 
-<style>
-    .upload-area {
-        border: 3px dashed #dee2e6;
-        border-radius: 12px;
-        padding: 3rem;
-        transition: all 0.3s ease;
-        background-color: #f8f9fa;
-        cursor: pointer;
-    }
-
-        .upload-area:hover {
-            border-color: #0d6efd;
-            background-color: #e7f3ff;
-        }
-
-        .upload-area.drag-over {
-            border-color: #0d6efd;
-            background-color: #e7f3ff;
-            transform: scale(1.02);
-        }
-
-    .preview-area img {
-        transition: transform 0.2s ease;
-    }
-
-        .preview-area img:hover {
-            transform: scale(1.02);
-        }
-
-    .form-control-lg {
-        font-size: 1.1rem;
-        padding: 0.75rem 1rem;
-    }
-
-    .card {
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        transition: box-shadow 0.3s ease;
-    }
-
-        .card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-    .form-check-input:checked {
-        background-color: #198754;
-        border-color: #198754;
-    }
-
-    #charCount {
-        font-weight: bold;
-        color: #0d6efd;
-    }
-</style>
-
-
-<script>
-    $(document).ready(function() {
-        // Load existing image if editing
-        const existingImage = $('#existingImage').val();
-        if (existingImage) {
-            showPreview(existingImage);
-        }
-
-        // Character count for description
-        $('#BrandDescription').on('input', function() {
-            const count = $(this).val().length;
-            $('#charCount').text(count);
-
-            if (count > 450) {
-                $('#charCount').addClass('text-warning');
-            } else {
-                $('#charCount').removeClass('text-warning');
-            }
-        });
-
-        // Initialize character count
-        $('#BrandDescription').trigger('input');
-
-        // File input change handler
-        $('#imageFileInput').change(function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                // Validate file size (5MB)
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('File size must be less than 5MB');
-                    $(this).val('');
-                    return;
-                }
-
-                // Validate file type
-                if (!file.type.match('image.*')) {
-                    alert('Please select a valid image file');
-                    $(this).val('');
-                    return;
-                }
-
-                // Show preview
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    showPreview(e.target.result);
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Show preview
-        function showPreview(imageSrc) {
-            $('#imagePreview').attr('src', imageSrc);
-            $('#uploadContent').hide();
-            $('#previewArea').show();
-        }
-
-        // Remove image
-        $('#removeImageBtn').click(function() {
-            $('#imageFileInput').val('');
-            $('#existingImage').val('');
-            $('#uploadContent').show();
-            $('#previewArea').hide();
-        });
-
-        // Drag and drop handlers
-        const uploadArea = $('#uploadArea');
-
-        uploadArea.on('dragover', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            $(this).addClass('drag-over');
-        });
-
-        uploadArea.on('dragleave', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            $(this).removeClass('drag-over');
-        });
-
-        uploadArea.on('drop', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            $(this).removeClass('drag-over');
-
-            const files = e.originalEvent.dataTransfer.files;
-            if (files.length > 0) {
-                $('#imageFileInput')[0].files = files;
-                $('#imageFileInput').trigger('change');
-            }
-        });
-
-        // Click on upload area
-        uploadArea.click(function(e) {
-            if (e.target === this || $(e.target).closest('.upload-content').length) {
-                $('#imageFileInput').click();
-            }
-        });
-
-        // Status switch handler
-        $('#isActiveSwitch').on('change', function() {
-            if ($(this).is(':checked')) {
-                $('#statusText').text('Active').removeClass('text-danger').addClass('text-success');
-            } else {
-                $('#statusText').text('Inactive').removeClass('text-success').addClass('text-danger');
-            }
-        });
-
-        // Form submission
-        $('#brandForm').submit(function(e) {
-            const brandName = $('#BrandName').val().trim();
-
-            // Show loading state
-            $('#saveBtn').prop('disabled', true)
-                .html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
-        });
-
-    });
-
-</script>
+<script src="~/js/adminjs/brand.js"></script>

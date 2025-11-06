@@ -1,7 +1,7 @@
 ﻿using eCommerce.Application.Features.ProductConfigurationFeature.DTOs;
 using eCommerce.Domain.Entities;
 using eCommerce.Domain.RepositoryContracts;
-using eCommerce.Domain.RepositoryContracts.Products;
+using eCommerce.Domain.RepositoryContracts.Common;
 using MediatR;
 
 namespace eCommerce.Application.Features.ProductConfigurationFeature.Commands

@@ -10,7 +10,7 @@ public partial class Cart
 
     public Guid? CustomerId { get; set; }
 
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     public DateTime? UpdatedAt { get; set; }
 
@@ -18,5 +18,5 @@ public partial class Cart
 
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 
-    public virtual ApplicationUser CartNavigation { get; set; } = null!;
+    public virtual ApplicationUser Customer { get; set; } = null!;
 }

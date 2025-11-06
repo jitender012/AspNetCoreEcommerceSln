@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace eCommerce.Application.Features.BrandFeature.Queries
 {
-    public record GetBrandForEditQuery(Guid BrandId) : IRequest<BrandSaveDTO>;
+    public record GetBrandForEditQuery(Guid BrandId) : IRequest<BrandSaveDto>;
 
     // Handler
-    public class GetBrandForEditQueryHandler : IRequestHandler<GetBrandForEditQuery, BrandSaveDTO>
+    public class GetBrandForEditQueryHandler : IRequestHandler<GetBrandForEditQuery, BrandSaveDto>
     {
         private readonly IBrandRepository _brandRepository;
         private readonly IMapper _mapper;
@@ -24,12 +24,12 @@ namespace eCommerce.Application.Features.BrandFeature.Queries
             _mapper = mapper;
         }
 
-        public async Task<BrandSaveDTO> Handle(GetBrandForEditQuery request, CancellationToken cancellationToken)
+        public async Task<BrandSaveDto> Handle(GetBrandForEditQuery request, CancellationToken cancellationToken)
         {
-            var brand = await _brandRepository.GetByIdAsync(request.BrandId);
+            var brand = await _brandRepository.GetBrandById(request.BrandId);
             if (brand == null) throw new KeyNotFoundException("Brand not found");
 
-            return _mapper.Map<BrandSaveDTO>(brand);
+            return _mapper.Map<BrandSaveDto>(brand);
         }
     }
 

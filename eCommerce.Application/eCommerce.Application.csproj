@@ -20,9 +20,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\CartFeature\Validators\" />
     <Folder Include="Features\FeatureFolders\Commands\" />
     <Folder Include="Features\MeasurementUnitFeature\Commands\" />
     <Folder Include="Features\MeasurementUnitFeature\Validators\" />
+    <Folder Include="Features\OrderFeature\Queries\" />
+    <Folder Include="Features\OrderFeature\Validators\" />
     <Folder Include="Features\ProductConfigurationFeature\Validators\" />
     <Folder Include="Features\ProductImageFeatures\Queries\" />
     <Folder Include="Features\ProductImageFeatures\Validators\" />
@@ -32,7 +35,10 @@
     <Folder Include="Features\ProductVariantFeatures\Handlers\" />
     <Folder Include="Features\ProductVariantFeatures\Queries\" />
     <Folder Include="Features\ProductVariantFeatures\Validators\" />
+    <Folder Include="Features\WarehouseFeature\Validators\" />
+    <Folder Include="Features\WishlistFeature\Validators\" />
     <Folder Include="Services\CustomerServices\" />
+    <Folder Include="Services\VendorServices\" />
   </ItemGroup>
 
 </Project>

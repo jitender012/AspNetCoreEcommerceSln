@@ -21,7 +21,7 @@ namespace eCommerce.Application.Features.BrandFeature.Commands
 
         public async Task<bool> Handle(DeleteBrandCommand request, CancellationToken cancellationToken)
         {
-            var brand = await _brandRepository.GetByIdAsync(request.BrandId);
+            var brand = await _brandRepository.GetBrandById(request.BrandId);
             if (brand == null) throw new KeyNotFoundException("Brand not found");
 
             await _brandRepository.SoftDeleteAsync(request.BrandId);

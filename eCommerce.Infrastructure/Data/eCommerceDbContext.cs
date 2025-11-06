@@ -227,8 +227,8 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
             entity.Property(e => e.AddedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.ProductIvariantd).HasColumnName("ProductIVariantd");
+            entity.Property(e => e.UnitPrice).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.ProductVariantId).HasColumnName("ProductIVariantd");
             entity.Property(e => e.Quantity).HasDefaultValue(1);
             entity.Property(e => e.TotalPrice).HasColumnType("decimal(10, 2)");
 
@@ -237,8 +237,8 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CartItem_Cart");
 
-            entity.HasOne(d => d.ProductIvariantdNavigation).WithMany(p => p.CartItems)
-                .HasForeignKey(d => d.ProductIvariantd)
+            entity.HasOne(d => d.ProductVariant).WithMany(p => p.CartItems)
+                .HasForeignKey(d => d.ProductVariantId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CartItem_Products");
         });

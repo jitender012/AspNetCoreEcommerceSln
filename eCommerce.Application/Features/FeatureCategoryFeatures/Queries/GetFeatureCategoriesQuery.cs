@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using eCommerce.Application.Features.FeatureCategoryFeatures.Dtos;
-using eCommerce.Domain.RepositoryContracts.Products;
+using eCommerce.Domain.RepositoryContracts.Common;
 using MediatR;
 
 namespace eCommerce.Application.Features.FeatureCategoryFeatures.Queries

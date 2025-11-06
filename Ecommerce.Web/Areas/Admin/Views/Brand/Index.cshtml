@@ -18,8 +18,8 @@
                     <button type="button" class="btn btn-outline-secondary" onclick="exportBrands()">
                         <i class="fas fa-download me-2"></i>Export
                     </button>
-                   
-                    <a class="btn btn-primary" href="/admin/brand/create"><i class="fas fa-plus me-2"></i>Add Brand</a>
+
+                    <a class="btn btn-primary" href="/brands/create"><i class="fas fa-plus me-2"></i>Add Brand</a>
                 </div>
             </div>
         </div>
@@ -29,14 +29,14 @@
     <div class="row mb-4">
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="card   h-100" style="background-color: #4A90E2;">
-                <div class="card-body" >
-                    <div class="d-flex justify-content-between" >
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
                         <div style="color:white">
                             <h6 class="mb-2" style="color:white">Total Brands</h6>
                             <h3 class="mb-0" style="color:white">@Model.Count</h3>
                         </div>
                         <div class="align-self-center">
-                            <i style="color:white"  class="fas fa-tags fa-2x opacity-75"></i>
+                            <i style="color:white" class="fas fa-tags fa-2x opacity-75"></i>
                         </div>
                     </div>
                 </div>
@@ -62,7 +62,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h6 style="color:white"  class="card-title mb-2">Inactive Brands</h6>
+                            <h6 style="color:white" class="card-title mb-2">Inactive Brands</h6>
                             <h3 class="mb-0">@Model.Count(b => b.IsActive == false)</h3>
                         </div>
                         <div class="align-self-center">
@@ -118,11 +118,12 @@
                 </div>
                 <div class="col-md-2">
                     <div class="btn-group w-100">
-                        <button type="button" class="btn btn-outline-secondary" id="gridViewBtn" title="Grid View">
-                            <i class="fas fa-th"></i>
-                        </button>
+
                         <button type="button" class="btn btn-primary" id="listViewBtn" title="List View">
                             <i class="fas fa-list"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" id="gridViewBtn" title="Grid View">
+                            <i class="fas fa-th"></i>
                         </button>
                     </div>
                 </div>
@@ -214,7 +215,7 @@
                                     <td>
                                         <span class="badge bg-info">@brand.ProductCount products</span>
                                     </td>
-                                    <td>
+                                    <td id="brand-status-@brand.BrandId">
                                         @if (brand.IsActive == true)
                                         {
                                             <span class="badge bg-success">Active</span>
@@ -231,24 +232,14 @@
                                     </td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
-                                            <button type="button" class="btn btn-outline-info"
-                                                    onclick="viewBrand('@brand.BrandId')" title="View">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-primary"
-                                                    onclick="editBrand('@brand.BrandId')" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
+                                            <a href="brands/@brand.BrandId" class="btn btn-outline-info" title="View"><i class="fas fa-eye"></i></a>
+                                            <a href="brands/edit/@brand.BrandId" class="btn btn-outline-primary" title="Edit"><i class="fas fa-edit"></i></a>
                                             <button type="button" class="btn btn-outline-success"
-                                                    onclick="toggleBrandStatus('@brand.BrandId', @(brand.IsActive == true ? "true" : "false"))"
+                                                    onclick="toggleBrandStatus('@brand.BrandId', @((brand.IsActive).ToString().ToLower()))"
                                                     title="@(brand.IsActive == true ? "Deactivate" : "Activate")">
-                                                <i class="fas fa-@(brand.IsActive == true ? "toggle-on" : "toggle-off")"></i>
+                                                <i id="toggle-@brand.BrandId" class="fas fa-@(brand.IsActive == true ? "toggle-on" : "toggle-off")"></i>
                                             </button>
-                                            <button type="button" class="btn btn-outline-warning"
-                                                    onclick="viewProducts('@brand.BrandId')" title="View Products">
-                                                <i class="fas fa-box"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-danger"
+                                            <button type="button" class="btn btn-outline-danger"                                            
                                                     onclick="deleteBrand('@brand.BrandId')"
                                                     title="Delete">
                                                 <i class="fas fa-trash"></i>
@@ -274,18 +265,21 @@
                                  data-name="@brand.BrandName.ToLower()">
                                 <div class="card h-100">
                                     <div class="position-relative">
-                                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
-                                             style="height: 150px;">
-                                            @if (!string.IsNullOrEmpty(brand.BrandImage))
-                                            {
-                                                <img src="@brand.BrandImage" alt="@brand.BrandName"
-                                                     style="max-width: 80%; max-height: 120px; object-fit: contain;">
-                                            }
-                                            else
-                                            {
-                                                <i class="fas fa-image fa-3x text-muted"></i>
-                                            }
-                                        </div>
+                                        <a href="brands/@brand.BrandId">
+                                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                                                 style="height: 150px;">
+                                                @if (!string.IsNullOrEmpty(brand.BrandImage))
+                                                {
+                                                    <img src="@brand.BrandImage" alt="@brand.BrandName"
+                                                         style="max-width: 80%; max-height: 120px; object-fit: contain;">
+                                                }
+                                                else
+                                                {
+                                                    <i class="fas fa-image fa-3x text-muted"></i>
+                                                }
+                                            </div>
+                                        </a>
+
                                         <div class="position-absolute top-0 start-0 p-2">
                                             <div class="form-check">
                                                 <input class="form-check-input brand-checkbox" type="checkbox"
@@ -329,7 +323,7 @@
                                             </button>
                                             <ul class="dropdown-menu">
                                                 <li>
-                                                    <a class="dropdown-item" href="#" onclick="viewBrand('@brand.BrandId')">
+                                                    <a class="dropdown-item" href="brands/@brand.BrandId">
                                                         <i class="fas fa-eye me-2"></i>View Details
                                                     </a>
                                                 </li>
@@ -417,7 +411,7 @@
                     </div>
                     <div class="form-group">
                         <label for="BrandDescription" class="control-label">Brand Description</label>
-                        <input type="text" name="BrandDescription" class="form-control" placeholder="Enter Description"/>                        
+                        <input type="text" name="BrandDescription" class="form-control" placeholder="Enter Description" />
                         <span validation-for="BrandDescription" class="text-danger"></span>
                     </div>
 
@@ -448,20 +442,6 @@
     </div>
 </div>
 
-<!-- View Brand Details Modal -->
-<div class="modal fade" id="viewBrandModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Brand Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="brandDetailsContent">
-                <!-- Content loaded via AJAX -->
-            </div>
-        </div>
-    </div>
-</div>
 
 <style>
     .brand-card {
@@ -493,16 +473,16 @@
         $(function () {
             @if (TempData["Success"] != null)
             {
-                    <text>
-                        showToast("@TempData["Success"]", "success");
-                    </text>
+            <text>
+                showToast("@TempData["Success"]", "success");
+            </text>
             }
 
             @if (TempData["Error"] != null)
             {
-                    <text>
-                        showToast("@TempData["Error"]", "danger");
-                    </text>
+            <text>
+                showToast("@TempData["Error"]", "danger");
+            </text>
             }
         });
     </script>

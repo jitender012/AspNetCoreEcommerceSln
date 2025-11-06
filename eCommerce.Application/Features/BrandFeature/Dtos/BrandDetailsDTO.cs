@@ -6,22 +6,25 @@ using System.Threading.Tasks;
 
 namespace eCommerce.Application.Features.BrandFeature.Dtos
 {
-    public class BrandDetailsDTO
+    public class BrandDetailsDto
     {
+        public Guid BrandId { get; set; }
         public string BrandName { get; set; } = null!;
-
         public string? BrandImage { get; set; }
-
         public string? BrandDescription { get; set; }
 
-        public bool? IsActive { get; set; }
-
-        public Guid CreatedBy { get; set; }
-
+        // Audit Info
+        public string CreatedByName { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
-
-        public Guid? UpdatedBy { get; set; }
-
+        public string? UpdatedByName { get; set; }
         public DateTime? UpdatedAt { get; set; }
+
+        // Status
+        public bool IsActive { get; set; }
+        public bool IsDeleted { get; set; }
+
+        // Extra Info
+        public int TotalProducts { get; set; }        
+        public List<string>? ProductNames { get; set; }
     }
 }

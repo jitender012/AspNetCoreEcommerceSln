@@ -59,6 +59,13 @@ builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddSignalR();
 
+builder.Services.ConfigureApplicationCookie(option =>
+    {
+        option.LoginPath = "/login";
+    }
+);
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

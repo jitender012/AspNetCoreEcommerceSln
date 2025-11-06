@@ -7,7 +7,7 @@ using MediatR;
 
 namespace eCommerce.Application.Features.BrandFeature.Commands
 {
-    public record CreateBrandCommand(BrandSaveDTO Dto) : IRequest<Guid>;
+    public record CreateBrandCommand(BrandSaveDto Dto) : IRequest<Guid>;
 
     public class CreateBrandHandler : IRequestHandler<CreateBrandCommand, Guid>
     {
@@ -28,9 +28,9 @@ namespace eCommerce.Application.Features.BrandFeature.Commands
             var brand = _mapper.Map<Brand>(request.Dto);
             brand.BrandId = Guid.NewGuid();
             brand.CreatedBy = _userContextService.GetUserId();
-            var result = await _brandRepository.InsertAsync(brand);
+            var id = await _brandRepository.InsertBrandAsync(brand);
 
-            return result.BrandId;
+            return id;
         }
     }
 }

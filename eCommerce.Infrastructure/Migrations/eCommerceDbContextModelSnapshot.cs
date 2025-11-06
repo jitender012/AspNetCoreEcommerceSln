@@ -319,9 +319,6 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Property<Guid>("CartId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CartNavigationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
@@ -342,7 +339,7 @@ namespace eCommerce.Infrastructure.Migrations
                     b.HasKey("CartId")
                         .HasName("PK_UserCart_1");
 
-                    b.HasIndex("CartNavigationId");
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("Cart", "User");
                 });
@@ -366,7 +363,7 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10, 2)");
 
-                    b.Property<Guid>("ProductIvariantd")
+                    b.Property<Guid>("ProductVariantId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("ProductIVariantd");
 
@@ -382,7 +379,7 @@ namespace eCommerce.Infrastructure.Migrations
 
                     b.HasIndex("CartId");
 
-                    b.HasIndex("ProductIvariantd");
+                    b.HasIndex("ProductVariantId");
 
                     b.ToTable("CartItem", "User");
                 });
@@ -1664,13 +1661,11 @@ namespace eCommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("eCommerce.Domain.Entities.Cart", b =>
                 {
-                    b.HasOne("eCommerce.Domain.IdentityEntities.ApplicationUser", "CartNavigation")
+                    b.HasOne("eCommerce.Domain.IdentityEntities.ApplicationUser", "Customer")
                         .WithMany()
-                        .HasForeignKey("CartNavigationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CustomerId");
 
-                    b.Navigation("CartNavigation");
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("eCommerce.Domain.Entities.CartItem", b =>
@@ -1681,15 +1676,15 @@ namespace eCommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_CartItem_Cart");
 
-                    b.HasOne("eCommerce.Domain.Entities.ProductVariant", "ProductIvariantdNavigation")
+                    b.HasOne("eCommerce.Domain.Entities.ProductVariant", "ProductVariant")
                         .WithMany("CartItems")
-                        .HasForeignKey("ProductIvariantd")
+                        .HasForeignKey("ProductVariantId")
                         .IsRequired()
                         .HasConstraintName("FK_CartItem_Products");
 
                     b.Navigation("Cart");
 
-                    b.Navigation("ProductIvariantdNavigation");
+                    b.Navigation("ProductVariant");
                 });
 
             modelBuilder.Entity("eCommerce.Domain.Entities.FeatureOption", b =>

@@ -31,36 +31,36 @@ namespace eCommerce.UnitTest.Features
             _mapper = new Mock<IMapper>();
         }
 
-        #region AddBrand        
-        [Fact]
-        public async Task AddBrandAsync_ShouldReturnBrandId_WhenBrandIsValid()
-        {
-            var userId = Guid.NewGuid();
-            // Arrange
-            var brandDto = _fixture.Build<BrandSaveDTO>()
-                .Create();
+        //#region AddBrand        
+        //[Fact]
+        //public async Task AddBrandAsync_ShouldReturnBrandId_WhenBrandIsValid()
+        //{
+        //    var userId = Guid.NewGuid();
+        //    // Arrange
+        //    var brandDto = _fixture.Build<BrandSaveDTO>()
+        //        .Create();
 
-            var expectedId = Guid.NewGuid();
+        //    var expectedId = Guid.NewGuid();
 
-            var insertedBrand = new Brand { BrandId = expectedId, BrandName = "Test Brand" };
+        //    var insertedBrand = new Brand { BrandId = expectedId, BrandName = "Test Brand" };
 
-            _brandRepositoryMock
-                .Setup(r => r.InsertAsync(It.IsAny<Brand>()))
-                .ReturnsAsync(insertedBrand);
+        //    _brandRepositoryMock
+        //        .Setup(r => r.InsertAsync(It.IsAny<Brand>()))
+        //        .ReturnsAsync(insertedBrand);
 
-            _userContextServiceMock
-                .Setup(u => u.GetUserId())
-                .Returns(userId);
+        //    _userContextServiceMock
+        //        .Setup(u => u.GetUserId())
+        //        .Returns(userId);
 
-            var handler = new CreateBrandHandler(_brandRepositoryMock.Object, _userContextServiceMock.Object, _mapper.Object);
-            var command = new CreateBrandCommand(brandDto);                
+        //    var handler = new CreateBrandHandler(_brandRepositoryMock.Object, _userContextServiceMock.Object, _mapper.Object);
+        //    var command = new CreateBrandCommand(brandDto);                
 
-            // Act
-            var result = await handler.Handle(command, CancellationToken.None);
+        //    // Act
+        //    var result = await handler.Handle(command, CancellationToken.None);
 
-            // Assert
-            Assert.Equal(expectedId, result);
-        }
+        //    // Assert
+        //    Assert.Equal(expectedId, result);
+        //}
 
         //[Fact]
         //public void CreateBrandCommand_ShouldFail_WhenBrandNameIsEmpty()

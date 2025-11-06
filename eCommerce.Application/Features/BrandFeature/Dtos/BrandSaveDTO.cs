@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace eCommerce.Application.Features.BrandFeature.Dtos
 {
-    public class BrandSaveDTO
+    public class BrandSaveDto
     {
         public Guid BrandId { get; set; }
 

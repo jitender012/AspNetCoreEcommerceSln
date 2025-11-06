@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using eCommerce.Application.Features.MeasurementUnitFeature.Dtos;
-using eCommerce.Domain.RepositoryContracts.Products;
+using eCommerce.Domain.RepositoryContracts.Common;
 using MediatR;
 using System;
 using System.Collections.Generic;

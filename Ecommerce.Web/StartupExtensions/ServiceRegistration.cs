@@ -6,11 +6,14 @@ using eCommerce.Application.ServiceContracts.VendorServiceContracts;
 using eCommerce.Application.Services;
 using eCommerce.Application.Services.AdminServices;
 using eCommerce.Application.Services.ProductServices;
-using eCommerce.Application.Services.VendorServices;
 using eCommerce.Domain.RepositoryContracts;
-using eCommerce.Domain.RepositoryContracts.Products;
+using eCommerce.Domain.RepositoryContracts.Customer;
+using eCommerce.Domain.RepositoryContracts.Common;
+using eCommerce.Domain.RepositoryContracts.Seller;
 using eCommerce.Infrastructure.Repositories;
-using eCommerce.Infrastructure.Repositories.Products;
+using eCommerce.Infrastructure.Repositories.Common;
+using eCommerce.Infrastructure.Repositories.Customer;
+using eCommerce.Infrastructure.Repositories.Seller;
 
 namespace eCommerce.Web.StartupExtensions
 {
@@ -20,8 +23,7 @@ namespace eCommerce.Web.StartupExtensions
         {
 
             //Services dependency injection
-            services.AddScoped<IFileUploadService, FileUploadService>();           
-            services.AddScoped<IWarehouseService, WarehouseService>();
+            services.AddScoped<IFileUploadService, FileUploadService>();                       
             services.AddScoped<IProductCategoryService, CategoryService>();            
             services.AddScoped<IFeatureCategoryService, FeatureCategoryService>();
             services.AddScoped<IProductFeatureService, ProductFeatureService>();
@@ -32,8 +34,7 @@ namespace eCommerce.Web.StartupExtensions
 
             //Services dependency resolve
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
-            services.AddScoped<IBrandRepository, BrandRepository>();
-            services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+            services.AddScoped<IBrandRepository, BrandRepository>();            
 
             services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>(); 
             services.AddScoped<IProductRepository, ProductRepository>();
@@ -44,6 +45,10 @@ namespace eCommerce.Web.StartupExtensions
             services.AddScoped<IProductFeatureRepository, ProductFeatureRepository>();           
             services.AddScoped<IMeasurementUnitRepository, MeasurementUnitRepository>();
             services.AddScoped<IProductConfigurationRepository, ProductConfigurationRepository>();
+            services.AddScoped<IWishlistRepository, WishlistRepository>();
+            services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+            services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<IOrderRepository,OrderRepository>();
         }
     }
 }

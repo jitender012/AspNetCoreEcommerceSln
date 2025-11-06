@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using eCommerce.Application.Common.Exceptions;
 using eCommerce.Application.DTO.ProductDTOs;
 using eCommerce.Application.ServiceContracts.ProductServiceContracts;
-using eCommerce.Domain.RepositoryContracts.Products;
+using eCommerce.Domain.RepositoryContracts.Common;
 using Microsoft.Extensions.Logging;
 
 namespace eCommerce.Application.Services.ProductServices

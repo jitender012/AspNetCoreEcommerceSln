@@ -7,20 +7,14 @@ using System.Threading.Tasks;
 
 namespace eCommerce.Domain.RepositoryContracts
 {
-    public interface IBrandRepository  : IBaseRepository<Brand>
+    public interface IBrandRepository  
     {
-        /// <summary>
-        /// Retrieves a Brand entity by its unique identifier.  
-        /// </summary>
-        /// <param name="id">The unique identifier of the Brand.</param>
-        /// <returns>
-        /// A task that represents the asynchronous operation. 
-        /// The task result contains the Brand entity if found; otherwise, null.
-        /// </returns>
-        //Task<Brand?> GetBrandById(Guid id);
+    
+        Task<Brand?> GetBrandById(Guid id);
         Task<List<Brand>> GetAllBrands();
-        //Task<Guid> CreateAsync(Brand brand);
-        //Task UpdateAsync(Brand brand);
+        Task<Guid> InsertBrandAsync(Brand brand);
+        Task UpdateAsync(Brand brand);
+        Task UpdateStatusAsync(Guid brandId);
         Task<bool> SoftDeleteAsync(Guid brandId);
         Task<bool> ExistsByNameAsync(string brandName);
     }

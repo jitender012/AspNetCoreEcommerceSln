@@ -5,7 +5,7 @@ using FluentValidation;
 
 namespace eCommerce.Application.Features.BrandFeature.Validators
 {
-    public class BrandSaveValidator : AbstractValidator<BrandSaveDTO>
+    public class BrandSaveValidator : AbstractValidator<BrandSaveDto>
     {
         private readonly IBrandRepository _brandRepository;
         public BrandSaveValidator(IBrandRepository brandRepository)

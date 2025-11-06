@@ -1,91 +1,213 @@
 ﻿@model eCommerce.Web.Areas.Admin.Models.Brand.BrandSaveVM
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
 <h4>Update Brand</h4>
 <hr />
 
-<div class="card py-4 px-5">
-
-    @using (Html.BeginForm("Edit", "Brand", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        @Html.AntiForgeryToken()
-        <div class="form row">
-            <div class="col-12 col-md-6 col-lg-6 mt-3">
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                @Html.HiddenFor(model => model.BrandId)
-
-                <div class="form-group mb-2">
-                    <label class="control-label">Brand Name</label>
-                    <div class="">
-                        @Html.EditorFor(model => model.BrandName, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.BrandName, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group mb-2">
-                    <label class="control-label">Brand Description</label>
-                    <div class="">
-                        @Html.TextAreaFor(model => model.BrandDescription, new  { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.BrandDescription, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group mb-2">
-                    <label class="control-label ">Image</label>
-                    <div class="">
-                        <input type="file" name="ImageFile" class="form-control" id="ImageFile" />
-                        @Html.ValidationMessageFor(model => model.ImageFile, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
+<div class="container-fluid py-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <div class="col-md-offset-2 my-4">
-                        <input type="submit" value="Update" class="btn btn-success w-100 bg-ad-primary" />
-                    </div>
+                    <h1 class="h3 mb-0">
+                        <i class="fas fa-plus-circle me-2"></i>
+                        Edit Brand
+                    </h1>
+                    <p class="text-muted mb-0">Edit brand for product catalog</p>
+                </div>
+                <div>
+                    <a href="/brands" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Brands
+                    </a>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-6 mt-3" id="oldImage">
-                <div class="form-group">
-                    <div class="col-md-offset-2 d-flex justify-content-center">
-                        @Html.HiddenFor(model => model.BrandImage, new { htmlAttributes = new { @class = "form-control" } })
-                        @if (Model.BrandImage != null)
-                        {
-                            <img src="@Url.Content(Model.BrandImage)" alt="Image Preview" style="max-width: 200px; max-height:200px; " />
-                        }
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-6 mt-3">
-                <div class="form-group">
-                    <div class="col-md-offset-2 d-flex justify-content-center">
-                        <img id="imagePreview" src="#" alt="Image Preview" style="max-width: 200px; max-height:200px; display: none;" />
-                    </div>
-                </div>
-            </div>
-
         </div>
-    }
-
-    <div class="card-footer">
-        @Html.ActionLink("Back to List", "Index")
     </div>
+    <form action="/brands/edit" enctype="multipart/form-data" method="post">            
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Brand Information Card -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-info-circle me-2"></i>Brand Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 mb-4">
+                                <input type="hidden" name="BrandId" value="@Model.BrandId"/>
+                                <label asp-for="BrandName" class="form-label fw-semibold">
+                                    Brand Name <span class="text-danger">*</span>
+                                </label>
+                                @Html.TextBoxFor(x => x.BrandName, new { @class = "form-control form-control-lg", placeholder = "Enter brand name (e.g., Nike, Apple, Samsung)", maxlength = "100" })
+                                @Html.ValidationMessageFor(x => x.BrandName, "", new { @class = "text-danger" })
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    This will be displayed across the website
+                                </small>
+                            </div>
+
+                            <div class="col-md-12 mb-4">
+                                <label asp-for="BrandDescription" class="form-label fw-semibold">
+                                    Brand Description
+                                </label>
+                                @Html.TextAreaFor(x => x.BrandDescription, new { @class = "form-control", rows = "5", placeholder = "Enter brand description, story, or additional information...", maxlength = "500" })
+                                @Html.ValidationMessageFor(x => x.BrandDescription, "", new { @class = "text-danger" })
+                                <div class="d-flex justify-content-between mt-1">
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Optional: Add a brief description about the brand
+                                    </small>
+                                    <small class="text-muted">
+                                        <span id="charCount">0</span> / 500 characters
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Brand Logo Card -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-image me-2"></i>Brand Logo
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label asp-for="ImageFile" class="form-label fw-semibold">
+                                    Upload Logo
+                                </label>
+                                @{
+                                    var isImageExists = Model.BrandImage != null;
+                                }
+                                <!-- Upload Area -->
+                                <div class="upload-area" id="uploadArea">
+
+                                    <input type="file" name="ImageFile" class="d-none"
+                                           id="imageFileInput" accept="image/*" />
+                                    <input name="BrandImage" type="hidden" id="existingImagePath"
+                                           value="@(Model.BrandImage == null ? "" : Url.Content(Model.BrandImage))" />
+
+                                    @Html.ValidationMessageFor(model => model.ImageFile, "", new { @class = "text-danger" })
+
+                                    <div class="upload-content text-center" id="uploadContent">
+                                        <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                                        <h5>Drop your logo here or click to browse</h5>
+                                        <p class="text-muted mb-3">
+                                            Supported formats: JPG, PNG, GIF, SVG<br>
+                                            Maximum size: 5MB<br>
+                                            Recommended: 500x500px (Square)
+                                        </p>
+                                        <button type="button" class="btn btn-primary" onclick="$('#imageFileInput').click()">
+                                            <i class="fas fa-folder-open me-2"></i>Choose File
+                                        </button>
+                                    </div>
+
+                                    <!-- Preview Area -->
+                                    <div class="preview-area" id="previewArea" style="display: none;">
+                                        <div class="text-center">
+                                            <img id="imagePreview"  src="" alt="Preview" class="img-fluid mb-3"
+                                                 style="max-height: 300px; max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <button type="button" class="btn btn-outline-primary"
+                                                        onclick="$('#imageFileInput').click()">
+                                                    <i class="fas fa-sync-alt me-2"></i>Change Logo
+                                                </button>
+                                                <button type="button" class="btn btn-outline-danger" id="removeImageBtn">
+                                                    <i class="fas fa-trash me-2"></i>Remove
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Status Card -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-toggle-on me-2"></i>Publication Status
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check form-switch">
+
+                            @Html.CheckBoxFor(x => x.IsActive, new { @class = "form-check-input", value = "true", id = "isActiveSwitch", style = "width: 3em; height: 1.5em;" })
+                        </div>
+                        <hr>
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            <span>This brand is visible to sellers and customers</span>
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Guidelines Card -->
+                <div class="card mb-4 border-info">
+                    <div class="card-header text-white h-bg" >
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-lightbulb me-2"></i>Logo Guidelines
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0 small">
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Use high-resolution images
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Transparent background preferred
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Square or horizontal orientation
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Maintain aspect ratio
+                            </li>
+                            <li class="mb-0">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Avoid text-heavy logos
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Action Buttons Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg" id="saveBtn">
+                                <i class="fas fa-save me-2"></i>
+                                Save Changes
+                            </button>
+                            <a href="/brands" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
-
-@section Scripts {
-
-    <script>
-        $(document).ready(function () {
-            $("#ImageFile").change(function () {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#imagePreview').attr('src', e.target.result);
-                    $('#oldImage').hide();
-                    $('#imagePreview').show();
-                }
-                reader.readAsDataURL(this.files[0]);
-            });
-        });
-    </script>
-}
+<script src="~/js/adminjs/brand.js"></script>

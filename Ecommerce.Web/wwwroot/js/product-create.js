@@ -50,7 +50,7 @@ $(document).ready(
             allowClear: true
         });
 
-        $('#categoryDropdown').change(function () {
+        $('#categoryDropdown').on('change', function () {
             let categoryId = $(this).val();
 
             if (categoryId) {

@@ -6,16 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] Seller Dashboard</title>
 
-    <link href="~/lib/datatables.net-bs5/datatables.bootstrap5.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
-    <link href="~/css/app.css" rel="stylesheet" />
-    @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
+    <link href="~/css/bootstrap.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/css/site.css" asp-append-version="true" rel="stylesheet" />
+
+    @* <link href="~/css/app.css" rel="stylesheet" /> *@
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
+    <link href="~/lib/datatables.net-bs5/datatables.bootstrap5.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    @* <link rel="stylesheet" href="~/Ecommerce.Web.styles.css" asp-append-version="true" /> *@
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-thin-straight/css/uicons-thin-straight.css'>
 </head>
 <body>
@@ -27,113 +27,151 @@
             <hr class="text-white m-0 p-0" />
             <div class="sidebar-content js-simplebar">
 
-                <ul class="sidebar-nav">
-                    <li class="sidebar-header">
-                        Pages
-                    </li>
-
+                <ul class="sidebar-nav">                   
+                    @* 1. Dashboard *@
                     <li class="sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString()  == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">
                         <a class="sidebar-link" href="~/Seller/Home/Index">
-                            <i class="align-middle" data-feather="home"></i> <span class="align-middle">Home</span>
+                            <i class="align-middle" data-feather="home"></i> <span class="align-middle">Dashboard</span>
                         </a>
                     </li>
 
+                    @* 2. Products *@
+                    <li class="sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "FeatureCategory" ? "active" : "")">
 
-                    <li class=" @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Product" ? "active" : "")">
-                        <a class="sidebar-link " href="~/Seller/Product/Index">
-                            <i class="align-middle" data-feather="check-square"></i><span class="align-middle">Listings</span>
+                        <a class="sidebar-link " data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" href="#adminLeftNavCollapse1" role="button">
+                            <i class="align-middle" data-feather="settings"></i> <span class="align-middle ">Products</span>
                         </a>
-                    </li>
-
-                    <li class="sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString()  == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "FeatureCategory" ? "active" : "")">
-
-                        <a class="sidebar-link " data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" href="#adminLeftNavCollapse1" role="button">
-                            <i class="align-middle" data-feather="settings"></i> <span class="align-middle ">Your Stores </span>
-                        </a>
-                        <div id="collapseOne" class="accordion-collapse collapse " data-bs-parent="#accordionExample">
-                            <div style="display: grid;justify-content: center;">
+                        <div id="collapseTwo" class="accordion-collapse collapse " data-bs-parent="#accordionExample">
+                            <div style="display: grid;padding-left: 35px">
                                 <a class="sidebar-link " href="~/Admin/FeatureCategory/Index">
-                                    <span class="align-middle">Feature Category</span>
+                                    <span class="align-middle">Add New Product</span>
                                 </a>
 
-                                <a class="sidebar-link " href="~/Admin/ProductFeature/Index">
-                                    <span class="align-middle">Product Features</span>
+                                <a class="sidebar-link " href="~/Seller/Product/Index">
+                                    <span class="align-middle">My Products</span>
                                 </a>
 
                                 <a class="sidebar-link " href="~/Admin/Category/Index">
-                                    <span class="align-middle">Feature Options</span>
+                                    <span class="align-middle">Discounts/Offers</span>
                                 </a>
                             </div>
 
                         </div>
                     </li>
 
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="pages-sign-up.html">
-                            <i class="align-middle" data-feather="user-plus"></i> <span class="align-middle">Orders</span>
+                    @* 3. Inventory *@
+                    <li class=" sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "OrderManagement" ? "active" : "")">
+
+                        <a data-bs-toggle="collapse" data-bs-target="#inventoryCollapse" aria-expanded="false" aria-controls="inventoryCollapse" class="sidebar-link " href="#adminLeftNavCollapse1" role="button">
+                            <i class="align-middle" data-feather="settings"></i> <span class="align-middle ">Inventory</span>
+                        </a>
+                        <div id="inventoryCollapse" class="accordion-collapse collapse " data-bs-parent="#accordionExample">
+                            <div style="display: grid;padding-left: 35px">
+                                <a class="sidebar-link" href="#">
+                                    <span class="align-middle">Stock Levels</span>
+                                </a>
+                                <a class="sidebar-link " href="#">
+                                    <span class="align-middle">Low Stock</span>
+                                </a>                                
+                            </div>
+
+                        </div>
+                    </li>
+
+                    @* 4. Store / Warehouse *@
+                    <li class=" sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "OrderManagement" ? "active" : "")">
+
+                        <a data-bs-toggle="collapse" data-bs-target="#storesCollapse" aria-expanded="false" aria-controls="storesCollapse" class="sidebar-link " href="#adminLeftNavCollapse1" role="button">
+                            <i class="align-middle" data-feather="settings"></i> <span class="align-middle ">Store</span>
+                        </a>
+                        <div id="storesCollapse" class="accordion-collapse collapse " data-bs-parent="#accordionExample">
+                            <div style="display: grid;padding-left: 35px">
+                                <a class="sidebar-link" href="#">
+                                    <span class="align-middle">My Stores</span>
+                                </a>
+                                <a class="sidebar-link " href="#">
+                                    <span class="align-middle">Add Store</span>
+                                </a>
+                                <a class="sidebar-link " href="#">
+                                    <span class="align-middle">Store Staff</span>
+                                </a>
+                            </div>
+
+                        </div>
+                    </li>
+                 
+                    
+                    @* 5. Orders *@
+                    <li class="sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">
+                        <a class="sidebar-link" href="~/Seller/Home/Index">
+                            <i class="align-middle" data-feather="home"></i> <span class="align-middle">Orders</span>
                         </a>
                     </li>
 
-                    <li class="sidebar-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Store" ? "active" : "")">
-                        <a class="sidebar-link" href="~/Admin/Store/Index">
-                            <i class="align-middle " data-feather="book"></i> <span class="align-middle">Payments</span>
+                    @* 6. Payments *@
+                    <li class=" sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "OrderManagement" ? "active" : "")">
+
+                        <a data-bs-toggle="collapse" data-bs-target="#paymentsCollapse" aria-expanded="false" aria-controls="paymentsCollapse" class="sidebar-link " href="#adminLeftNavCollapse1" role="button">
+                            <i class="align-middle" data-feather="settings"></i> <span class="align-middle ">Payments</span>
+                        </a>
+                        <div id="paymentsCollapse" class="accordion-collapse collapse " data-bs-parent="#accordionExample">
+                            <div style="display: grid;padding-left: 35px">
+                                <a class="sidebar-link" href="#">
+                                    <span class="align-middle">Payment History</span>
+                                </a>
+                                <a class="sidebar-link " href="#">
+                                    <span class="align-middle">Transactions</span>
+                                </a>                                
+                            </div>
+
+                        </div>
+                    </li>
+
+                    @* 7. Feedback *@
+                    <li class=" sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "OrderManagement" ? "active" : "")">
+
+                        <a data-bs-toggle="collapse" data-bs-target="#feedbackCollapse" aria-expanded="false" aria-controls="feedbackCollapse" class="sidebar-link " href="#adminLeftNavCollapse1" role="button">
+                            <i class="align-middle" data-feather="settings"></i> <span class="align-middle ">Feedback</span>
+                        </a>
+                        <div id="feedbackCollapse" class="accordion-collapse collapse " data-bs-parent="#accordionExample">
+                            <div style="display: grid;padding-left: 35px">
+                                <a class="sidebar-link" href="#">
+                                    <span class="align-middle">Product Reviews</span>
+                                </a>
+                                <a class="sidebar-link " href="#">
+                                    <span class="align-middle">Customer Q&A</span>
+                                </a>
+                            </div>
+
+                        </div>
+                    </li>
+
+                    @* 8. Notifications *@
+                    <li class="sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")">
+                        <a class="sidebar-link" href="~/Seller/Home/Index">
+                            <i class="align-middle" data-feather="home"></i> <span class="align-middle">Notifications</span>
                         </a>
                     </li>
 
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="pages-blank.html">
-                            <i class="align-middle" data-feather="book"></i> <span class="align-middle">Reports</span>
+                    @* 9. Settings *@
+                    <li class=" sidebar-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "OrderManagement" ? "active" : "")">
+
+                        <a data-bs-toggle="collapse" data-bs-target="#settingsCollapse" aria-expanded="false" aria-controls="settingsCollapse" class="sidebar-link " href="#adminLeftNavCollapse1" role="button">
+                            <i class="align-middle" data-feather="settings"></i> <span class="align-middle ">Settings</span>
                         </a>
-                    </li>
-
-                    <li class="sidebar-header">
-                        Tools & Components
-                    </li>
-
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="ui-buttons.html">
-                            <i class="align-middle" data-feather="square"></i> <span class="align-middle">Buttons</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="ui-forms.html">
-                            <i class="align-middle" data-feather="check-square"></i> <span class="align-middle">Forms</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="ui-cards.html">
-                            <i class="align-middle" data-feather="grid"></i> <span class="align-middle">Cards</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="ui-typography.html">
-                            <i class="align-middle" data-feather="align-left"></i> <span class="align-middle">Typography</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="icons-feather.html">
-                            <i class="align-middle" data-feather="coffee"></i> <span class="align-middle">Icons</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-header">
-                        Plugins & Addons
-                    </li>
-
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="charts-chartjs.html">
-                            <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Charts</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="maps-google.html">
-                            <i class="align-middle" data-feather="map"></i> <span class="align-middle">Maps</span>
-                        </a>
+                        <div id="settingsCollapse" class="accordion-collapse collapse " data-bs-parent="#accordionExample">
+                            <div style="display: grid;padding-left: 35px">
+                                <a class="sidebar-link" href="#">
+                                    <span class="align-middle">Store Profile</span>
+                                </a>
+                                <a class="sidebar-link " href="#">
+                                    <span class="align-middle">Bank Details</span>
+                                </a>
+                                <a class="sidebar-link " href="#">
+                                    <span class="align-middle">Change Password</span>
+                                </a>
+                            </div>
+                        </div>
                     </li>
                 </ul>
 
@@ -348,15 +386,9 @@
     </div>
 
     <script src="~/js/app.js"></script>
-    @* Default Scripts *@
-    @* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
+    @* Default Scripts *@    
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-    @* Default Scripts end *@
-
-    <script>
-
-
-    </script>
+    
+    
 </body>
 </html>

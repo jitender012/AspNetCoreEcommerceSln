@@ -2,7 +2,7 @@
 using eCommerce.Application.Features.FeatureCategoryFeatures.Dtos;
 using eCommerce.Application.ServiceContracts;
 using eCommerce.Domain.Entities;
-using eCommerce.Domain.RepositoryContracts.Products;
+using eCommerce.Domain.RepositoryContracts.Common;
 using MediatR;
 using System;
 using System.Collections.Generic;
