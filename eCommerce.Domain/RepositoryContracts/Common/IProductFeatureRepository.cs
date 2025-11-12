@@ -39,6 +39,6 @@ namespace eCommerce.Domain.RepositoryContracts.Common
 
         Task<int> LinkToSpecificProductCategoryAsync(int featureId, int categoryId);
 
-        //Task<List<ProductFeature>> GetProductFeaturesAsync(int categoryId = 0, int productCategoryId = 0);
+        Task<List<ProductFeature>> GetProductFeaturesByCategoryIdAsync(int categoryId);
     }
 }

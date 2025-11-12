@@ -34,18 +34,15 @@ namespace eCommerce.Domain.RepositoryContracts.Common
 
         #region Read Methods
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="productCategory"></param>
-        /// <returns></returns>
         Task<IEnumerable<FeatureCategory>> FetchAllAsync();
-        //Task<IEnumerable<FeatureCategory>> FetchByProductCategoryIdAsync(int productCategory );
+        //Task<IEnumerable<FeatureCategory>> FetchByProductCategoryIdAsync(int productCategory);
         //Task<bool> UnlinkCategoryFeature(int productCategoryId, int featureCategoryId);
         Task<bool> LinkFeatCatToProdCat(int featureCategoryId, int productCategoryId);
 
         Task<FeatureCategory> FindByIdAsync(int id);
         Task<FeatureCategory> FindDetailsAsync(int id);
+
+
         #endregion
 
         public Task<bool> RemoveAsync(int id);

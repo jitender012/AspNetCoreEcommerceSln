@@ -16,7 +16,7 @@ namespace eCommerce.Application.ServiceContracts.AdminServiceContracts
         Task<List<CategoryDTO>> GetAllAsync();
         Task<List<CategoryDTO>> GetMainCategoriesAsync();
         Task<List<CategoryDTO>> GetSubCategoriesAsync();
-        Task<List<CategoryDTO>> GetChildCategoriesAsync();
+        Task<List<CategoryDTO>> GetLeafCategoriesAsync();
         Task<List<CategoryDTO>> GetAllCategoriesHierarchicalAsync();
         Task<CategoryDTO> GetCategoryByIdAsync(int id);
         //Task<List<CategoryDTO>> GetByFeatureCategoryIdAsync(int id);

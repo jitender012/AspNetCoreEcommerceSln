@@ -59,9 +59,19 @@ namespace eCommerce.Web.StartupExtensions
                 .ForMember(dest => dest.VariantCount,
                     opt => opt.MapFrom(src => src.ProductVariants.Count));
 
-            CreateMap<Product, ProductDetailsDto>();
+            CreateMap<Product, ProductDetailsDto>()
+                .ForMember(dest => dest.BrandName,
+                    opt => opt.MapFrom(src => src.Brand.BrandName))
+                .ForMember(dest => dest.CategoryName,
+                    opt => opt.MapFrom(src => src.Category!.CategoryName));
 
             CreateMap<ProductVariant, ProductVariantDto>()
+                .ForMember(dest => dest.ImageUrl,
+                    opt => opt.MapFrom(src => src.ProductImages
+                                    .Select(x => x.ImageUrl)
+                                    .FirstOrDefault()));
+
+            CreateMap<ProductVariant, ProductVariantDetailsDto>()
                 .ForMember(dest => dest.ImageUrls,
                     opt => opt.MapFrom(src => src.ProductImages.Select(pi => pi.ImageUrl)));
 
@@ -127,18 +137,15 @@ namespace eCommerce.Web.StartupExtensions
             CreateMap<MeasurementUnit, MeasurementUnitDTO>();
 
             CreateMap<FeatureCategory, FeatureCategoryListDTO>();
-            //CreateMap<FeatureCategory, FeatureCategoryDetailsDTO>()
-            //    .ForMember(dest => dest.ProductFeatures,
-            //        opt => opt.MapFrom(src => src.ProductFeatures
-            //        .Select(f => new IdNameDto<int> { Id = f.ProductFeaturesId, Name = f.Name }).ToList()
-            //        ))
-            //    .ForMember(dest => dest.ProductCategories,
-            //        opt => opt.MapFrom(src => src.ProductCategoryFeatures
-            //        .Select(x => new IdNameDto<int>
-            //            {
-            //                Id = x.ProductCategory.ProductCategoryId,
-            //                Name = x.ProductCategory.CategoryName
-            //            })));
+            CreateMap<FeatureCategory, FeatureCategoryDetailsDTO>()
+                .ForMember(dest => dest.ProductFeatures,
+                    opt => opt.MapFrom(src => src.ProductFeatures
+                    .Select(f => new IdNameDto<int>
+                        {
+                            Id = f.ProductFeaturesId,
+                            Name = f.Name
+                        }).ToList()
+                    ));
             CreateMap<FeatureCategorySaveDto, FeatureCategory>();
 
             CreateMap<ProductCategory, ProductCategoryListDto>()
@@ -152,8 +159,8 @@ namespace eCommerce.Web.StartupExtensions
 
             CreateMap<BrandListDTO, BrandListVM>();
             CreateMap<BrandDetailsDto, BrandVM>();
-            CreateMap<BrandSaveDto, BrandSaveVM>();            
-            CreateMap<BrandSaveVM, BrandSaveDto>();            
+            CreateMap<BrandSaveDto, BrandSaveVM>();
+            CreateMap<BrandSaveVM, BrandSaveDto>();
 
             CreateMap<FeatureListDTO, FeatureListVM>();
             CreateMap<FeatureDetailsDTO, FeatureDetailsVM>();
@@ -171,7 +178,7 @@ namespace eCommerce.Web.StartupExtensions
             #region For Seller Models
             // Domain to DTO and DTO to Domain
             CreateMap<ProductSaveDTO, Product>();
-            CreateMap<ProductVariant, ProductVariantDto>();
+            CreateMap<ProductVariant, ProductVariantDetailsDto>();
 
             CreateMap<WarehouseSaveDto, Warehouse>();
             CreateMap<Warehouse, WarehouseDto>();

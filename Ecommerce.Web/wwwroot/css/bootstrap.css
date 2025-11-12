@@ -1,4 +1,12 @@
 :root, [data-bs-theme=light] {
+    --primary-blue: #4A90E2;
+    --success-green: #10B981;
+    --warning-orange: #F59E0B;
+    --danger-red: #EF4444;
+    --info-teal: #14B8A6;
+    --light-gray: #F3F4F6;
+    --border-gray: #E5E7EB;
+
     --bs-blue: #3b7ddd;
     --bs-indigo: #0a0a0a;
     --bs-purple: #6f42c1;
@@ -13681,7 +13689,9 @@ textarea.form-control-lg {
 .card-title {
     color: #939ba2;
     font-size: .925rem;
-    font-weight: 600
+    font-weight: 600;
+    display:flex;
+    align-items:center;
 }
 
 .card-subtitle {
@@ -13738,7 +13748,7 @@ textarea.form-control-lg {
     direction: ltr;
     flex: 1;
     max-width: 100vw;
-    padding: 1.5rem 1.5rem .75rem;
+    padding: 0rem 1.5rem .75rem;
     width: 100vw
 }
 
@@ -13751,7 +13761,7 @@ textarea.form-control-lg {
 
 @media(min-width:992px) {
     .content {
-        padding: 3rem 3rem 1.5rem
+        padding: 2.25rem
     }
 }
 
@@ -14147,12 +14157,12 @@ body {
 }
 
 .sidebar.collapsed {
-    margin-left: -260px
+    margin-left: -300px
 }
 
 @media(min-width:1px)and (max-width:991.98px) {
     .sidebar {
-        margin-left: -260px
+        margin-left: -300px
     }
 
         .sidebar.collapsed {

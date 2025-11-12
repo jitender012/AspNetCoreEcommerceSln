@@ -11,6 +11,6 @@ namespace eCommerce.Web.ViewModels.ProductVariantVMs
         public int? Quantity { get; set; }
         public decimal Price { get; set; }        
         public ProductStatus ProductStatus { get; set; }
-        public List<IFormFile>? ProuctImages { get; set; } = new();
+        public List<IFormFile>? ProductImages { get; set; } = new();
     }
 }

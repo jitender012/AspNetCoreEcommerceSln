@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace eCommerce.Application.Features.WarehouseFeature.Commands
 {
-    public record DeleteWarehouseCommand(int id) : IRequest<bool>;
+    public record DeleteWarehouseCommand(Guid id) : IRequest<bool>;
     public class DeleteWarehouseCommandHandler : IRequestHandler<DeleteWarehouseCommand, bool>
     {
         private readonly IWarehouseRepository _warehouseRepository;

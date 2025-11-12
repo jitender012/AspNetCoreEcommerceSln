@@ -14,8 +14,6 @@ namespace eCommerce.Application.Features.ProductFeatures.Dtos
 
         public string ProductName { get; set; } = null!;
 
-        public decimal Price { get; set; }
-
         public string? Description { get; set; }
 
         public string? Url { get; set; }

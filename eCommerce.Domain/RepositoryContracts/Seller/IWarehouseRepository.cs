@@ -10,11 +10,11 @@ namespace eCommerce.Domain.RepositoryContracts.Seller
     public interface IWarehouseRepository
     {
      
-        Task<Warehouse> FetchByIdAsync(int id);
+        Task<Warehouse> FetchByIdAsync(Guid Guid);
         Task<List<Warehouse>> FetchBySellerIdAsync(Guid sellerId);
         Task<List<Warehouse>> FetchAllAsync();
-        Task<int> InsertAsync(Warehouse warehouse);
+        Task<Guid> InsertAsync(Warehouse warehouse);
         Task<bool> ModifyAsync(Warehouse warehouse);
-        Task<bool> RemoveAsync(int warehouseId, Guid userId);
+        Task<bool> RemoveAsync(Guid warehouseId, Guid userId);
     }
 }

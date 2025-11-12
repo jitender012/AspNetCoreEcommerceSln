@@ -8,7 +8,7 @@ namespace eCommerce.Application.Features.WarehouseFeature.Dtos
 {
     public class WarehouseSaveDto
     {
-        public int WarehouseId { get; set; }
+        public Guid WarehouseId { get; set; }
 
         public string Name { get; set; } = null!;
 

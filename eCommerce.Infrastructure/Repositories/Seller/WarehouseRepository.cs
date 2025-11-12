@@ -25,7 +25,7 @@ namespace eCommerce.Infrastructure.Repositories.Seller
                 .ToListAsync();
         }
 
-        public async Task<Warehouse> FetchByIdAsync(int id)
+        public async Task<Warehouse> FetchByIdAsync(Guid id)
         {
             var warehouse = await _context.Warehouses
                 .Where(x => x.WarehouseId == id)
@@ -38,9 +38,12 @@ namespace eCommerce.Infrastructure.Repositories.Seller
             return warehouse;
         }
 
-        public Task<int> InsertAsync(Warehouse warehouse)
+        public async Task<Guid> InsertAsync(Warehouse warehouse)
         {
-            throw new NotImplementedException();
+            await _context.Warehouses.AddAsync(warehouse);
+            await _context.SaveChangesAsync();
+
+            return warehouse.WarehouseId;
         }
 
         public Task<bool> ModifyAsync(Warehouse warehouse)
@@ -48,7 +51,7 @@ namespace eCommerce.Infrastructure.Repositories.Seller
             throw new NotImplementedException();
         }
 
-        public Task<bool> RemoveAsync(int warehouseId, Guid userId)
+        public Task<bool> RemoveAsync(Guid warehouseId, Guid userId)
         {
             throw new NotImplementedException();
         }

@@ -1,111 +1,76 @@
-﻿@* @model List<ProductListVM>
-
-@{
-    ViewData["Title"] = "";
-    Layout = "~/Areas/Seller/Views/Shared/_VendorLayout.cshtml";
-}
-<link href="~/lib/datatables.net-bs5/datatables.bootstrap5.min.css" rel="stylesheet" />
-<!-- Display TempData messages -->
-<div>
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["SuccessMessage"]
-        </div>
-    }
-    @if (TempData["NotFound"] != null)
-    {
-        <div class="alert alert-warning">
-            @TempData["NotFound"]
-        </div>
-    }
-
-</div>
-
-<div class="d-flex justify-content-between align-items-end mb-3">
-    <div>
-        <a href="@Url.Action("Dashboard", "Dashboard")" style=" color: #6ebb4a; font-size: 14px; font-weight: 600;">
-            Home
-            <i class="fas fa-angle-right" style="color: #c1cdc2;"></i>
-
-        </a>
-        <h4>
-            Products
-        </h4>
-    </div>
-    <div>
-        <a href="@Url.Action("Create", "Product")" class="addNewBtn">
-            <i class="bi bi-plus-circle"></i>
-            Add New Product
-        </a>
-    </div>
-</div>
-<div class="table-div">
-    <table class="table table-bordered table-hover w-100" id="myTable">
-        <thead>
-            <tr>
-                <th> Image </th>
-                <th> Product Id </th>
-                <th> Product Name </th>
-                <th> Price </th>
-                <th> Category  Name
-                <th> Variant Count </th>
-                <th></th>
-            </tr>
-        </thead>
-
-
-        @foreach (var item in Model)
-        {
-            <tr id="@item.ProductId">
-                <td>
-                    <img href="@Url.Content(item.Url)" height="50" width="50" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CategoryName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.VariantCount)
-                </td>
-
-
-                <td style="text-align:center;vertical-align:middle">
-                    <div class="btn-group">*@
-                        @* <a href="@Url.Action("Details", "Product", new { id = item.ProductId })" class=" btn btn-outline-info"> Details</a> *@
-                        @* <a href="@Url.Action("Edit", "Product", new { brandId = item.ProductId })" class=" btn btn-outline-info"> Edit</a> *@
-                        @* <a href="#" class="delete-brand btn btn-outline-danger" name="brand_id" data-id="@item.ProductId">Delete</a> *@
-                 @*    </div>
-                </td>
-            </tr>
-        }
-
-    </table>
-
-</div>
-
-<script src="~/lib/datatables/js/datatables.js"></script>
-<script src="~/lib/datatables.net-bs5/datatables.bootstrap5.min.js"></script>
-<script src="~/js/jquery code/adminjs/seller-product-index.js"></script>  *@
-<style>
-    .card-title {
-        color: white;
-    }
-</style>
+﻿
 @{
     ViewData["Title"] = "My Products";
     Layout = "~/Areas/Seller/Views/Shared/_VendorLayout.cshtml";
 }
 
 @model List<ProductListVM>
+
+<style>
+    :root {
+        --primary-blue: #4A90E2;
+        --success-green: #10B981;
+        --warning-orange: #F59E0B;
+        --danger-red: #EF4444;
+        --info-teal: #14B8A6;
+        --light-gray: #F3F4F6;
+        --border-gray: #E5E7EB;
+    }
+    .card-title {
+        color: white;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 0.25rem;
+        padding: 20px;
+        border: 1px solid var(--border-gray);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+        .stat-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .stat-card.blue {
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .stat-card.green {
+            border-left: 4px solid var(--success-green);
+        }
+
+        .stat-card.teal {
+            border-left: 4px solid var(--info-teal);
+        }
+
+        .stat-card.orange {
+            border-left: 4px solid var(--warning-orange);
+        }
+
+    .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: #1F2937;
+        margin-bottom: 4px;
+    }
+
+    .stat-label {
+        font-size: 14px;
+        color: #6B7280;
+        font-weight: 500;
+    }
+
+    .stat-icon {
+        font-size: 32px;
+        opacity: 0.5;
+        position: absolute;
+        right: 20px;
+        top: 20px;
+    }
+</style>
 
 <div class="container-fluid py-4">
     <!-- Header Section -->
@@ -161,64 +126,33 @@
     <!-- Statistics Cards -->
     <div class="row mb-4">
         <div class="col-lg-3 col-md-6 mb-3">
-            <div class="card bg-primary text-white h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="card-title">Total Products</h6>
-                            <h3 class="mb-0" id="totalProducts">@Model.Count</h3>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-shopping-bag fa-2x opacity-75"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="stat-card blue position-relative">             
+                <i class="fas fa-shopping-bag fa-2x stat-icon" style="color: var(--primary-blue);"></i>
+                <div class="stat-value" id="statPrice">@Model.Count</div>
+                <div class="stat-label">Total Products</div>
+            </div>      
         </div>
         <div class="col-lg-3 col-md-6 mb-3">
-            <div class="card bg-success text-white h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="card-title">Active Products</h6>
-                            <h3 class="mb-0" id="activeProducts">@(Model.Count - 2)</h3>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-check-circle fa-2x opacity-75"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="stat-card green position-relative">
+                <i class="fas fa-check-circle fa-2x stat-icon text-success" ></i>
+                <div class="stat-value" id="statPrice">@(Model.Count - 2)</div>
+                <div class="stat-label">Active Products</div>
+            </div>         
         </div>
         <div class="col-lg-3 col-md-6 mb-3">
-            <div class="card bg-warning text-white h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="card-title">Draft Products</h6>
-                            <h3 class="mb-0" id="draftProducts">2</h3>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-edit fa-2x opacity-75"></i>
-                        </div>
-                    </div>
-                </div>
+            <div class="stat-card orange position-relative">
+                <i class="fas fa-edit fa-2x stat-icon text-warning" style="color: var(--warning-orange);"></i>
+                <div class="stat-value" id="statPrice">-</div>
+                <div class="stat-label">Draft Products</div>
             </div>
+            
         </div>
         <div class="col-lg-3 col-md-6 mb-3">
-            <div class="card bg-info text-white h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="card-title">Total Variants</h6>
-                            <h3 class="mb-0" id="totalVariants">@Model.Sum(p => p.VariantCount)</h3>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-boxes fa-2x opacity-75"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="stat-card teal position-relative">
+                <i class="fas fa-boxes fa-2x stat-icon" style="color: var(--info-teal);"></i>
+                <div class="stat-value" id="statPrice">@Model.Sum(p => p.VariantCount)</div>
+                <div class="stat-label">Total Variants</div>
+            </div>           
         </div>
     </div>
 
@@ -409,7 +343,8 @@
                                     </td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
-                                            <a href="/seller/products/@product.ProductId" class="btn btn-outline-info" title="View">
+                                            @* Details button *@
+                                            <a href="@Url.Action("Details", "Product", new { Area = "Seller", productId = product.ProductId})" class="btn btn-outline-info" title="View">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             <a href="/seller/products/@product.ProductId/edit" class="btn btn-outline-primary" title="Edit">

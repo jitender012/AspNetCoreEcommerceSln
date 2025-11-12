@@ -27,7 +27,7 @@ namespace eCommerce.Infrastructure.Repositories.Common
                                                 .ThenInclude(v => v.ProductImages)
                                             .ToListAsync(); ;
             }
-            catch (Exception )
+            catch (Exception)
             {
                 _logger.LogError("Error occurred while fetching all records.");
                 throw;
@@ -78,11 +78,11 @@ namespace eCommerce.Infrastructure.Repositories.Common
 
                 foreach (var fo in featureOption)
                 {
-                   await _context.FeatureOptions.AddAsync(fo);
+                    await _context.FeatureOptions.AddAsync(fo);
 
                     configurations.Add(new ProductConfiguration
                     {
-                        ProductVariantId = productVariant.ProductVariantId,                        
+                        ProductVariantId = productVariant.ProductVariantId,
                         FeatureOption = fo
                     });
                 }
@@ -210,12 +210,11 @@ namespace eCommerce.Infrastructure.Repositories.Common
         public async Task<Product?> GetProductDetailSeller(Guid productId)
         {
             var productDetails = await _context.Products
-           .Include(x => x.ProductVariants)
-               .ThenInclude(y => y.ProductConfigurations)
-               .ThenInclude(z => z.FeatureOption)
-            .Include(x => x.ProductVariants)
-                .ThenInclude(y => y.ProductImages)
-           .FirstOrDefaultAsync(x => x.ProductId == productId);
+                    .Include(x => x.ProductVariants)
+                        .ThenInclude(x=>x.ProductImages)
+                    .Include(x => x.Brand)
+                    .Include(x => x.Category)
+                   .FirstOrDefaultAsync(x => x.ProductId == productId);
 
             return productDetails;
         }

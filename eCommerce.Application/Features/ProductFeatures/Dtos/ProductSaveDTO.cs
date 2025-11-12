@@ -4,6 +4,7 @@ namespace eCommerce.Application.Features.ProductFeatures.Dtos
 {
     public class ProductSaveDTO
     {                
+        public string ProductName { get; set; } = null!;
 
         public string? Description { get; set; }        
 
@@ -13,6 +14,6 @@ namespace eCommerce.Application.Features.ProductFeatures.Dtos
 
         public ProductVariantSaveDTO ProductVariant { get; set; } = new();
         
-        public IEnumerable<FeaturesDto>? Features { get; set; }
+        public List<FeatureCategoryWithFeaturesDto>? FeatureCategory { get; set; }
     }
 }

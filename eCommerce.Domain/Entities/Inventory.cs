@@ -9,7 +9,7 @@ public partial class Inventory
 
     public Guid ProductVariantId { get; set; }
 
-    public int WarehouseId { get; set; }
+    public Guid WarehouseId { get; set; }
 
     public int? StockQuantity { get; set; }
 

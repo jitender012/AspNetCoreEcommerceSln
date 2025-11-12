@@ -14,6 +14,8 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using System.Threading.Tasks;
 
 namespace eCommerce.Web.Areas.Seller.Controllers
 {
@@ -32,7 +34,7 @@ namespace eCommerce.Web.Areas.Seller.Controllers
             IMapper mapper, ILogger<ProductController> logger,
             IMediator mediator,
              IFileUploadService fileUploadService)
-        {            
+        {
             _categoryService = categoryService;
             _featureCategoryService = featureCategoryService;
             _mapper = mapper;
@@ -47,70 +49,11 @@ namespace eCommerce.Web.Areas.Seller.Controllers
             var productsVm = _mapper.Map<List<ProductListVM>>(products);
 
             return View(productsVm);
-        }
-        //public async Task<IActionResult> Details(Guid id)
-        //{
-        //    var products = await _mediator.Send(new GetProductDetailsSellerQuery(id));
-        //    var productsVm = _mapper.Map<ProductDetailsVM>(products);
+        }       
 
-        //    return View(productsVm);
-        //}
-
-        public IActionResult Details()
+        public async Task<IActionResult> Details(Guid productId)
         {
-            var product = new ProductDetailsVM
-            {
-                ProductId = Guid.NewGuid(),
-                ProductName = "SuperPhone X",
-                Price = 999.99m,
-                Description = "The latest SuperPhone with amazing features.",
-                Url = "/products/superphone-x",
-                CategoryName = "Smartphones",
-                BrandName = "SuperTech",
-                ProductVariants = new List<ProductVariantVM>
-                {
-                    new ProductVariantVM
-                    {
-                        ProductIvarientId = Guid.NewGuid(),
-                        VarientName = "128GB - Black",
-                        Quantity = 50,
-                        Sku = "SPX-128-BLK",
-                        Price = 999.99m,
-                        IsActive = true,
-                        ImageUrls = new List<string>
-                        {
-                            "/images/products/superphone-x-black-front.jpg",
-                            "/images/products/superphone-x-black-back.jpg"
-                        },
-                        Features = new List<FeaturesVM>
-                        {
-                            new FeaturesVM { ProductFeaturesId = 1, Name = "Storage", Value = "128GB" },
-                            new FeaturesVM { ProductFeaturesId = 2, Name = "Color", Value = "Black" },
-                            new FeaturesVM { ProductFeaturesId = 3, Name = "Battery", Value = "4000mAh" }
-                        }
-                    },
-                    new ProductVariantVM
-                    {
-                        ProductIvarientId = Guid.NewGuid(),
-                        VarientName = "256GB - Silver",
-                        Quantity = 30,
-                        Sku = "SPX-256-SLV",
-                        Price = 1199.99m,
-                        IsActive = true,
-                        ImageUrls = new List<string>
-                        {
-                            "/images/products/superphone-x-silver-front.jpg",
-                            "/images/products/superphone-x-silver-back.jpg"
-                        },
-                        Features = new List<FeaturesVM>
-                        {
-                            new FeaturesVM { ProductFeaturesId = 4, Name = "Storage", Value = "256GB" },
-                            new FeaturesVM { ProductFeaturesId = 5, Name = "Color", Value = "Silver" },
-                            new FeaturesVM { ProductFeaturesId = 6, Name = "Battery", Value = "4000mAh" }
-                        }
-                    }
-                }
-            };
+            var product = await _mediator.Send(new GetProductDetailsSellerQuery(productId));
 
             return View(product);
         }
@@ -125,7 +68,7 @@ namespace eCommerce.Web.Areas.Seller.Controllers
                     Value = x.BrandId.ToString(),
                     Text = x.BrandName
                 }),
-                CategoryList = (await _categoryService.GetChildCategoriesAsync())
+                CategoryList = (await _categoryService.GetLeafCategoriesAsync())
                 .Select(x => new SelectListItem
                 {
                     Value = x.CategoryId.ToString(),
@@ -136,6 +79,14 @@ namespace eCommerce.Web.Areas.Seller.Controllers
             return View(vm);
         }
 
+        [HttpGet]
+        public async Task<ActionResult> GetFeatures(int categoryId)
+        {
+            var groupedFeatures = await _mediator.Send(new GetByProductCategoryIdQuery(categoryId));
+
+
+            return PartialView("_FeaturesPartial", groupedFeatures);
+        }
 
         [HttpPost]
         public async Task<IActionResult> Create(ProductSaveVM model, CancellationToken cancellationToken)
@@ -147,22 +98,18 @@ namespace eCommerce.Web.Areas.Seller.Controllers
                       Value = x.BrandId.ToString(),
                       Text = x.BrandName
                   });
-            model.CategoryList = (await _categoryService.GetChildCategoriesAsync())
+            model.CategoryList = (await _categoryService.GetLeafCategoriesAsync())
                .Select(x => new SelectListItem
                {
                    Value = x.CategoryId.ToString(),
                    Text = x.CategoryName
                });
 
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
 
             try
             {
                 var dto = _mapper.Map<ProductSaveDTO>(model);
-                var images = model.ProductVariant.ProuctImages;
+                var images = model.ProductVariant.ProductImages;
 
                 if (images != null && images.Count > 0)
                 {
@@ -213,7 +160,7 @@ namespace eCommerce.Web.Areas.Seller.Controllers
 
         private async Task PopulateCategoryDropdownItems()
         {
-            var categories = await _categoryService.GetChildCategoriesAsync();
+            var categories = await _categoryService.GetLeafCategoriesAsync();
 
             var dropdownItems = categories.Select(x => new SelectListItem
             {
@@ -224,11 +171,6 @@ namespace eCommerce.Web.Areas.Seller.Controllers
             ViewBag.CategoryList = dropdownItems;
         }
 
-        //[HttpGet]
-        //public async Task<JsonResult> GetFeatureCategoriesWithFeatures(int categoryId)
-        //{
-        //    List<FeatureCategoryDTO>? categories = await _featureCategoryService.GetByProductCategoryIdAsync(categoryId);
-        //    return Json(categories);
-        //}
+
     }
 }

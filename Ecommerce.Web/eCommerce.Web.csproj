@@ -122,6 +122,7 @@
     <Folder Include="Areas\Customer\Data\" />
     <Folder Include="Areas\Customer\Models\" />
     <Folder Include="Areas\Seller\Data\" />
+    <Folder Include="Areas\Seller\Models\ProductModels\" />
     <Folder Include="wwwroot\Images\BrandImages\" />
     <Folder Include="wwwroot\Images\ProductImages\" />
     <Folder Include="wwwroot\js\jQuery code\" />

@@ -6,7 +6,7 @@ namespace eCommerce.Domain.Entities;
 
 public partial class Warehouse
 {
-    public int WarehouseId { get; set; }
+    public Guid WarehouseId { get; set; }
 
     public string Name { get; set; } = null!;
 

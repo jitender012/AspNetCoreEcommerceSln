@@ -1,6 +1,4 @@
-﻿using AutoMapper.Features;
-using eCommerce.Application.DTO.ProductDTOs;
-using eCommerce.Application.Features.ProductFeatures.Dtos;
+﻿using eCommerce.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,20 +9,18 @@ namespace eCommerce.Application.Features.ProductVariantFeatures.Dtos
 {
     public class ProductVariantDto
     {
-        public Guid ProductIvarientId { get; set; }
+        public Guid ProductVariantId { get; set; }
 
-        public string? VarientName { get; set; }
+        public string? VarientName { get; set; }        
 
-        public int? Quantity { get; set; }
+        public string? ImageUrl { get; set; }
 
         public string Sku { get; set; } = null!;
 
-        public decimal Price { get; set; }
+        public decimal Price { get; set; }        
 
-        public bool? IsActive { get; set; } = true;
+        public string? Barcode { get; set; }
 
-        public List<string> ImageUrls { get; set; } = [];
-
-        public List<ProductFeatureDto> Features { get; set; } = [];
+        public ProductStatus Status { get; set; } = ProductStatus.Draft;
     }
 }

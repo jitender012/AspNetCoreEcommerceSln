@@ -30,7 +30,14 @@ namespace eCommerce.Infrastructure.Repositories.Common
         {
             try
             {
-                return await _context.ProductVariants.FirstOrDefaultAsync(pv => pv.ProductVariantId == productVariantId);
+                return await _context
+                    .ProductVariants
+                    .Include(x=>x.ProductImages)
+                    .Include(x=>x.Inventories)
+                    .Include(x=>x.ProductConfigurations)
+                        .ThenInclude(pc=>pc.FeatureOption)
+                            .ThenInclude(fo=>fo.ProductFeature)
+                    .FirstOrDefaultAsync(pv => pv.ProductVariantId == productVariantId);
             }
             catch (Exception)
             {

@@ -1,0 +1,43 @@
+﻿@using eCommerce.Application.Features.ProductFeatures.Dtos
+@model List<FeatureCategoryWithFeaturesDto>
+<div class="row">
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        var featureCategory = Model[i];
+        <div class="col-12 mb-4">
+            <h5 class="fw-bold text-primary  mb-2">
+                @featureCategory.FeatureCategoryName
+            </h5>
+
+            <div class="row">
+                @for (int j = 0; j < featureCategory.ProductFeatures.Count; j++)
+                {
+                    var feature = featureCategory.ProductFeatures[j];
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold text-dark">
+                            @feature.Name @(feature.MeasurementUnit != null ? $"({feature.MeasurementUnit})" : "")
+                        </label>
+
+                        <input type="hidden" name="FeatureCategory[@i].ProductFeatures[@j].ProductFeatureId" value="@feature.ProductFeatureId" />
+
+                        @if (feature.InputType == eCommerce.Domain.Entities.FeatureInputType.Dropdown)
+                        {
+                            <select name="FeatureCategory[@i].ProductFeatures[@j].Value" class="form-select">
+                                <option value="">-- Select --</option>
+                                @foreach (var option in feature.FeatureOptions)
+                                {
+                                    <option value="@option.Id">@option.Name</option>
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <input name="FeatureCategory[@i].ProductFeatures[@j].Value" class="form-control" placeholder="Enter value" />
+                        }
+                        <span class="text-danger small" asp-validation-for="@feature.Value"></span>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

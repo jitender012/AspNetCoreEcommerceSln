@@ -2,13 +2,12 @@
 using eCommerce.Application.ServiceContracts.AdminServiceContracts;
 using eCommerce.Application.ServiceContracts.ProductServiceContracts;
 using eCommerce.Application.ServiceContracts.UtilityServiceContracts;
-using eCommerce.Application.ServiceContracts.VendorServiceContracts;
 using eCommerce.Application.Services;
 using eCommerce.Application.Services.AdminServices;
 using eCommerce.Application.Services.ProductServices;
 using eCommerce.Domain.RepositoryContracts;
-using eCommerce.Domain.RepositoryContracts.Customer;
 using eCommerce.Domain.RepositoryContracts.Common;
+using eCommerce.Domain.RepositoryContracts.Customer;
 using eCommerce.Domain.RepositoryContracts.Seller;
 using eCommerce.Infrastructure.Repositories;
 using eCommerce.Infrastructure.Repositories.Common;

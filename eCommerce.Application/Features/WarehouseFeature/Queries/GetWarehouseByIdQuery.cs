@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace eCommerce.Application.Features.WarehouseFeature.Queries
 {
-    public record GetWarehouseByIdQuery(int id) : IRequest<WarehouseDto>;
+    public record GetWarehouseByIdQuery(Guid id) : IRequest<WarehouseDto>;
 
     public class GetWarehouseByIdQueryHandler : IRequestHandler<GetWarehouseByIdQuery, WarehouseDto>
     {

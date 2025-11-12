@@ -17,28 +17,18 @@ namespace eCommerce.Application.Features.ProductFeatures.Queries
     {
         public async Task<ProductDetailsDto> Handle(GetProductDetailsSellerQuery request, CancellationToken cancellationToken)
         {
-            var product = await productRepository.GetProductDetailSeller(request.pId);
-
-            var productDto = mapper.Map<ProductDetailsDto>(product);
-
-            if (product != null)
+            try
             {
-                foreach (var variantDto in productDto.ProductVariants)
-                {
-                    var variant = product.ProductVariants
-                        .First(v => v.ProductVariantId == variantDto.ProductIvarientId);
-
-                    variantDto.Features = variant.ProductConfigurations
-                        .Select(pc => new ProductFeatureDto
-                        {
-                            Name = pc.FeatureOption.ProductFeature.Name,
-                            Value = pc.FeatureOption.Value
-                        })
-                        .ToList();
-                }
+                var product = await productRepository.GetProductDetailSeller(request.pId);
+                var productDto = mapper.Map<ProductDetailsDto>(product);
+                
+                return productDto;
             }
+            catch (Exception)
+            {
 
-            return productDto;
+                throw;
+            }
         }
     }
 }

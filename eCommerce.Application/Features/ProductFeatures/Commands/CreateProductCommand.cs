@@ -5,6 +5,7 @@ using eCommerce.Domain.Entities;
 using eCommerce.Domain.RepositoryContracts.Common;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace eCommerce.Application.Features.ProductFeatures.Commands
 {
@@ -18,7 +19,12 @@ namespace eCommerce.Application.Features.ProductFeatures.Commands
             var data = request.dto;
             var userId = _userContextService.GetUserId();
 
-            if (data.ProductVariant == null || data.Features == null)
+            var Features = data.FeatureCategory?
+                .SelectMany(fc => fc.ProductFeatures)
+                .Where(f => !string.IsNullOrWhiteSpace(f.Value))
+                .ToList() ?? new List<FeaturesDto>();
+
+            if (data.ProductVariant == null || Features == null)
             {
                 _logger.LogError("Invalid product data: Variant, images, or configurations are missing.");
                 return Guid.Empty;
@@ -27,7 +33,7 @@ namespace eCommerce.Application.Features.ProductFeatures.Commands
             var product = new Product
             {
                 ProductId = Guid.NewGuid(),
-                ProductName = data.ProductVariant.VarientName!,
+                ProductName = data.ProductName,
                 Price = data.ProductVariant.Price,
                 Description = data.Description,
                 CreatedAt = DateTime.Now,
@@ -58,9 +64,9 @@ namespace eCommerce.Application.Features.ProductFeatures.Commands
                 Order = 1
             }).ToList();
 
-            var featureOptions = data.Features.Select(x => new FeatureOption
+            var featureOptions = Features.Select(x => new FeatureOption
             {
-                ProductFeatureId = x.ProductFeaturesId,
+                ProductFeatureId = x.ProductFeatureId,
                 Value = x.Value,
                 CreatedBy = userId.ToString(),
             }).ToList();

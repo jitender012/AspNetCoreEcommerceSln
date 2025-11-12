@@ -360,9 +360,6 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Property<Guid>("CartId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(10, 2)");
-
                     b.Property<Guid>("ProductVariantId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("ProductIVariantd");
@@ -373,6 +370,9 @@ namespace eCommerce.Infrastructure.Migrations
                         .HasDefaultValue(1);
 
                     b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(10, 2)");
+
+                    b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(10, 2)");
 
                     b.HasKey("CartItemId");
@@ -533,8 +533,8 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("WarehouseId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("InventoryId");
 
@@ -1389,11 +1389,9 @@ namespace eCommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("eCommerce.Domain.Entities.Warehouse", b =>
                 {
-                    b.Property<int>("WarehouseId")
+                    b.Property<Guid>("WarehouseId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WarehouseId"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("City")
                         .HasMaxLength(255)

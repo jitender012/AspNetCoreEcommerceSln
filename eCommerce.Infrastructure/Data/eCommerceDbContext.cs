@@ -310,11 +310,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasForeignKey(d => d.ProductVariantId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Inventory_ProductVarient");
-
-            entity.HasOne(d => d.Warehouse).WithMany(p => p.Inventories)
-                .HasForeignKey(d => d.WarehouseId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Inventory_Warehouse");
+         
         });
 
         modelBuilder.Entity<Notification>(entity =>
@@ -763,7 +759,6 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
 
         modelBuilder.Entity<Warehouse>(entity =>
         {
-            entity.HasKey(e => e.WarehouseId).HasName("PK__stores__A2F2A30C9859C215");
 
             entity.ToTable("Warehouse", "Inventory");
 

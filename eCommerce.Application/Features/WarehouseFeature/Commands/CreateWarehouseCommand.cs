@@ -16,9 +16,9 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eCommerce.Application.Features.WarehouseFeature.Commands
 {
-    public record CreateWarehouseCommand(WarehouseSaveDto dto) : IRequest<int>;
+    public record CreateWarehouseCommand(WarehouseSaveDto dto) : IRequest<Guid>;
 
-    public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseCommand, int>
+    public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseCommand, Guid>
     {
         private readonly IWarehouseRepository _warehouseRepository;
         private readonly IUserContextService _userContextService;
@@ -32,7 +32,7 @@ namespace eCommerce.Application.Features.WarehouseFeature.Commands
             _logger = logger;
         }
 
-        public async Task<int> Handle(CreateWarehouseCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateWarehouseCommand request, CancellationToken cancellationToken)
         {
             var data = request.dto;
             var userId = _userContextService.GetUserId();

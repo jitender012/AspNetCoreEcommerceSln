@@ -165,7 +165,7 @@ namespace eCommerce.Application.Services.AdminServices
             return true;
         }
 
-        public async Task<List<CategoryDTO>> GetChildCategoriesAsync()
+        public async Task<List<CategoryDTO>> GetLeafCategoriesAsync()
         {
             var category = await _categoryRepository.GetChildCategoriesAsync();
 

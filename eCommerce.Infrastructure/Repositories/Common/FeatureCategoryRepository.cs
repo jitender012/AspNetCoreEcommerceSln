@@ -142,8 +142,7 @@ namespace eCommerce.Infrastructure.Repositories.Common
                 var FeatureCategory = await _context.FeatureCategories
                     .Where(x => x.FeatureCategoryId == id)
                     .Include(x => x.ProductFeatures)
-                    //.Include(x=> x.ProductCategoryFeatures)
-                    //.ThenInclude(pc => pc.ProductCategory)
+                        .ThenInclude(x => x.MeasurementUnit)
                     .FirstOrDefaultAsync();
 
                 if (FeatureCategory == null)
@@ -192,6 +191,9 @@ namespace eCommerce.Infrastructure.Repositories.Common
                 throw;
             }
         }
+
+
+
         #endregion
 
         public async Task<bool> RemoveAsync(int id)

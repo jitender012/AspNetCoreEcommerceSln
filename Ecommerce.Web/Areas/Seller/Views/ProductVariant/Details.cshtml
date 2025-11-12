@@ -1,0 +1,402 @@
+﻿@using eCommerce.Application.Features.ProductVariantFeatures.Dtos
+@model ProductVariantDetailsDto
+
+@{
+    Layout = "~/Areas/Seller/Views/Shared/_VendorLayout.cshtml";
+    ViewData["Title"] = "Product Variant Details - " + Model.VariantName;
+}
+<style>
+    .info-row{
+        display: flex;
+        margin-bottom:15px;
+        justify-content: space-between;
+    }
+    .image-gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 16px;
+    }
+
+    .image-item {
+        position: relative;
+        aspect-ratio: 1;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 2px solid var(--border-gray);
+        transition: all 0.3s ease;
+    }
+
+        .image-item:hover {
+            border-color: var(--primary-blue);
+            transform: scale(1.02);
+        }
+
+        .image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    @@media (max-width: 768px) {
+        .info-row {
+            flex-direction: column;
+        }
+
+        .info-label {
+            width: 100%;
+            margin-bottom: 4px;
+        }
+    }
+</style>
+<!-- Breadcrumb/Header -->
+<div class="custom-section mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+
+        <div aria-label="breadcrumb">
+            <ol class="breadcrumb-custom">
+                <li>
+                    <a href="#">
+                        <i class="fas fa-home"></i>
+                    </a>
+                </li>
+                <li>
+                    <span class="breadcrumb-separator">/</span>
+                    <a href="#">Products</a>
+                </li>
+                <li>
+                    <span class="breadcrumb-separator">/</span>
+                    <a href="#">@Model.VariantName</a>
+                </li>
+                <li>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="active">@Model.VariantName</span>
+                </li>
+            </ol>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <span class="status-badge status-active">Active</span>
+            <div class="dropdown">
+                <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit"></i> Edit Variant</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-eye"></i> View in Store</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-clone"></i> Duplicate Variant</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash"></i> Delete Variant</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card blue position-relative">
+                <i class="fas fa-dollar-sign stat-icon" style="color: var(--primary-blue);"></i>
+                <div class="stat-value">Rs. @Model.Price</div>
+                <div class="stat-label">Current Price</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card green position-relative">
+                <i class="fas fa-boxes stat-icon" style="color: var(--success-green);"></i>
+                <div class="stat-value">@Model.Quantity</div>
+                <div class="stat-label">Current Stock</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card teal position-relative">
+                <i class="fas fa-shopping-cart stat-icon" style="color: var(--info-teal);"></i>
+                <div class="stat-value">245</div>
+                <div class="stat-label">Total Sold</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card orange position-relative">
+                <i class="fas fa-chart-line stat-icon" style="color: var(--warning-orange);"></i>
+                <div class="stat-value">$24,497</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-lg-8">
+            <!-- Basic Information -->
+            <div class="content-card">
+                <h2 class="card-title">Basic Information</h2>
+                <div class="row g-5">
+                    <div class="col-6">
+
+                        <div class="info-row">
+                            <strong class="info-label">Variant Name</strong>
+                            <div class="info-value">@Model.VariantName</div>
+                        </div>
+                        <div class="info-row">
+                            <strong class="info-label">Product</strong>
+                            <div class="info-value">SuperPhone X</div>
+                        </div>
+                        <div class="info-row">
+                            <strong class="info-label">SKU</strong>
+                            <div class="info-value">@Model.Sku</div>
+                        </div>
+                       
+                    </div>                   
+                    <div class="col-6">
+                        <div class="info-row">
+                            <strong class="info-label">Barcode</strong>
+                            <div class="info-value">@Model.Barcode</div>
+                        </div>
+                        <div class="info-row">
+                            <strong class="info-label">Status</strong>
+                            <div class="info-value">
+                                <span class="status-badge status-active">@(Model.IsActive!.Value ? "Active" : "Inactive")</span>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <strong class="info-label">Last Updated</strong>
+                            <div class="info-value">2 hours ago</div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <!-- Additional Details -->
+            <div class="content-card">
+                <h2 class="card-title">Additional Details</h2>
+                <div class="row g-3">
+                    <!-- g-3 adds Bootstrap gap -->
+                    @foreach (var feature in Model.Features)
+                    {
+                        <div class="col-md-6">
+                            <div class="info-row p-2 ">
+                                <div class="info-label fw-bold">@feature.Name</div>
+                                <div class="info-value text-muted">@feature.Value</div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+
+
+            <!-- Variant Images -->
+            <div class="content-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="card-title mb-0">Variant Images</h2>
+                </div>
+                <div class="image-gallery" id="imageGallery">
+                    <!-- Images will be loaded here -->
+                    @foreach (var image in Model.ImageUrls)
+                    {
+                        <div class="image-item">
+                            <img src="@image" alt="Variant image">
+                            <button class="delete-image" onclick="deleteImage(this)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    }
+
+                    <div class="image-upload" onclick="triggerImageUpload()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>Upload Image</span>
+                    </div>
+                </div>
+                <input type="file" id="imageUpload" accept="image/*" multiple style="display: none;" onchange="handleImageUpload(event)">
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-lg-4">
+            <!-- Quick Actions -->
+            <div class="content-card">
+                <h2 class="card-title">Quick Actions</h2>
+                <button class="btn btn-primary btn-custom w-100 mb-2">
+                    <i class="fas fa-edit"></i> Update Stock
+                </button>
+                <button class="btn btn-success btn-custom w-100 mb-2">
+                    <i class="fas fa-tag"></i> Update Price
+                </button>
+                <button class="btn btn-outline-secondary btn-custom w-100 mb-2">
+                    <i class="fas fa-download"></i> Export Data
+                </button>
+                <button class="btn btn-outline-info btn-custom w-100">
+                    <i class="fas fa-chart-bar"></i> View Analytics
+                </button>
+            </div>
+
+            <!-- Inventory Information -->
+            @*   <div class="content-card">
+                <h2 class="card-title">Inventory & Sales</h2>
+                <div class="mb-3">
+                    <label class="form-label">Current Stock</label>
+                    <input type="number" class="form-control" id="inputStock" value="50">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Price</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control" id="inputPrice" value="999.99" step="0.01">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Status</label>
+                    <select class="form-select" id="inputStatus">
+                        <option value="Active" selected>Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="alert alert-info mb-0">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Total Sold:</strong> 245 units
+                </div>
+            </div>
+ *@
+            <!-- Recent Activity -->
+            <div class="content-card">
+                <h2 class="card-title">Recent Activity</h2>
+                <div class="timeline">
+                    <div class="mb-3 pb-3 border-bottom">
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-edit text-primary me-2 mt-1"></i>
+                            <div>
+                                <div class="fw-medium">Price Updated</div>
+                                <small class="text-muted">Changed from $949.99 to $999.99</small>
+                                <div><small class="text-muted">2 hours ago</small></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 pb-3 border-bottom">
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-box text-success me-2 mt-1"></i>
+                            <div>
+                                <div class="fw-medium">Stock Increased</div>
+                                <small class="text-muted">Added 50 units</small>
+                                <div><small class="text-muted">3 days ago</small></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-image text-info me-2 mt-1"></i>
+                            <div>
+                                <div class="fw-medium">Images Updated</div>
+                                <small class="text-muted">Added 2 new images</small>
+                                <div><small class="text-muted">1 week ago</small></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    @*  <div class="row mb-4">
+        <div class="col-12">
+            <div class="content-card">
+                <div class="action-buttons">
+                    <button class="btn btn-success-custom btn-custom" onclick="saveChanges()">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <button class="btn btn-outline-custom btn-custom" onclick="cancelChanges()">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div> *@
+</div>
+
+<script>
+
+
+    function formatTimeAgo(date) {
+        const seconds = Math.floor((new Date() - date) / 1000);
+
+        const intervals = {
+            year: 31536000,
+            month: 2592000,
+            week: 604800,
+            day: 86400,
+            hour: 3600,
+            minute: 60
+        };
+
+        for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+            const interval = Math.floor(seconds / secondsInUnit);
+            if (interval >= 1) {
+                return interval === 1 ? `1 ${unit} ago` : `${interval} ${unit}s ago`;
+            }
+        }
+
+        return 'Just now';
+    }
+
+    function triggerImageUpload() {
+        $('#imageUpload').click();
+    }
+
+    function handleImageUpload(event) {
+        const files = event.target.files;
+        const gallery = $('#imageGallery');
+
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageHtml = `
+                    <div class="image-item">
+                        <img src="${e.target.result}" alt="Variant image">
+                        <button class="delete-image" onclick="deleteImage(this)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                $('.image-upload').before(imageHtml);
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Reset input
+        event.target.value = '';
+    }
+
+    function deleteImage(btn) {
+        if (confirm('Are you sure you want to delete this image?')) {
+            $(btn).closest('.image-item').fadeOut(300, function() {
+                $(this).remove();
+            });
+        }
+    }
+
+    function saveChanges() {
+        const updatedData = {
+            stock: $('#inputStock').val(),
+            price: $('#inputPrice').val(),
+            status: $('#inputStatus').val()
+        };
+
+        console.log('Saving changes:', updatedData);
+        alert('Changes saved successfully!');
+
+        // Update the statistics
+        $('#statStock').text(updatedData.stock);
+        $('#statPrice').text('$' + parseFloat(updatedData.price).toFixed(2));
+
+        // Update status badges
+        const statusClass = updatedData.status === 'Active' ? 'status-active' : 'status-inactive';
+        $('#statusBadge, #infoStatus').removeClass('status-active status-inactive').addClass(statusClass).text(updatedData.status);
+    }
+
+    function cancelChanges() {
+        if (confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
+            loadVariantData(variantData);
+        }
+    }
+</script>

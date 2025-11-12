@@ -76,7 +76,7 @@ namespace eCommerce.Infrastructure.Repositories.Common
             return productFeature.ProductFeaturesId;
         }
 
-    
+
         public async Task<bool> ModifyAsync(ProductFeature productFeature)
         {
             try
@@ -140,21 +140,27 @@ namespace eCommerce.Infrastructure.Repositories.Common
 
         public async Task<List<ProductFeature>> GetFeaturesByFeatureCategoryIdsAsync(List<int?> featureCategoryIds)
         {
-            try
-            {
-                var productFeatures = await _context.ProductFeatures
-                    .Where(f => featureCategoryIds.Contains(f.FeatureCategoryId))
-                    .ToListAsync();
+            var productFeatures = await _context.ProductFeatures
+                .Where(f => featureCategoryIds.Contains(f.FeatureCategoryId))
+                .ToListAsync();
 
-                return productFeatures;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while fetching product features by feature category ids.");
-                throw;
-            }
+            return productFeatures;
         }
 
+
+        public async Task<List<ProductFeature>> GetProductFeaturesByCategoryIdAsync(int categoryId)
+        {
+            var productFeatures = await _context.ProductFeatures
+                .Include(pf => pf.FeatureCategory)
+                .Include(pf => pf.FeatureOptions)
+                .Include(pf => pf.MeasurementUnit)
+                .Where(pf => _context.ProductCategoryProductFeature
+                    .Any(pcf => pcf.ProductFeatureId == pf.ProductFeaturesId &&
+                                pcf.ProductCategoryId == categoryId))
+                .ToListAsync();
+
+            return productFeatures;
+        }
         //public async Task<List<ProductFeature>> GetProductFeaturesAsync(int featureCategoryId = 0, int productCategoryId = 0)
         //{
         //    try

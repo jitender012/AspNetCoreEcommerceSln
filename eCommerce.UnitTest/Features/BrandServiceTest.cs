@@ -80,7 +80,7 @@ namespace eCommerce.UnitTest.Features
         //    Assert.False(result.IsValid);
         //    Assert.Contains(result.Errors, e => e.PropertyName == "Dto.BrandName");
         //}
-        #endregion
+        
 
         #region UpdateBrand
         #endregion

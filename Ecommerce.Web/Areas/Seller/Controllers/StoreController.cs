@@ -1,5 +1,4 @@
-﻿using eCommerce.Application.DTO;
-using eCommerce.Application.ServiceContracts.VendorServiceContracts;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eCommerce.Web.Areas.Seller.Controllers
@@ -7,15 +6,18 @@ namespace eCommerce.Web.Areas.Seller.Controllers
     [Area("Seller")]
     public class StoreController : Controller
     {
-        private readonly IWarehouseService _storeService;
-        public StoreController(IWarehouseService storeService)
+        private readonly IMediator _mediator;
+        public StoreController(IMediator mediator)
         {
-            _storeService = storeService;
+            _mediator= mediator;
         }
         public async Task<IActionResult> Index()
+        {            
+            return View();
+        }
+        public IActionResult Create()
         {
-            var stores = await _storeService.GetAllStores();
-            return View(stores);
+            return View();
         }
     }
 }

@@ -19,7 +19,6 @@ namespace eCommerce.Application.Features.FeatureCategoryFeatures.Dtos
 
         public int? ProductCategoryName { get; set; }
 
-        public List<IdNameDto<int>>? ProductFeatures { get; set; }
-        public List<IdNameDto<int>>? ProductCategories { get; set; }
+        public List<IdNameDto<int>>? ProductFeatures { get; set; }        
     }
 }
