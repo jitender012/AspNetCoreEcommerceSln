@@ -139,7 +139,7 @@ namespace eCommerce.Web.Controllers
                 ModelState.AddModelError(nameof(data.Email), "Email is not registered.");
                 return View(data);
             }
-            var result = await _signInManager.PasswordSignInAsync(applicationUser, data.Password, true, false);
+            var result = await _signInManager.PasswordSignInAsync(applicationUser, data.Password, data.RememberMe, false);
             if (result.Succeeded)
             {
                 string area = applicationUser != null && await _userManager.IsInRoleAsync(applicationUser, "Admin") ? "Admin" :

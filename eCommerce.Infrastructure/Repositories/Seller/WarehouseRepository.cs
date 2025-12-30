@@ -1,4 +1,5 @@
-﻿using eCommerce.Domain.Entities;
+﻿using Dapper;
+using eCommerce.Domain.Entities;
 using eCommerce.Domain.RepositoryContracts.Seller;
 using eCommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -8,21 +9,32 @@ namespace eCommerce.Infrastructure.Repositories.Seller
     public class WarehouseRepository : IWarehouseRepository
     {
         private readonly eCommerceDbContext _context;
-        public WarehouseRepository(eCommerceDbContext context)
+        private readonly DapperContext _dapperContext;
+        public WarehouseRepository(eCommerceDbContext context, DapperContext dapperContext)
         {
             _context = context;
+            _dapperContext = dapperContext;
         }
         public async Task<List<Warehouse>> FetchAllAsync()
         {
-            return await _context.Warehouses
-                .ToListAsync();
+            string query = "SELECT * FROM Warehouse";
+
+            using (var connection = _dapperContext.CreateConnection())
+            {
+                var warehouses = await connection.QueryAsync<Warehouse>(query);
+                return warehouses.ToList();
+            }
         }
 
         public async Task<List<Warehouse>> FetchBySellerIdAsync(Guid sellerId)
         {
-            return await _context.Warehouses
-                .Where(x => x.UserId == sellerId)
-                .ToListAsync();
+            string query = "SELECT * FROM [Inventory].[Warehouse] where UserId = @sellerId";
+
+            using (var connection = _dapperContext.CreateConnection())
+            {
+                var warehouses = await connection.QueryAsync<Warehouse>(query, new { sellerId });
+                return warehouses.ToList();
+            }
         }
 
         public async Task<Warehouse> FetchByIdAsync(Guid id)
@@ -30,7 +42,7 @@ namespace eCommerce.Infrastructure.Repositories.Seller
             var warehouse = await _context.Warehouses
                 .Where(x => x.WarehouseId == id)
                 .FirstOrDefaultAsync();
-            
+
             if (warehouse == null)
             {
                 return new Warehouse();
@@ -54,6 +66,15 @@ namespace eCommerce.Infrastructure.Repositories.Seller
         public Task<bool> RemoveAsync(Guid warehouseId, Guid userId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<List<Warehouse>> GetAvailableWarehousesForVariantQuery(Guid variantId)
+        {
+            var result = await _context.Warehouses
+                .Where(w => !w.Inventories
+                .Any(i => i.ProductVariantId == variantId))
+                .ToListAsync();
+            return result;
         }
     }
 }

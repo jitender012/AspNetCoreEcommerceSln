@@ -4,6 +4,7 @@ using eCommerce.Application.DTO.ProductDTOs;
 using eCommerce.Application.DTO.VendorDTOs;
 using eCommerce.Application.Features.BrandFeature.Dtos;
 using eCommerce.Application.Features.FeatureCategoryFeatures.Dtos;
+using eCommerce.Application.Features.InventroryFeature.Dtos;
 using eCommerce.Application.Features.MeasurementUnitFeature.Dtos;
 using eCommerce.Application.Features.ProductCategoryFeatures.Dtos;
 using eCommerce.Application.Features.ProductConfigurationFeature.DTOs;
@@ -17,6 +18,7 @@ using eCommerce.Web.Areas.Admin.Models.FeatureCategory;
 using eCommerce.Web.Areas.Admin.Models.Product;
 using eCommerce.Web.Areas.Admin.Models.ProductCategory;
 using eCommerce.Web.Areas.Admin.Models.ProductFeature;
+using eCommerce.Web.Areas.Seller.Models.StoreModels;
 using eCommerce.Web.Areas.Vendor.Models;
 using eCommerce.Web.Models;
 using eCommerce.Web.ViewModels.ProductVariantVMs;
@@ -181,8 +183,9 @@ namespace eCommerce.Web.StartupExtensions
             CreateMap<ProductVariant, ProductVariantDetailsDto>();
 
             CreateMap<WarehouseSaveDto, Warehouse>();
+            CreateMap<Warehouse, WarehouseDetailsDto>();
             CreateMap<Warehouse, WarehouseDto>();
-            CreateMap<Warehouse, WarehouseListDto>();
+            CreateMap<CreateInventoryDto, Inventory>();
 
             //DTO to VM and VM to DTO
             CreateMap<ProductVariantSaveVM, SellerProductVariantDTO>();
@@ -191,6 +194,8 @@ namespace eCommerce.Web.StartupExtensions
             CreateMap<SellerProductViewModel, SellerProductDTO>();
             CreateMap<SellerProductViewModel, SellerProductDTO>().ReverseMap();
 
+            CreateMap<WarehouseSaveVm, WarehouseSaveDto>();
+            CreateMap<WarehouseSaveVm, WarehouseSaveDto>().ReverseMap();
             #endregion
 
             #region For Customer Models

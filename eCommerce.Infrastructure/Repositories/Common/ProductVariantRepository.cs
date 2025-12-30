@@ -25,13 +25,26 @@ namespace eCommerce.Infrastructure.Repositories.Common
                 throw;
             }
         }
+        public async Task<List<ProductVariant>> GetProductVariantBySellerId(Guid sellerId)
+        {
+            try
+            {
+                return await _context.ProductVariants
+                    .Where(x => x.Product.CreatedBy == sellerId)
+                    .Include(x=>x.Product)
+                    .ToListAsync();
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
+        }
         public async Task<ProductVariant?> GetProductVariantByIdAsync(Guid productVariantId)
         {
             try
             {
-                return await _context
-                    .ProductVariants
+                return await _context.ProductVariants
                     .Include(x=>x.ProductImages)
                     .Include(x=>x.Inventories)
                     .Include(x=>x.ProductConfigurations)

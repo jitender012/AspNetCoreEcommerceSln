@@ -1,0 +1,244 @@
+﻿@using eCommerce.Application.Features.WarehouseFeature.Dtos
+@{
+    ViewData["Title"] = "Stores";
+    Layout = "~/Areas/Seller/Views/Shared/_VendorLayout.cshtml";
+}
+@model List<WarehouseDto>
+
+
+
+
+<div class="custom-section mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div aria-label="breadcrumb">
+            <ol class="breadcrumb-custom">
+                <li>
+                    <a href="/seller">
+                        <i class="fas fa-home"></i>
+                    </a>
+                </li>
+                <li>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="active">Stores</span>
+                </li>
+
+            </ol>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <button class="btn" onclick="history.back()">⬅ Back</button>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row g-3 justify-content-between">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search stores...">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="btn-group w-100">
+                    <button type="button" class="btn btn-primary" id="listViewBtn" title="List View">
+                        <i class="fas fa-list"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" id="gridViewBtn" title="Grid View">
+                        <i class="fas fa-th"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">Stores</h5>
+        <small class="text-muted">
+            Showing <span id="showingCount">@Model.Count</span> of <span id="totalCount">@Model.Count</span> stores
+        </small>
+    </div>
+    <div class="card-body p-0">
+        <!-- List View (Default) -->
+        <div id="listView">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="40">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="selectAll">
+                                </div>
+                            </th>
+
+                            <th>Store Name</th>
+                            <th width="120">Email</th>
+                            <th width="120">City</th>
+                            <th width="150">State</th>
+                            <th width="180">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="brandsTableBody">
+                        @foreach (var warehouse in Model)
+                        {
+                            <tr>
+                                @*                                 <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input brand-checkbox" type="checkbox"
+                                               value="@brand.BrandId">
+                                    </div>
+                                </td>                            
+ *@                             
+ 
+ <td></td>
+                                <td>
+                                    <h6 class="mb-1">@warehouse.Name</h6>
+                                    <small class="text-muted">ID: @warehouse.WarehouseId.ToString().Substring(0, 8)...</small>
+                                </td>
+
+                                <td>
+                                    <h6 class="mb-1">@(warehouse.Email ?? "-")</h6>
+                                </td>
+
+                                <td id="brand-status-@warehouse.City">
+                                    <h6 class="mb-1">@(warehouse.City ?? "-")</h6>
+                                </td>
+
+                                <td>
+                                    <h6 class="mb-1">@(warehouse.State ?? "-") </h6>
+                                </td>
+
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="/seller/warehouse/details" class="btn btn-outline-info" title="View"><i class="fas fa-eye"></i></a>
+                                        <a href="brands/edit/@warehouse.WarehouseId" class="btn btn-outline-primary" title="Edit"><i class="fas fa-edit"></i></a>
+                                        <button type="button" class="btn btn-outline-danger"
+                                                onclick="deleteBrand('@warehouse.WarehouseId')"
+                                                title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Grid View -->
+        @*  <div id="gridView" style="display: none;">
+            <div class="p-4">
+                <div class="row g-4" id="brandsGridContainer">
+                    @foreach (var brand in Model)
+                    {
+                        <div class="col-xl-3 col-lg-4 col-md-6 brand-card"
+                             data-brand-id="@brand.BrandId"
+                             data-status="@(brand.IsActive == true ? "active" : "inactive")"
+                             data-name="@brand.BrandName.ToLower()">
+                            <div class="card h-100">
+                                <div class="position-relative">
+                                    <a href="brands/@brand.BrandId">
+                                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                                             style="height: 150px;">
+                                            @if (!string.IsNullOrEmpty(brand.BrandImage))
+                                            {
+                                                <img src="@brand.BrandImage" alt="@brand.BrandName"
+                                                     style="max-width: 80%; max-height: 120px; object-fit: contain;">
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-image fa-3x text-muted"></i>
+                                            }
+                                        </div>
+                                    </a>
+
+                                    <div class="position-absolute top-0 start-0 p-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input brand-checkbox" type="checkbox"
+                                                   value="@brand.BrandId">
+                                        </div>
+                                    </div>
+                                    <div class="position-absolute top-0 end-0 p-2">
+                                        @if (brand.IsActive == true)
+                                        {
+                                            <span class="badge bg-success">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Inactive</span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">@brand.BrandName</h5>
+                                    <div class="mb-2">
+                                        <span class="badge bg-info">@brand.ProductCount products</span>
+                                    </div>
+                                    <p class="text-muted small mb-3">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        Added @brand.CreatedAt.ToString("MMM dd, yyyy")
+                                    </p>
+                                    <div class="d-grid gap-2">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-outline-primary btn-sm"
+                                                    onclick="editBrand('@brand.BrandId')">
+                                                <i class="fas fa-edit me-1"></i>Edit
+                                            </button>
+                                            <button type="button" class="btn btn-outline-info btn-sm"
+                                                    onclick="viewProducts('@brand.BrandId')">
+                                                <i class="fas fa-box me-1"></i>Products
+                                            </button>
+                                        </div>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                                                data-bs-toggle="dropdown">
+                                            <i class="fas fa-ellipsis-h me-1"></i>More
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" href="brands/@brand.BrandId">
+                                                    <i class="fas fa-eye me-2"></i>View Details
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="#"
+                                                   onclick="toggleBrandStatus('@brand.BrandId', @(brand.IsActive == true ? "true" : "false"))">
+                                                    <i class="fas fa-toggle-@(brand.IsActive == true ? "off" : "on") me-2"></i>
+                                                    @(brand.IsActive == true ? "Deactivate" : "Activate")
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <a class="dropdown-item text-danger" href="#"
+                                                   onclick="deleteBrand('@brand.BrandId', @brand.ProductCount)">
+                                                    <i class="fas fa-trash me-2"></i>Delete
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div> *@
+
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">No brands found</h5>
+                <p class="text-muted">Start by adding your first brand.</p>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBrandModal">
+                    <i class="fas fa-plus me-2"></i>Add First Brand
+                </button>
+            </div>
+        }
+    </div>
+</div>

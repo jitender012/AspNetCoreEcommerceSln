@@ -1,0 +1,311 @@
+﻿@using eCommerce.Web.Areas.Seller.Models.InventoryModels
+@model IEnumerable<InventoryViewModel>
+
+@{
+    ViewData["Title"] = "Inventory Management";
+    Layout = "~/Areas/Seller/Views/Shared/_VendorLayout.cshtml";
+
+    // Simple logic to calculate KPIs based on the loaded data
+    var totalItems = Model.Count();
+    var totalStockCount = Model.Sum(x => x.StockQuantity);
+    var lowStockCount = Model.Count(x => (x.StockQuantity ?? 0) < 10); // Assuming < 10 is low
+    var totalReserved = Model.Sum(x => x.ReservedQuantity ?? 0);
+}
+
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-1 mb-md-3">
+        <div class="mb-2">
+            <h1 class="h3 mb-1 "><strong>Inventory Management</strong></h1>
+            <div aria-label="breadcrumb">
+                <ol class="breadcrumb-custom">
+                    <li>
+                        <a href="/seller">
+                            <i class="fas fa-home"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <span class="breadcrumb-separator">/</span>
+                        <span class="active"><strong>Inventories</strong> </span>
+                    </li>
+
+                </ol>
+            </div>
+        </div>
+        <div class="d-flex gap-2 mb-2">
+            <div class="btn-group">
+                <button type="button" class="btn btn-light" style="background-color:white; border:1px solid #939ba2" onclick="exportProducts()">
+                    <i class="fas fa-download me-2"></i>Export
+                </button>
+                <button type="button" style="background-color:white; border:1px solid #939ba2" class="btn btn-light dropdown-toggle dropdown-toggle-split"
+                        data-bs-toggle="dropdown"></button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="exportProducts('csv')">
+                            <i class="fas fa-file-csv me-2"></i>Export as CSV
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="exportProducts('excel')">
+                            <i class="fas fa-file-excel me-2"></i>Export as Excel
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="exportProducts('pdf')">
+                            <i class="fas fa-file-pdf me-2"></i>Export as PDF
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProduct">
+                <i class="fas fa-plus me-2"></i>Add Item
+            </button>
+        </div>
+    </div>
+    <!-- Statistics Cards -->
+    <div class="row mb-2 mb-lg-4">
+        <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
+            <div class="stat-card blue position-relative">
+                <i class="fas fa-shopping-bag fa-2x stat-icon" style="color: var(--primary-blue);"></i>
+                <div class="stat-value" id="statPrice">@totalItems</div>
+                <div class="stat-label">Total Inventory Items</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
+            <div class="stat-card green position-relative">
+                <i class="fas fa-check-circle fa-2x stat-icon text-success"></i>
+                <div class="stat-value" id="statPrice">@totalStockCount</div>
+                <div class="stat-label">Total Stock Units</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
+            <div class="stat-card orange position-relative">
+                <i class="fas fa-edit fa-2x stat-icon text-warning" style="color: var(--warning-orange);"></i>
+                <div class="stat-value" id="statPrice">@lowStockCount</div>
+                <div class="stat-label">Low Stocks</div>
+            </div>
+
+        </div>
+        <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
+            <div class="stat-card teal position-relative">
+                <i class="fas fa-boxes fa-2x stat-icon" style="color: var(--info-teal);"></i>
+                <div class="stat-value" id="statPrice">@totalReserved</div>
+                <div class="stat-label">Out of Stock</div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-9">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
+                                <input type="text" class="form-control border-start-0 bg-light" placeholder="Search product or warehouse...">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select">
+                                <option selected>All Warehouses</option>
+                                <option>Main Hub</option>
+                                <option>North Branch</option>
+                            </select>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <div class="btn-group" role="group">
+                                <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off">
+                                <label class="btn btn-outline-secondary btn-sm" for="btncheck1">Low Stock Only</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light text-secondary">
+                            <tr>
+                                <th scope="col" class="ps-4">Product Variant</th>
+                                <th scope="col">Warehouse</th>
+                                <th scope="col">Status</th>
+                                <th scope="col" class="text-end">Available</th>
+                                <th scope="col" class="text-end">Reserved</th>
+                                <th scope="col" class="text-end pe-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                var stock = item.StockQuantity ?? 0;
+                                var reserved = item.ReservedQuantity ?? 0;
+                                var available = stock - reserved;
+
+                                // Determine status color
+                                string badgeClass = "bg-success";
+                                string statusText = "In Stock";
+
+                                if (stock == 0) { badgeClass = "bg-danger"; statusText = "Out of Stock"; }
+                                else if (stock < 10) { badgeClass = "bg-warning text-dark"; statusText = "Low Stock"; }
+
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar bg-light rounded px-2 py-1 me-2 text-secondary fw-bold">
+                                                @item.ProductVariantName.Substring(0, 1).ToUpper()
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold text-dark">@item.ProductVariantName</div>
+                                                <small class="text-muted">ID: #@item.InventoryId</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <i class="bi bi-building me-1 text-muted"></i> @item.WarehouseName
+                                    </td>
+                                    <td>
+                                        <span class="badge rounded-pill @badgeClass">@statusText</span>
+                                    </td>
+                                    <td class="text-end fw-bold">
+                                        @available <span class="text-muted fw-normal fs-7">/ @stock</span>
+                                    </td>
+                                    <td class="text-end text-muted">
+                                        @reserved
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="dropdown">
+                                            <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit Stock</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="bi bi-arrow-left-right me-2"></i>Transfer</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer bg-white border-top-0 py-3">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center mb-0">
+                            <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3">
+            <div class="card shadow-sm border-0 mb-3">
+                <div class="card-header bg-white fw-bold">
+                    Recent Activity
+                </div>
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <small class="text-muted">10 mins ago</small>
+                        </div>
+                        <p class="mb-1 text-sm">Stock adjustment: <strong>Blue Shirt</strong></p>
+                        <small class="text-success">+50 units added</small>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <small class="text-muted">1 hour ago</small>
+                        </div>
+                        <p class="mb-1 text-sm">Order #1024 shipped</p>
+                        <small class="text-muted">Reserved qty decreased</small>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <small class="text-muted">Yesterday</small>
+                        </div>
+                        <p class="mb-1 text-sm">New Warehouse Added</p>
+                        <small class="text-primary">North Branch</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info border-0 shadow-sm" role="alert">
+                <div class="d-flex">
+                    <i class="bi bi-info-circle-fill fs-4 me-3"></i>
+                    <div>
+                        <strong>Tip:</strong> You have 3 variants with zero stock. Consider ordering soon.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Add item Modal -->
+<div class="modal fade" id="addProduct" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Add Existing Items</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="inventoryForm">
+                <div class="modal-body">
+                    <input type="hidden" id="categoryId">
+
+                    <div class="mb-3">
+                        <label for="categoryName" class="form-label fw-semibold">
+                            Variant Name <span class="text-danger">*</span>
+                        </label>
+                        <select class="js-select2 form-select" id="variantSelect">
+                        </select>
+
+                    </div>
+                    <div class="mb-3">
+                        <label for="storeSelect" class="form-label fw-semibold">
+                            Store Name <span class="text-danger">*</span>
+                        </label>
+                        <select class="storeSelect form-select" id="storeSelect">
+                            <option value="">-- Select Store --</option>
+                        </select>
+
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="quantity" class="form-label fw-semibold">
+                                Quantity <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" class="form-control" id="quantity"
+                                   placeholder="Quantity" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="reserved_quantity" class="form-label fw-semibold">
+                                Reserved Quantity
+                            </label>
+                            <input type="number" class="form-control" id="reserved_quantity"
+                                   placeholder="Reserved quantity" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi-plus-circle me-2"></i>Add
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+    <script src="~/js/sellerjs/inventory/index.js"></script>

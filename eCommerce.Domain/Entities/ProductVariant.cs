@@ -48,4 +48,6 @@ public partial class ProductVariant
     public virtual ICollection<ReturnRequest> ReturnRequests { get; set; } = new List<ReturnRequest>();
 
     public virtual ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
+    public virtual ICollection<StockHistory> StockHistories { get; set; } = new List<StockHistory>();
+
 }

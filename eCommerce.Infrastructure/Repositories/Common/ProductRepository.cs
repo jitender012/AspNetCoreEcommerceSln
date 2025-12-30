@@ -9,7 +9,7 @@ namespace eCommerce.Infrastructure.Repositories.Common
     public class ProductRepository : IProductRepository
     {
         private readonly eCommerceDbContext _context;
-        private readonly ILogger<ProductRepository> _logger;
+        private readonly ILogger<ProductRepository> _logger;        
         public ProductRepository(eCommerceDbContext context, ILogger<ProductRepository> logger)
         {
             _context = context;
@@ -97,6 +97,7 @@ namespace eCommerce.Infrastructure.Repositories.Common
             {
                 await transaction.RollbackAsync();
                 _logger.LogError(ex, "Error while inserting product data.");
+                Console.WriteLine(ex);
                 return Guid.Empty;
             }
         }

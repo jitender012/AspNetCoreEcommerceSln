@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace eCommerce.Application.Features.WarehouseFeature.Queries
 {
-    public record GetWarehouseByIdQuery(Guid id) : IRequest<WarehouseDto>;
+    public record GetWarehouseByIdQuery(Guid id) : IRequest<WarehouseDetailsDto>;
 
-    public class GetWarehouseByIdQueryHandler : IRequestHandler<GetWarehouseByIdQuery, WarehouseDto>
+    public class GetWarehouseByIdQueryHandler : IRequestHandler<GetWarehouseByIdQuery, WarehouseDetailsDto>
     {
         private readonly IWarehouseRepository _warehouseRepository;
         private readonly IMapper _mapper;
@@ -22,11 +22,11 @@ namespace eCommerce.Application.Features.WarehouseFeature.Queries
             _warehouseRepository = warehouseRepository;
             _mapper = mapper;
         }
-        public async Task<WarehouseDto> Handle(GetWarehouseByIdQuery request, CancellationToken cancellationToken)
+        public async Task<WarehouseDetailsDto> Handle(GetWarehouseByIdQuery request, CancellationToken cancellationToken)
         {
             var warehouse = await _warehouseRepository.FetchByIdAsync(request.id);
 
-            var warehouseDto = _mapper.Map<WarehouseDto>(warehouse);
+            var warehouseDto = _mapper.Map<WarehouseDetailsDto>(warehouse);
             return warehouseDto;
         }
     }

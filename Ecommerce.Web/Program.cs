@@ -32,6 +32,9 @@ builder.Services.AddApplicationService();
 builder.Services.AddDbContext<eCommerceDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+//Registering Dapper Context 
+builder.Services.AddScoped<DapperContext>();
+
 builder.Services.AddScoped<IDapperRepository, DapperRepository>();
 
 builder.Services.AddScoped<IDbConnection>(sp => new SqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -45,7 +48,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<BrandSaveValidator>();
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
-    .AddEntityFrameworkStores<eCommerce.Infrastructure.Data.eCommerceDbContext>()
+    .AddEntityFrameworkStores<eCommerceDbContext>()
     .AddDefaultTokenProviders()
     .AddRoleStore<RoleStore<ApplicationRole, eCommerceDbContext, Guid>>();
 

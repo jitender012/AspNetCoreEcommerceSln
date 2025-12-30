@@ -42,6 +42,8 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
 
     public virtual DbSet<Inventory> Inventories { get; set; }
 
+    public virtual DbSet<StockHistory> StockHistories { get; set; }
+
     public virtual DbSet<MeasurementUnit> MeasurementUnits { get; set; }
 
     public virtual DbSet<Notification> Notifications { get; set; }
@@ -258,7 +260,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
 
             entity.HasIndex(e => e.Value, "UQ_Value").IsUnique();
 
-            entity.Property(e => e.Value).HasMaxLength(50);
+            entity.Property(e => e.Value).HasMaxLength(200);
 
             entity.HasOne(d => d.ProductFeature).WithMany(p => p.FeatureOptions)
                 .HasForeignKey(d => d.ProductFeatureId)
@@ -311,6 +313,24 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Inventory_ProductVarient");
          
+        });
+
+        modelBuilder.Entity<StockHistory>(entity =>
+        {
+            entity.ToTable("StockHistory", "Inventory");
+            entity.Property(e => e.ActionReason).IsUnicode(false);
+            entity.Property(e => e.ActionType)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+            entity.HasOne(d => d.ProductVariant).WithMany(p => p.StockHistories)
+                .HasForeignKey(d => d.ProductVariantId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_StockHistory_ProductVarient");
+            entity.HasOne(d => d.Warehouse).WithMany(p => p.StockHistories)
+                .HasForeignKey(d => d.WarehouseId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_StockHistory_Warehouse");           
         });
 
         modelBuilder.Entity<Notification>(entity =>

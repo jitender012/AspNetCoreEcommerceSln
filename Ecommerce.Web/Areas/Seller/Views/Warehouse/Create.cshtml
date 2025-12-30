@@ -1,0 +1,220 @@
+﻿@using eCommerce.Web.Areas.Seller.Models.StoreModels
+@{
+    ViewData["Title"] = "Add New Store";
+    Layout = "~/Areas/Seller/Views/Shared/_VendorLayout.cshtml";
+}
+
+@model WarehouseSaveVm
+<style>
+    .action-buttons {
+        gap: 12px;
+        padding-top: 24px;
+    }
+
+    .info-box {
+        background-color: #EFF6FF;
+        border-left: 4px solid var(--primary-blue);
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+    }
+
+        .info-box i {
+            color: var(--primary-blue);
+            margin-right: 8px;
+        }
+
+    .info-box-text {
+        color: #1E40AF;
+        font-size: 14px;
+        margin: 0;
+    }
+</style>
+<div class="custom-section mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div aria-label="breadcrumb">
+            <ol class="breadcrumb-custom">
+                <li>
+                    <a href="/seller">
+                        <i class="fas fa-home"></i>
+                    </a>
+                </li>
+                <li>
+                    <span class="breadcrumb-separator">/</span>
+                    <a href="#">Store</a>
+                </li>
+                <li>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="active">Create</span>
+                </li>
+
+            </ol>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <button class="btn" onclick="history.back()">⬅ Back</button>
+        </div>
+    </div>
+</div>
+
+<form asp-action="Create" asp-controller="Warehouse" asp-area="Seller" method="post">
+    <div class="row">
+
+
+        <!-- Main Form Column -->
+        <div class="col-lg-8">
+            <!-- Store Information -->
+            <div class="content-card">
+                <h2 class="card-title">
+                    <i class="fas fa-store me-2"></i> Store Information
+                </h2>
+
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <label asp-for="Name" class="form-label">
+                            Store Name <span class="required">*</span>
+                        </label>
+                        <input asp-for="Name" type="text"
+                               class="form-control"
+                               id="storeName"
+                               placeholder="Enter store name"
+                               required>
+                        <small class="form-hint">This name will be displayed to customers</small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="phoneNumber" class="form-label">
+                            Phone Number
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-phone"></i>
+                            </span>
+                            <input asp-for="PhoneNumber" type="tel"
+                                   class="form-control"
+                                   id="phoneNumber"
+                                   placeholder="+1 (555) 123-4567">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="email" class="form-label">
+                            Email Address
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                            <input asp-for="Email" type="email"
+                                   class="form-control"
+                                   id="email"
+                                   placeholder="store@example.com">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Store Address -->
+            <div class="content-card">
+                <h2 class="card-title">
+                    <i class="fas fa-map-marker-alt me-2"></i> Store Address
+                </h2>
+
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <label for="street" class="form-label">
+                            Street Address
+                        </label>
+                        <input asp-for="Street" type="text"
+                               class="form-control"
+                               id="street"
+                               placeholder="123 Main Street, Suite 100">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="city" class="form-label">
+                            City
+                        </label>
+                        <input asp-for="City" type="text"
+                               class="form-control"
+                               id="city"
+                               placeholder="New York">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="state" class="form-label">
+                            State
+                        </label>
+                        <input asp-for="State" type="text"
+                               class="form-control"
+                               id="state"
+                               placeholder="NY">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="postalCode" class="form-label">
+                            Postal Code
+                        </label>
+                        <input asp-for="PostalCode" type="text"
+                               class="form-control"
+                               id="postalCode"
+                               placeholder="10001">
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- Sidebar Column -->
+        <div class="col-lg-4">
+            <!-- Help & Guidelines -->
+            <div class="content-card">
+                <h2 class="card-title">
+                    <i class="fas fa-lightbulb me-2"></i> Guidelines
+                </h2>
+
+                <div class="info-box">
+                    <p class="info-box-text">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Required Fields:</strong> Only the store name is required. All other fields are optional.
+                    </p>
+                </div>
+
+                <div class="mb-3">
+                    <h6 class="fw-semibold mb-2">Store Name</h6>
+                    <p class="text-muted small mb-3">
+                        Choose a clear, descriptive name that identifies the location (e.g., "Downtown Store", "Airport Location").
+                    </p>
+                </div>
+
+                <div class="mb-3">
+                    <h6 class="fw-semibold mb-2">Contact Information</h6>
+                    <p class="text-muted small mb-3">
+                        Provide phone and email for customer inquiries and internal communication.
+                    </p>
+                </div>
+
+                <div class="mb-3">
+                    <h6 class="fw-semibold mb-2">Address Details</h6>
+                    <p class="text-muted small mb-0">
+                        Complete address information helps with shipping, inventory management, and customer directions.
+                    </p>
+                </div>
+            </div>
+            <!-- Action Buttons -->
+            <div class="content-card">
+                <button class="btn btn-success w-100 mb-2" type="submit">
+                    <i class="fas fa-check"></i> Create Store
+                </button>
+                <button class="btn btn-primary w-100 mb-2" type="submit">
+                    <i class="fas fa-plus"></i> Save & Add Another
+                </button>
+                <button class="btn btn-outline-secondary w-100 mb-2" onclick="history.back()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+</form>

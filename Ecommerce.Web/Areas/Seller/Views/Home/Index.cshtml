@@ -2,114 +2,49 @@
     Layout = "~/Areas/Seller/Views/Shared/_VendorLayout.cshtml";
 }
 
-<style>
-    .stepper-wrapper {
-        display: flex;
-        justify-content: space-between;
-        position: relative;
-        margin-top: 30px;
-    }
-
-    .stepper-item {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        flex: 1;
-    }
-
-        .stepper-item::before,
-        .stepper-item::after {
-            content: "";
-            position: absolute;
-            top: 20px;
-            border-top: 2px solid #dee2e6;
-            width: 100%;
-            z-index: 1;
-        }
-
-        .stepper-item::before {
-            left: -50%;
-        }
-
-        .stepper-item::after {
-            right: -50%;
-        }
-
-        .stepper-item:first-child::before {
-            content: none;
-        }
-
-        .stepper-item:last-child::after {
-            content: none;
-        }
-
-    .step-counter {
-        position: relative;
-        z-index: 2;
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        background-color: #dee2e6;
-        color: #6c757d;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        margin-bottom: 5px;
-    }
-
-    .step-name {
-        font-size: 0.9rem;
-        color: #6c757d;
-    }
-
-    .stepper-item.active .step-counter {
-        background-color: #0d6efd;
-        color: #fff;
-    }
-
-    .stepper-item.completed .step-counter {
-        background-color: #198754;
-        color: #fff;
-    }
-
-    .stepper-item.active ~ .stepper-item::before {
-        border-top-color: #0d6efd;
-    }
-
-</style>
-<h1>Vendors Home Page</h1>
-
-
-
-<div class="stepper-wrapper mb-4">
-    <div class="stepper-item active">
-        <div class="step-counter">1</div>
-        <div class="step-name">Basic Info</div>
-    </div>
-    <div class="stepper-item">
-        <div class="step-counter">2</div>
-        <div class="step-name">Advance Info</div>
-    </div>
-    <div class="stepper-item">
-        <div class="step-counter">3</div>
-        <div class="step-name">Images</div>
-    </div>
-    <div class="stepper-item">
-        <div class="step-counter">4</div>
-        <div class="step-name">Review & Submit</div>
+<button class="btn btn mb-3" data-bs-toggle="modal" data-bs-target="#MyModal">
+    <i class="fas fa-plus me-2"></i>Open Modal
+</button>
+<!-- Add item Modal -->
+<div class="modal fade" id="MyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Add Existing Items</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <select class="js-select2 form-control" id="mySelect">
+                    <option value="">Select product</option>
+                    <option value="1">iPhone</option>
+                    <option value="2">Samsung</option>
+                    <option value="3">OnePlus</option>
+                </select>
+            </div>
+        </div>
     </div>
 </div>
 
+<select class="js-example-basic-single form-control" name="state">
+    <option value="AL">Alabama</option>
+    <option value="AL">UP</option>
+    <option value="AL">MP</option>
+    <option value="AL">Gujrat</option>
+    <option value="AL">Rajasthan</option>
+    <option value="AL">Bengal</option>
+    <option value="WY">Wyoming</option>
+</select>
+
 <script>
-            function setActiveStep(stepNumber) {
-        $('.stepper-item').removeClass('active completed');
-        $('.stepper-item').each(function (index) {
-            if (index + 1 < stepNumber) $(this).addClass('completed');
-            if (index + 1 === stepNumber) $(this).addClass('active');
-        });
-    }
+    //     $(document).ready(function() {
+    //     $('.js-example-basic-single').select2();
+    // });
+
+    $('#MyModal').on('shown.bs.modal', function () {
+      $('#mySelect').select2({
+        dropdownParent: $('#MyModal'),
+        width: '100%'
+      });
+    });
 
 </script>
-    

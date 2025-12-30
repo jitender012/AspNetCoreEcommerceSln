@@ -25,6 +25,8 @@ public partial class Warehouse
     public Guid? UserId { get; set; }
 
     public virtual ICollection<Inventory> Inventories { get; set; } = new List<Inventory>();
+    public virtual ICollection<StockHistory > StockHistories { get; set; } = new List<StockHistory>();
+
 
     public virtual ApplicationUser? User { get; set; }
 }

@@ -433,8 +433,8 @@ namespace eCommerce.Infrastructure.Migrations
 
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("FeatureOptionId");
 
@@ -1285,6 +1285,54 @@ namespace eCommerce.Infrastructure.Migrations
                     b.ToTable("ReturnRequest", "Transaction");
                 });
 
+            modelBuilder.Entity("eCommerce.Domain.Entities.StockHistory", b =>
+                {
+                    b.Property<int>("StockHistoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StockHistoryId"));
+
+                    b.Property<string>("ActionReason")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)");
+
+                    b.Property<string>("ActionType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int>("ChangedQty")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("NewQty")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PreviousQty")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ProductVariantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SellerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("WarehouseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("StockHistoryId");
+
+                    b.HasIndex("ProductVariantId");
+
+                    b.HasIndex("WarehouseId");
+
+                    b.ToTable("StockHistory", "Inventory");
+                });
+
             modelBuilder.Entity("eCommerce.Domain.Entities.Supplier", b =>
                 {
                     b.Property<int>("SupplierId")
@@ -1432,8 +1480,7 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("WarehouseId")
-                        .HasName("PK__stores__A2F2A30C9859C215");
+                    b.HasKey("WarehouseId");
 
                     b.HasIndex("UserId");
 
@@ -1738,8 +1785,8 @@ namespace eCommerce.Infrastructure.Migrations
                     b.HasOne("eCommerce.Domain.Entities.Warehouse", "Warehouse")
                         .WithMany("Inventories")
                         .HasForeignKey("WarehouseId")
-                        .IsRequired()
-                        .HasConstraintName("FK_Inventory_Warehouse");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ProductVariant");
 
@@ -2023,6 +2070,25 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("eCommerce.Domain.Entities.StockHistory", b =>
+                {
+                    b.HasOne("eCommerce.Domain.Entities.ProductVariant", "ProductVariant")
+                        .WithMany("StockHistories")
+                        .HasForeignKey("ProductVariantId")
+                        .IsRequired()
+                        .HasConstraintName("FK_StockHistory_ProductVarient");
+
+                    b.HasOne("eCommerce.Domain.Entities.Warehouse", "Warehouse")
+                        .WithMany("StockHistories")
+                        .HasForeignKey("WarehouseId")
+                        .IsRequired()
+                        .HasConstraintName("FK_StockHistory_Warehouse");
+
+                    b.Navigation("ProductVariant");
+
+                    b.Navigation("Warehouse");
+                });
+
             modelBuilder.Entity("eCommerce.Domain.Entities.SupplierProduct", b =>
                 {
                     b.HasOne("eCommerce.Domain.Entities.ProductVariant", "ProductVariant")
@@ -2162,6 +2228,8 @@ namespace eCommerce.Infrastructure.Migrations
 
                     b.Navigation("ReturnRequests");
 
+                    b.Navigation("StockHistories");
+
                     b.Navigation("Wishlists");
                 });
 
@@ -2185,6 +2253,8 @@ namespace eCommerce.Infrastructure.Migrations
             modelBuilder.Entity("eCommerce.Domain.Entities.Warehouse", b =>
                 {
                     b.Navigation("Inventories");
+
+                    b.Navigation("StockHistories");
                 });
 #pragma warning restore 612, 618
         }

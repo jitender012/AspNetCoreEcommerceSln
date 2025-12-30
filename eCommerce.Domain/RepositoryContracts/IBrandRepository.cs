@@ -17,5 +17,6 @@ namespace eCommerce.Domain.RepositoryContracts
         Task UpdateStatusAsync(Guid brandId);
         Task<bool> SoftDeleteAsync(Guid brandId);
         Task<bool> ExistsByNameAsync(string brandName);
+        
     }
 }

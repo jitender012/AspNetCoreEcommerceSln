@@ -22,8 +22,8 @@ namespace eCommerce.Web.StartupExtensions
         {
 
             //Services dependency injection
-            services.AddScoped<IFileUploadService, FileUploadService>();                       
-            services.AddScoped<IProductCategoryService, CategoryService>();            
+            services.AddScoped<IFileUploadService, FileUploadService>();
+            services.AddScoped<IProductCategoryService, CategoryService>();
             services.AddScoped<IFeatureCategoryService, FeatureCategoryService>();
             services.AddScoped<IProductFeatureService, ProductFeatureService>();
             services.AddScoped<IFeatureOptionService, FeatureOptionService>();
@@ -33,21 +33,22 @@ namespace eCommerce.Web.StartupExtensions
 
             //Services dependency resolve
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
-            services.AddScoped<IBrandRepository, BrandRepository>();            
+            services.AddScoped<IBrandRepository, BrandRepository>();
 
-            services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>(); 
+            services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IFeatureCategoryRepository, FeatureCategoryRepository>();
             services.AddScoped<IFeatureOptionRepository, FeatureOptionRepository>();
             services.AddScoped<IProductFeatureRepository, ProductFeatureRepository>();
             services.AddScoped<IProductVariantRepository, ProductVariantRepository>();
-            services.AddScoped<IProductFeatureRepository, ProductFeatureRepository>();           
+            services.AddScoped<IProductFeatureRepository, ProductFeatureRepository>();
             services.AddScoped<IMeasurementUnitRepository, MeasurementUnitRepository>();
             services.AddScoped<IProductConfigurationRepository, ProductConfigurationRepository>();
             services.AddScoped<IWishlistRepository, WishlistRepository>();
             services.AddScoped<IWarehouseRepository, WarehouseRepository>();
             services.AddScoped<ICartRepository, CartRepository>();
-            services.AddScoped<IOrderRepository,OrderRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IInventroyRepository, InventroyRepository>();
         }
     }
 }

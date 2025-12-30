@@ -20,6 +20,12 @@ namespace eCommerce.Web.Areas.Seller.Controllers
             _mediator = mediator;
         }
 
+        public async Task<IActionResult> ProductVariantDropdown()
+        {
+            var result = await _mediator.Send(new GetProductVariantsDropdownQuery());
+            return Json(result);
+        }
+
         public async Task<IActionResult> Details(Guid variantId)
         {
             try

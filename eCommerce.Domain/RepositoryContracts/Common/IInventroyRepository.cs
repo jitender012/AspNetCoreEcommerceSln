@@ -9,8 +9,12 @@ namespace eCommerce.Domain.RepositoryContracts.Common
 {
     public interface IInventroyRepository
     {
+
+        // Get all inventories for a all variant
+        Task<IEnumerable<Inventory>> GetBySellerIdAsync(Guid sellerId);
+
         // Get all inventories for a specific product variant
-        Task<IEnumerable<Inventory>> GetByProductVariantIdAsync(Guid productVariantId);
+        Task<IEnumerable<Inventory>> GetByVariantIdAsync(Guid productVariantId);
 
         // Get inventory for a specific product variant in a specific warehouse
         Task<Inventory?> GetByVariantAndWarehouseAsync(Guid productVariantId, Guid warehouseId);
@@ -28,6 +32,6 @@ namespace eCommerce.Domain.RepositoryContracts.Common
         Task<bool> IncreaseStockAsync(Guid productVariantId, Guid warehouseId, int quantity);
 
         // Add or update inventory record
-        Task AddOrUpdateInventoryAsync(Inventory inventory);      
+        Task AddVariantAsync(Inventory inventory);      
     }
 }

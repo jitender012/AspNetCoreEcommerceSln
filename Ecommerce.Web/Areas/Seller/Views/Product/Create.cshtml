@@ -6,29 +6,37 @@
 @model ProductSaveVM
 
 
-<link href="~/css/product-create.css" rel="stylesheet" />
-<div class="container-fluid py-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h1 class="h3 mb-0">Add New Product</h1>
-                    <p class="text-muted mb-0">Create a new product and generate variants automatically</p>
-                </div>
-                <div class="btn-group">
-                    <a href="/seller/products" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-2"></i>Back to Products
+<link href="~/css/pages/product-create.css" rel="stylesheet" />
+<div class="custom-section mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div aria-label="breadcrumb">
+            <ol class="breadcrumb-custom">
+                <li>
+                    <a href="/seller">
+                        <i class="fas fa-home"></i>
                     </a>
-                   @*  <button type="button" class="btn btn-outline-info" id="saveAsDraftBtn">
-                        <i class="fas fa-solid file-pen me-2"></i>Save as Draft
-                    </button> *@
-                </div>
-            </div>
+                </li>
+                <li>
+                    <span class="breadcrumb-separator">/</span>
+                    <a href="@Url.Action("Index", "Product")">Product</a>
+                </li>
+                <li>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="active">Create</span>
+                </li>
+            </ol>
+                
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <button class="btn" onclick="history.back()">⬅ Back</button>
         </div>
     </div>
+</div>
 
 
+<div class="container-fluid">
+
+ 
     <div class="dashboard-container">
         <!-- Progress Steps -->
         <div class="progress-steps">
@@ -52,7 +60,6 @@
         </div>
 
     </div>
-
     <div class="form-card ">
 
         <form id="productForm" asp-action="Create" asp-controller="Product" asp-area="Seller" method="post" enctype="multipart/form-data">

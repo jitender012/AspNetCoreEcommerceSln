@@ -1,11 +1,14 @@
 ﻿using eCommerce.Domain.Entities;
 using eCommerce.Domain.RepositoryContracts;
 using eCommerce.Infrastructure.Data;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Data;
 
 namespace eCommerce.Infrastructure.Repositories
 {
-    public class BrandRepository : IBrandRepository
+    public class BrandRepository :  IBrandRepository
     {
         private readonly eCommerceDbContext _context;
         public BrandRepository(eCommerceDbContext context)
@@ -103,12 +106,12 @@ namespace eCommerce.Infrastructure.Repositories
             var brand = await _context.Brands.FindAsync(brandId);
             if (brand == null)
                 throw new KeyNotFoundException("Brand not found");
-            
+
             if (brand.IsActive.HasValue)
             {
-               brand.IsActive = !brand.IsActive.Value;
+                brand.IsActive = !brand.IsActive.Value;
             }
             await _context.SaveChangesAsync();
-        }
+        }        
     }
 }

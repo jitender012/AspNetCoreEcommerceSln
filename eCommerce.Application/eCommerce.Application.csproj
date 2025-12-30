@@ -22,6 +22,8 @@
   <ItemGroup>
     <Folder Include="Features\CartFeature\Validators\" />
     <Folder Include="Features\FeatureFolders\Commands\" />
+    <Folder Include="Features\InventroryFeature\Handlers\" />
+    <Folder Include="Features\InventroryFeature\Validators\" />
     <Folder Include="Features\MeasurementUnitFeature\Commands\" />
     <Folder Include="Features\MeasurementUnitFeature\Validators\" />
     <Folder Include="Features\OrderFeature\Queries\" />
