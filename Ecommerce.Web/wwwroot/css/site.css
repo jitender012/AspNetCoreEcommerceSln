@@ -347,7 +347,53 @@ i {
     font-weight: 500;
     transition: all 0.3s ease;
     border: none;
-}   
+}
 
 
 
+.icon-color {
+    color: #555; /* Dark grey color for icons */
+    cursor: pointer;
+}
+
+    .icon-color:hover {
+        color: #333;
+    }
+
+/* Adjust badge positioning to match the image */
+.badge-custom {
+    top: 5px !important;
+    left: 85% !important;
+    font-size: 0.65rem;
+    padding: 0.35em 0.5em;
+}
+
+
+
+.dropdown-menu {
+    display: block; /* Allows animation */
+    opacity: 0;
+    visibility: hidden;
+    /* USE MARGIN INSTEAD OF TRANSFORM TO AVOID CONFLICTS */
+    margin-top: 20px !important;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    /* Enforce right alignment strictly */
+    right: 0;
+    left: auto;
+}
+
+    .dropdown-menu.show {
+        opacity: 1;
+        visibility: visible;
+        margin-top: 10px !important; /* Final position */
+    }
+
+/* Chevron Rotation */
+.bi-chevron-down {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+a[aria-expanded="true"] .bi-chevron-down {
+    transform: rotate(180deg);
+}

@@ -26,13 +26,9 @@ namespace Ecommerce.Web.Controllers
 
                 if (await _userManager.IsInRoleAsync(user!, "Seller"))
                     return RedirectToAction("Index", "Home", new { area = "Seller" });
-
-                if (await _userManager.IsInRoleAsync(user!, "Customer"))
-                    return RedirectToAction("Index", "Home", new { area = "Customer" });
             }
-            var categories = _context.ProductCategories.ToList();
-            return View(categories);
 
+            return View();
         }
 
         public IActionResult Privacy()

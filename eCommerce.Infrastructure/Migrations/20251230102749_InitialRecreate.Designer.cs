@@ -12,8 +12,8 @@ using eCommerce.Infrastructure.Data;
 namespace eCommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(eCommerceDbContext))]
-    [Migration("20251114094817_AddStockHistoryTable")]
-    partial class AddStockHistoryTable
+    [Migration("20251230102749_InitialRecreate")]
+    partial class InitialRecreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

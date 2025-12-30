@@ -1,53 +1,211 @@
-﻿<style>
-    /* Table becomes a flex container */
-    .t-body {
-        display: flex;
-        flex-direction: row; /* Align <tr> horizontally */
-        gap: 10px; /* Space between rows */
-        border: none;
-    }
-    #myTable{
-        width:800px;
-    }
-        /* Each <tr> is a flex column */
-        #myTable tr {
-        border: 1px solid #ccc;
-        width:250px;
-            display: flex;
-            flex-direction: column; /* Align <td> vertically */
-            gap: 10px; /* Space between cells */
-        }
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-        /* Optional: Style <td> */
-        #myTable td {
-            /* border: 1px solid #ccc; */
-            border: none;
-            padding: 10px;
-            text-align: center;
-            background-color: #f9f9f9;
-        }
-</style>
+  
 
+    <div class="container mt-4">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="hero-card hero-main h-100">
+                    <div class="row w-100 align-items-center">
+                        <div class="col-md-7">
+                            <span class="badge bg-dark mb-2">New Arrival</span>
+                            <h1 class="fw-bold display-5 mb-3">Next Gen<br>Headphones</h1>
+                            <p class="lead mb-4">Experience sound like never before with active noise cancellation.</p>
+                            <button class="btn btn-dark rounded-pill px-4 py-2">Shop Now</button>
+                        </div>
+                        <div class="col-md-5 text-center">
+                            <img src="https://placehold.co/300x300/png?text=Headset" alt="Product" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="col-lg-4">
+                <div class="d-flex flex-column h-100 justify-content-between">
+                    <div class="hero-card hero-side bg-primary-subtle d-flex align-items-center">
+                        <div class="w-50">
+                            <h4 class="fw-bold">Summer<br>Collection</h4>
+                            <a href="#" class="text-decoration-none fw-bold text-primary">View All &rarr;</a>
+                        </div>
+                        <div class="w-50 text-end">
+                            <img src="https://placehold.co/100x100/png?text=Fashion" alt="Fashion" class="img-fluid rounded">
+                        </div>
+                    </div>
+                    <div class="hero-card hero-side bottom bg-danger-subtle d-flex align-items-center">
+                        <div class="w-50">
+                            <h4 class="fw-bold text-danger">Flash<br>Sale 50%</h4>
+                            <span class="small text-muted">Ends in 2h 15m</span>
+                        </div>
+                        <div class="w-50 text-end">
+                            <img src="https://placehold.co/100x100/png?text=Watch" alt="Watch" class="img-fluid rounded">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <section class="container my-5">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <h3 class="fw-bold m-0">Browse Categories</h3>
+            <a href="#" class="text-decoration-none">See All</a>
+        </div>
 
-<h1>Default Home Page</h1>
-<p class="d-inline-flex gap-1">
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3">
+            <div class="col">
+                <div class="cat-card">
+                    <i class="bi bi-phone cat-icon text-primary"></i>
+                    <h6 class="fw-bold m-0">Mobiles</h6>
+                </div>
+            </div>
+            <div class="col">
+                <div class="cat-card">
+                    <i class="bi bi-laptop cat-icon text-success"></i>
+                    <h6 class="fw-bold m-0">Laptops</h6>
+                </div>
+            </div>
+            <div class="col">
+                <div class="cat-card">
+                    <i class="bi bi-smartwatch cat-icon text-warning"></i>
+                    <h6 class="fw-bold m-0">Watches</h6>
+                </div>
+            </div>
+            <div class="col">
+                <div class="cat-card">
+                    <i class="bi bi-controller cat-icon text-danger"></i>
+                    <h6 class="fw-bold m-0">Gaming</h6>
+                </div>
+            </div>
+            <div class="col">
+                <div class="cat-card">
+                    <i class="bi bi-camera cat-icon text-info"></i>
+                    <h6 class="fw-bold m-0">Cameras</h6>
+                </div>
+            </div>
+            <div class="col">
+                <div class="cat-card">
+                    <i class="bi bi-house-door cat-icon text-secondary"></i>
+                    <h6 class="fw-bold m-0">Home</h6>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-white py-5">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1">Top Deals of the Day</h2>
+                    <p class="text-muted m-0">Grab them before they are gone</p>
+                </div>
+                <button class="btn btn-outline-dark rounded-pill">View All</button>
+            </div>
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+
+                <div class="col">
+                    <div class="product-card h-100 p-3 shadow-sm">
+                        <span class="badge-deal">-25%</span>
+                        <div class="product-img-wrapper">
+                            <img src="https://placehold.co/200x200/png?text=Sneakers" class="product-img" alt="Product">
+                        </div>
+                        <div class="mt-3">
+                            <h6 class="fw-bold text-dark text-truncate">Nike Air Jordan Retro High</h6>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="price-new">$149.00</span>
+                                <span class="price-old">$199.00</span>
+                            </div>
+                            <div class="d-flex gap-1 text-warning small mb-3">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-half"></i>
+                                <span class="text-muted ms-1">(420)</span>
+                            </div>
+                            <button class="btn btn-primary w-100 rounded-pill">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="product-card h-100 p-3 shadow-sm">
+                        <span class="badge-deal bg-warning text-dark">Hot</span>
+                        <div class="product-img-wrapper">
+                            <img src="https://placehold.co/200x200/png?text=Smart+Watch" class="product-img" alt="Product">
+                        </div>
+                        <div class="mt-3">
+                            <h6 class="fw-bold text-dark text-truncate">Apple Watch Series 8</h6>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="price-new">$399.00</span>
+                            </div>
+                            <div class="d-flex gap-1 text-warning small mb-3">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <span class="text-muted ms-1">(1.2k)</span>
+                            </div>
+                            <button class="btn btn-primary w-100 rounded-pill">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="product-card h-100 p-3 shadow-sm">
+                        <span class="badge-deal">-10%</span>
+                        <div class="product-img-wrapper">
+                            <img src="https://placehold.co/200x200/png?text=Backpack" class="product-img" alt="Product">
+                        </div>
+                        <div class="mt-3">
+                            <h6 class="fw-bold text-dark text-truncate">Anti-theft Laptop Backpack</h6>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="price-new">$45.00</span>
+                                <span class="price-old">$50.00</span>
+                            </div>
+                            <div class="d-flex gap-1 text-warning small mb-3">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star"></i>
+                                <i class="bi bi-star"></i>
+                                <span class="text-muted ms-1">(85)</span>
+                            </div>
+                            <button class="btn btn-primary w-100 rounded-pill">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="product-card h-100 p-3 shadow-sm">
+                        <div class="product-img-wrapper">
+                            <img src="https://placehold.co/200x200/png?text=Coffee+Maker" class="product-img" alt="Product">
+                        </div>
+                        <div class="mt-3">
+                            <h6 class="fw-bold text-dark text-truncate">Barista Express Coffee Machine</h6>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="price-new">$599.00</span>
+                            </div>
+                            <div class="d-flex gap-1 text-warning small mb-3">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-half"></i>
+                                <span class="text-muted ms-1">(300)</span>
+                            </div>
+                            <button class="btn btn-primary w-100 rounded-pill">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+  
+
    
-    <div class="" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-       -
-    </div>
-</p>
-<div class="collapse " id="collapseExample">
-    <div class="card card-body">
-        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-    </div>
-</div>
-
-<script>
-    // $(document).ready(
-    //     function () {
-    //         alert("Hi");
-    //     }
-    // )
-</script>
