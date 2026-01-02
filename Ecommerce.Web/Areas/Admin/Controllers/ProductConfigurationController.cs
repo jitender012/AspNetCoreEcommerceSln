@@ -2,11 +2,13 @@
 using eCommerce.Application.Features.ProductConfigurationFeature.DTOs;
 using eCommerce.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eCommerce.Web.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin")]    
+    [Authorize(Roles = "Admin")]
     public class ProductConfigurationController : Controller
     {
         private readonly IMediator _mediator;

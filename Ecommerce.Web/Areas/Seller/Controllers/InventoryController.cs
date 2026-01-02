@@ -3,11 +3,13 @@ using eCommerce.Application.Features.InventroryFeature.Dtos;
 using eCommerce.Application.Features.InventroryFeature.Queries;
 using eCommerce.Web.Areas.Seller.Models.InventoryModels;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eCommerce.Web.Areas.Seller.Controllers
 {
     [Area("Seller")]
+    [Authorize(Roles ="Seller")]
     public class InventoryController : Controller
     {
         private readonly IMediator _mediator;

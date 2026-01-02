@@ -32,7 +32,7 @@
         position: relative;
     }
 
-    .sidebar-menu a {
+    .sidebar-menu .sidebar-item {
         display: flex;
         align-items: center;
         padding: 12px 20px;
@@ -41,17 +41,33 @@
         transition: all 0.3s ease;
         font-size: 14px;
     }
+   
 
-        .sidebar-menu a:hover {
-            background-color: #34495e;
-            color: white;
-        }
+    .sidebar-menu .sidebar-item:hover {
+        background-color: #34495e;
+        color: white;
+    }
 
-        .sidebar-menu a.active {
+        .sidebar-menu .sidebar-item.active {
             background-color: #34495e;
             color: white;
             border-left: 3px solid #3498db;
         }
+
+    .sidebar-menu a {
+        display: flex;
+        align-items: center;
+        padding: 12px 0px 12px 55px;
+        color: #b8c5d6;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+.sidebar-link:hover {
+    background-color: #34495e;
+    color: white;
+}
+
 
     .sidebar-menu i {
         width: 20px;
@@ -64,6 +80,15 @@
         font-size: 12px;
     }
 
+.rotate-icon {
+    display: inline-block;
+    transition: transform 0.3s ease; /* Makes it smooth */
+}
+
+/* Rotate when the parent has aria-expanded="true" */
+[aria-expanded="true"] .rotate-icon {
+    transform: rotate(90deg);
+}
 .upgrade-box {
     position: absolute;
     bottom: 20px;

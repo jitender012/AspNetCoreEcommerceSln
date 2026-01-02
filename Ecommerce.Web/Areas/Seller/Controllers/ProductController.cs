@@ -12,6 +12,7 @@ using eCommerce.Web.ViewModels.ProductVariantVMs;
 using eCommerce.Web.ViewModels.ProductVMs;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -20,6 +21,8 @@ using System.Threading.Tasks;
 namespace eCommerce.Web.Areas.Seller.Controllers
 {
     [Area("Seller")]
+    [Authorize(Roles = "Seller")]
+
     public class ProductController : Controller
     {
         private readonly IProductCategoryService _categoryService;

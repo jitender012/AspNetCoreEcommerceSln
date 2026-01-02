@@ -3,11 +3,14 @@ using eCommerce.Application.Features.ProductVariantFeatures.Queries;
 using eCommerce.Application.ServiceContracts.ProductServiceContracts;
 using eCommerce.Web.ViewModels.ProductVariantVMs;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eCommerce.Web.Areas.Seller.Controllers
 {
     [Area("Seller")]
+    [Authorize(Roles = "Seller")]
+
     public class ProductVariantController : Controller
     {
         private readonly IMapper _mapper;

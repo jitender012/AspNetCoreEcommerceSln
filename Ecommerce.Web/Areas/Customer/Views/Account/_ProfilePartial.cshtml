@@ -1,0 +1,43 @@
+﻿@using eCommerce.Web.Areas.Customer.Models.ProfileModels
+@model ProfileViewModel
+
+<div class="content-card">
+    <h4 class="fw-bold mb-4">Personal Information</h4>
+    <form>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">First Name</label>
+                <input type="text" class="form-control" value="@Model.Name">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-control" value="@Model.EmailId">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Phone Number</label>
+                <input type="text" class="form-control" value="@Model.PhoneNumber">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Date Of Birth</label>
+                <input type="text" class="form-control" value="@Model.Dob">
+            </div>
+
+            <div class="col-12 mt-4">
+                <h6 class="fw-bold">Change Password</h6>
+            </div>
+            <div class="col-md-4">
+                <input type="password" class="form-control" placeholder="Current Password">
+            </div>
+            <div class="col-md-4">
+                <input type="password" class="form-control" placeholder="New Password">
+            </div>
+            <div class="col-md-4">
+                <input type="password" class="form-control" placeholder="Confirm Password">
+            </div>
+
+            <div class="col-12 mt-4 text-end">
+                <button type="submit" class="btn btn-primary px-4 rounded-pill">Save Changes</button>
+            </div>
+        </div>
+    </form>
+</div>

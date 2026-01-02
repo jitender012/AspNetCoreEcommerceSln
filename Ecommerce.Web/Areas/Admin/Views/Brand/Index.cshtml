@@ -6,39 +6,59 @@
 @model List<BrandListVM>
 
 
-<!-- Breadcrumb/Header -->
-<div class="d-flex justify-content-between align-items-center">
-
-    <div class="custom-section mb-4">
-        <div aria-label="breadcrumb">
-            <ol class="breadcrumb-custom">
-                <li>
-                    <a href="https://localhost:7091/Admin">
-                        <i class="fas fa-home"></i>
-                    </a>
-                </li>
-
-                <li>
-                    <span class="breadcrumb-separator">/</span>
-                    <span class="active">Brands</span>
-                </li>
-            </ol>
+<div class="container-fluid">
+    <!-- Breadcrumb/Header -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-1 mb-md-3">
+        <div class="mb-2">
+            <h1 class="h3 mb-1"><strong>Brand Management</strong></h1>
+            <div aria-label="breadcrumb">
+                <ol class="breadcrumb-custom">
+                    <li>
+                        <a href="/admin">
+                            <i class="fas fa-home"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <span class="breadcrumb-separator">/</span>
+                        <span class="active"><strong>Brands</strong> </span>
+                    </li>
+                </ol>
+            </div>
         </div>
-    </div>
-    <div class="d-flex gap-2 align-items-center">
+
         <div class="d-flex gap-2 mb-2">
-            <button type="button" class="btn btn-outline-secondary" onclick="exportBrands()">
-                <i class="fas fa-upload me-2"></i>Export
-            </button>
-
-            <a class="btn btn-outline-primary" href="/brands/create"><i class="fas fa-plus me-2"></i>Add Brand</a>
+            <div class="btn-group">
+                <button type="button" class="btn btn-light" style="background-color:white; border:1px solid #939ba2" onclick="exportBrands()">
+                    <i class="fas fa-download me-2"></i>Export
+                </button>
+                <button type="button" style="background-color:white; border:1px solid #939ba2" class="btn btn-light dropdown-toggle dropdown-toggle-split"
+                        data-bs-toggle="dropdown"></button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="exportProducts('csv')">
+                            <i class="fas fa-file-csv me-2"></i>Export as CSV
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="exportProducts('excel')">
+                            <i class="fas fa-file-excel me-2"></i>Export as Excel
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="exportProducts('pdf')">
+                            <i class="fas fa-file-pdf me-2"></i>Export as PDF
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <a class="btn btn-primary" href="/brands/create">
+                <i class="fas fa-plus me-2"></i>Add Brand
+            </a>
         </div>
     </div>
-</div>
 
 
 
-<div class="container-fluid py-4">
 
     <!-- Quick Stats Row -->
     <div class="row mb-4">
@@ -51,11 +71,11 @@
         </div>
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="stat-card green position-relative">
-                <i class="fas fa-pause-circle fa-2x stat-icon"></i>                
+                <i class="fas fa-pause-circle fa-2x stat-icon"></i>
                 <div class="stat-value">@Model.Count(b => b.IsActive == true)</div>
                 <div class="stat-label">Active Brands</div>
             </div>
-        </div>    
+        </div>
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="stat-card orange position-relative">
                 <i class="fas fa-exclamation-triangle fa-2x stat-icon" style="color: var(--warning-orange);"></i>
@@ -66,13 +86,13 @@
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="stat-card teal position-relative">
                 <i class="fas fa-warehouse stat-icon"></i>
-                <div class="stat-value" >@Model.Sum(b => b.ProductCount)</div>
+                <div class="stat-value">@Model.Sum(b => b.ProductCount)</div>
                 <div class="stat-label">Total Products</div>
             </div>
-        </div>    
+        </div>
     </div>
 
-    
+
 
     <!-- Filters -->
     <div class="card mb-4">
@@ -456,19 +476,19 @@
 @section Scripts {
     <script>
         $(function () {
-            @if (TempData["Success"] != null)
-            {
-                <text>
-                    showToast("@TempData["Success"]", "success");
-                </text>
-            }
+        @if (TempData["Success"] != null)
+        {
+            <text>
+                        showToast("@TempData["Success"]", "success");
+            </text>
+        }
 
-            @if (TempData["Error"] != null)
-            {
-                <text>
-                    showToast("@TempData["Error"]", "danger");
-                </text>
-            }
+        @if (TempData["Error"] != null)
+        {
+            <text>
+                        showToast("@TempData["Error"]", "danger");
+            </text>
+        }
         });
     </script>
 }

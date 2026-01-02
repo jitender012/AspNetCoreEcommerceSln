@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eCommerce.Application.Features.FeatureFolders.Handlers
+namespace eCommerce.Application.Features.AddressFeature.Commands
 {
-    internal class Handler
+    internal class DeleteAddressCommand
     {
     }
 }

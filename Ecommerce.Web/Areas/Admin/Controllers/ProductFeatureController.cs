@@ -10,12 +10,14 @@ using eCommerce.Domain.Entities;
 using eCommerce.Web.Areas.Admin.Models.Product;
 using eCommerce.Web.Areas.Admin.Models.ProductFeature;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace eCommerce.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles ="Admin" )]
     public class ProductFeatureController : Controller
     {
         private readonly IProductFeatureService _productFeatureService;

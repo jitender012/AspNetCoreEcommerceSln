@@ -6,63 +6,56 @@
 
 @model List<ProductListVM>
 
-<div class="custom-section mb-4">
-    <div class="d-flex justify-content-between align-items-center">
-        <div aria-label="breadcrumb">
-            <ol class="breadcrumb-custom">
-                <li>
-                    <a href="/seller">
-                        <i class="fas fa-home"></i>
-                    </a>
-                </li>
-                <li>
-                    <span class="breadcrumb-separator">/</span>
-                    <span class="active">Products</span>
-                </li>
-
-            </ol>
-        </div>     
-    </div>
-</div>
-<div class="content-card d-flex justify-content-between align-items-center flex-wrap">
-    <div class="mb-2">      
-        <h1 class="h3 mb-0">My Products</h1>
-        <p class="text-muted mb-0">Manage your product catalog</p>
-    </div>
-    <div class="d-flex gap-2 mb-2">
-        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#importModal">
-            <i class="fas fa-upload me-2"></i>Import Products
-        </button>
-        <div class="btn-group">
-            <button type="button" class="btn btn-outline-secondary" onclick="exportProducts()">
-                <i class="fas fa-download me-2"></i>Export
-            </button>
-            <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
-                    data-bs-toggle="dropdown"></button>
-            <ul class="dropdown-menu">
-                <li>
-                    <a class="dropdown-item" href="#" onclick="exportProducts('csv')">
-                        <i class="fas fa-file-csv me-2"></i>Export as CSV
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="#" onclick="exportProducts('excel')">
-                        <i class="fas fa-file-excel me-2"></i>Export as Excel
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="#" onclick="exportProducts('pdf')">
-                        <i class="fas fa-file-pdf me-2"></i>Export as PDF
-                    </a>
-                </li>
-            </ul>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-1 mb-md-3">
+        <div class="mb-2">
+            <h1 class="h3 mb-1"><strong>My Products</strong></h1>
+            <div aria-label="breadcrumb">
+                <ol class="breadcrumb-custom">
+                    <li>
+                        <a href="/seller">
+                            <i class="fas fa-home"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <span class="breadcrumb-separator">/</span>
+                        <span class="active"><strong>Products</strong> </span>
+                    </li>
+                </ol>
+            </div>
         </div>
-        <a href="/seller/product/create" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>Add Product
-        </a>
+
+        <div class="d-flex gap-2 mb-2">
+            <div class="btn-group">
+                <button type="button" class="btn btn-light" style="background-color:white; border:1px solid #939ba2" onclick="exportBrands()">
+                    <i class="fas fa-download me-2"></i>Export
+                </button>
+                <button type="button" style="background-color:white; border:1px solid #939ba2" class="btn btn-light dropdown-toggle dropdown-toggle-split"
+                        data-bs-toggle="dropdown"></button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="exportProducts('csv')">
+                            <i class="fas fa-file-csv me-2"></i>Export as CSV
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="exportProducts('excel')">
+                            <i class="fas fa-file-excel me-2"></i>Export as Excel
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="exportProducts('pdf')">
+                            <i class="fas fa-file-pdf me-2"></i>Export as PDF
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <a class="btn btn-primary" href="/seller/product/create">
+                <i class="fas fa-plus me-2"></i>Add Product
+            </a>
+        </div>
     </div>
-</div>
-<div class="container-fluid">   
+
 
     <!-- Statistics Cards -->
     <div class="row mb-4">

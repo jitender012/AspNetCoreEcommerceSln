@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace eCommerce.Web.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin")]  
+    [Authorize(Roles = "Admin")]
     public class HomeController : Controller
     {
         // GET: Administration/Index

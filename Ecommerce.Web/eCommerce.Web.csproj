@@ -133,7 +133,6 @@
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Images\BrandImages\" />
     <Folder Include="Areas\Customer\Data\" />
-    <Folder Include="Areas\Customer\Models\" />
     <Folder Include="Areas\Seller\Data\" />
     <Folder Include="Areas\Seller\Models\ProductModels\" />
     <Folder Include="wwwroot\Images\BrandImages\" />

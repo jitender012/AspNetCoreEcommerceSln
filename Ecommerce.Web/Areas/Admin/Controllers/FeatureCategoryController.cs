@@ -11,12 +11,14 @@ using eCommerce.Domain.Entities;
 using eCommerce.Web.Areas.Admin.Models.FeatureCategory;
 using eCommerce.Web.Areas.Admin.Models.Product;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace eCommerce.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles ="Admin")]
     public class FeatureCategoryController : Controller
     {
         private readonly IFeatureCategoryService _featureCategoryService;

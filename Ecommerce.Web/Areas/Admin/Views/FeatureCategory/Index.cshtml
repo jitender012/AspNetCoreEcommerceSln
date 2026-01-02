@@ -5,92 +5,90 @@
 
 @model List<FeatureCategoryListVm>
 
-<div class="container-fluid py-4">
+<div class="container-fluid">
     <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-1 mb-md-3">
+        <div class="mb-2">
+            <h1 class="h3 mb-1"><strong>Feature Category</strong></h1>
+            <div aria-label="breadcrumb">
+                <ol class="breadcrumb-custom">
+                    <li>
+                        <a href="/admin">
+                            <i class="fas fa-home"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <span class="breadcrumb-separator">/</span>
+                        <span class="active"><strong>Feature Categories</strong> </span>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 mb-2">
+            <div class="btn-group">
+                <button type="button" class="btn btn-light" style="background-color:white; border:1px solid #939ba2" onclick="exportBrands()">
+                    <i class="fas fa-download me-2"></i>Export
+                </button>
+                <button type="button" style="background-color:white; border:1px solid #939ba2" class="btn btn-light dropdown-toggle dropdown-toggle-split"
+                        data-bs-toggle="dropdown"></button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="exportProducts('csv')">
+                            <i class="fas fa-file-csv me-2"></i>Export as CSV
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="exportProducts('excel')">
+                            <i class="fas fa-file-excel me-2"></i>Export as Excel
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="exportProducts('pdf')">
+                            <i class="fas fa-file-pdf me-2"></i>Export as PDF
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
+                <i class="fas fa-plus me-2"></i>Add Feature Category
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick Stats Row -->
     <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center flex-wrap">
-                <div class="mb-2">
-                    <h1 class="h3 mb-1">Feature Category Management</h1>
-                    <p class="text-muted mb-0">Organize product features into logical categories</p>
-                </div>
-                <div class="d-flex gap-2 mb-2">
-                    <button type="button" class="btn btn-outline-secondary" onclick="exportCategories()">
-                        <i class="fas fa-download me-2"></i>Export
-                    </button>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
-                        <i class="fas fa-plus me-2"></i>Add Category
-                    </button>
-                </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card blue position-relative">
+                <i class="fas fa-dollar-sign stat-icon text-primary"></i>
+                <div class="stat-value"> @Model.Count</div>
+                <div class="stat-label">Total Categories</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card green position-relative">
+                <i class="fas fa-pause-circle fa-2x stat-icon"></i>
+                <div class="stat-value">@Model.Count(c => c.IsMandatory == true)</div>
+                <div class="stat-label">Mandatory</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card orange position-relative">
+                <i class="fas fa-exclamation-triangle fa-2x stat-icon" style="color: var(--warning-orange);"></i>
+                <div class="stat-value" id="statRevenue">@Model.Count(c => c.IsMandatory != true)</div>
+                <div class="stat-label">Optional</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card teal position-relative">
+                <i class="fas fa-warehouse stat-icon"></i>
+                <div class="stat-value">@Model.Count(c => c.ProductCategoryName.HasValue)</div>
+                <div class="stat-label">Assigned</div>
             </div>
         </div>
     </div>
 
-    <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-lg-3 col-md-6 mb-3">
-            <div class="card text-white h-100" style="background-color: #3b5168;">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="card-title mb-2">Total Categories</h6>
-                            <h3 class="mb-0">@Model.Count</h3>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-folder-open fa-2x opacity-75"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-3">
-            <div class="card text-white h-100" style="background-color: #3d6655;">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="card-title mb-2">Mandatory</h6>
-                            <h3 class="mb-0">@Model.Count(c => c.IsMandatory == true)</h3>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-star fa-2x opacity-75"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-3">
-            <div class="card text-white h-100" style="background-color: #6b5d5a;">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="card-title mb-2">Optional</h6>
-                            <h3 class="mb-0">@Model.Count(c => c.IsMandatory != true)</h3>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-info-circle fa-2x opacity-75"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-3">
-            <div class="card text-white h-100" style="background-color: #4e5d7c;">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h6 class="card-title mb-2">Assigned</h6>
-                            <h3 class="mb-0">@Model.Count(c => c.ProductCategoryName.HasValue)</h3>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-link fa-2x opacity-75"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Filters and Search -->
+<!-- Filters and Search -->
     <div class="card mb-4">
         <div class="card-body">
             <div class="row g-3">

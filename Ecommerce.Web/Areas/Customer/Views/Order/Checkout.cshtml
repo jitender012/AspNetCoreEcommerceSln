@@ -1,0 +1,196 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/pages/customer/order.css" rel="stylesheet" />
+
+
+<div class="container pb-5">
+    <div class="row g-4">
+
+        <div class="col-lg-8">
+
+            <div class="checkout-section">
+                <div class="section-title">
+                    <span class="step-number">1</span> Delivery Address
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <input type="radio" class="btn-check" name="address" id="addr1" checked>
+                        <label class="address-card w-100 h-100" for="addr1">
+                            <div class="fw-bold text-dark">John Doe <span class="badge bg-light text-dark border ms-2">Home</span></div>
+                            <div class="text-muted small mt-2">
+                                123 Market Street, Apt 4B<br>
+                                San Francisco, CA 94103<br>
+                                +1 234 567 8900
+                            </div>
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="radio" class="btn-check" name="address" id="addr2">
+                        <label class="address-card w-100 h-100" for="addr2">
+                            <div class="fw-bold text-dark">John Doe <span class="badge bg-light text-dark border ms-2">Work</span></div>
+                            <div class="text-muted small mt-2">
+                                500 Tech Plaza, Suite 200<br>
+                                San Jose, CA 95054<br>
+                                +1 987 654 3210
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <button class="btn btn-outline-primary btn-sm mt-3">
+                    <i class="bi bi-plus-lg"></i> Add New Address
+                </button>
+            </div>
+
+            <div class="checkout-section">
+                <div class="section-title">
+                    <span class="step-number">2</span> Payment Method
+                </div>
+
+                <div class="accordion" id="paymentAccordion">
+
+                    <div class="accordion-item border-0 border-bottom">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true">
+                                <i class="bi bi-credit-card-2-front me-2"></i> Credit or Debit Card
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#paymentAccordion">
+                            <div class="accordion-body">
+                                <form>
+                                    <div class="mb-3">
+                                        <label class="form-label small text-muted">Card Number</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" placeholder="0000 0000 0000 0000">
+                                            <span class="input-group-text bg-white"><i class="bi bi-credit-card"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label small text-muted">Name on Card</label>
+                                            <input type="text" class="form-control" placeholder="John Doe">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small text-muted">Expiry</label>
+                                            <input type="text" class="form-control" placeholder="MM/YY">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small text-muted">CVV</label>
+                                            <input type="password" class="form-control" placeholder="123">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item border-0 border-bottom">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                <i class="bi bi-wallet2 me-2"></i> UPI / Google Pay / PhonePe
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#paymentAccordion">
+                            <div class="accordion-body">
+                                <label class="form-label small text-muted">Enter UPI ID</label>
+                                <div class="input-group mb-2" style="max-width: 300px;">
+                                    <input type="text" class="form-control" placeholder="username@oksbi">
+                                    <button class="btn btn-dark">Verify</button>
+                                </div>
+                                <small class="text-muted">Open your UPI app to approve the payment request.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item border-0">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                <i class="bi bi-cash-stack me-2"></i> Cash on Delivery
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#paymentAccordion">
+                            <div class="accordion-body">
+                                <div class="alert alert-warning border-0 mb-0 small">
+                                    <i class="bi bi-info-circle me-1"></i> Pay securely with cash when your order is delivered.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="summary-card">
+                <h5 class="fw-bold mb-4">Order Summary</h5>
+
+                <div class="mb-4">
+                    <div class="item-row">
+                        <img src="https://placehold.co/100x100/png?text=Sony" class="item-thumb">
+                        <div class="flex-grow-1">
+                            <div class="small fw-bold text-dark text-truncate" style="max-width: 180px;">Sony WH-1000XM5</div>
+                            <div class="small text-muted">Qty: 1</div>
+                        </div>
+                        <div class="small fw-bold">$348.00</div>
+                    </div>
+                    <div class="item-row">
+                        <img src="https://placehold.co/100x100/png?text=Watch" class="item-thumb">
+                        <div class="flex-grow-1">
+                            <div class="small fw-bold text-dark text-truncate" style="max-width: 180px;">Apple Watch Series 8</div>
+                            <div class="small text-muted">Qty: 1</div>
+                        </div>
+                        <div class="small fw-bold">$399.00</div>
+                    </div>
+                    <div class="item-row">
+                        <img src="https://placehold.co/100x100/png?text=Cable" class="item-thumb">
+                        <div class="flex-grow-1">
+                            <div class="small fw-bold text-dark text-truncate" style="max-width: 180px;">USB-C Cable</div>
+                            <div class="small text-muted">Qty: 2</div>
+                        </div>
+                        <div class="small fw-bold">$39.98</div>
+                    </div>
+                </div>
+
+                <hr class="text-muted opacity-25">
+
+                <div class="price-row">
+                    <span>Subtotal</span>
+                    <span>$786.98</span>
+                </div>
+                <div class="price-row">
+                    <span>Discount</span>
+                    <span class="text-success">-$20.00</span>
+                </div>
+                <div class="price-row">
+                    <span>Shipping</span>
+                    <span class="text-success">Free</span>
+                </div>
+                <div class="price-row">
+                    <span>Tax</span>
+                    <span>$15.00</span>
+                </div>
+
+                <div class="total-row">
+                    <span>Total Pay</span>
+                    <span>$781.98</span>
+                </div>
+
+                <button class="btn btn-primary w-100 rounded-pill py-3 mt-4 fw-bold shadow-sm">
+                    Place Order <i class="bi bi-bag-check ms-2"></i>
+                </button>
+
+                <div class="text-center mt-3">
+                    <small class="text-muted" style="font-size: 0.8rem;">
+                        By placing your order, you agree to our <a href="#" class="text-decoration-none">Terms of Service</a>.
+                    </small>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>

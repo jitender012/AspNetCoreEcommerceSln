@@ -1,0 +1,184 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/pages/customer/order.css" rel="stylesheet" />
+<div class="container py-4">
+    <h3 class="fw-bold mb-4">My Orders</h3>
+
+    <div class="filter-bar">
+        <div class="row g-3 align-items-center">
+            <div class="col-md-4">
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" class="form-control" placeholder="Search by Order ID, Product...">
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <select class="form-select border-0 bg-light rounded-pill px-3" aria-label="Order Status">
+                    <option selected>All Statuses</option>
+                    <option value="1">Delivered</option>
+                    <option value="2">In Transit</option>
+                    <option value="3">Processing</option>
+                    <option value="4">Cancelled</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <select class="form-select border-0 bg-light rounded-pill px-3" aria-label="Order Time">
+                    <option selected>Last 30 Days</option>
+                    <option value="1">Last 3 Months</option>
+                    <option value="2">2023</option>
+                    <option value="3">2022</option>
+                </select>
+            </div>
+
+            <div class="col-md-2 text-md-end">
+                <button class="btn btn-outline-primary rounded-pill w-100"><i class="bi bi-download me-2"></i>Invoice</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden d-none d-md-block">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4">Order ID</th>
+                        <th>Date</th>
+                        <th>Product(s)</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th class="text-end pe-4">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="ps-4 fw-bold text-primary">#ORD-49230</td>
+                        <td class="text-muted">Nov 12, 2023</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="https://placehold.co/40x40/png?text=XM5" class="product-preview-img">
+                                <span class="text-dark fw-semibold small">Sony WH-1000XM5...</span>
+                            </div>
+                        </td>
+                        <td class="fw-bold">$348.00</td>
+                        <td><span class="status-badge status-delivered">Delivered</span></td>
+                        <td class="text-end pe-4">
+                            <a class="btn btn-sm btn-link text-decoration-none" href="@Url.Action("details","order", new {area="customer"})">View Details</a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="ps-4 fw-bold text-primary">#ORD-49112</td>
+                        <td class="text-muted">Nov 05, 2023</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="https://placehold.co/40x40/png?text=Watch" class="product-preview-img">
+                                <img src="https://placehold.co/40x40/png?text=Strap" class="product-preview-img">
+                                <span class="text-muted small ms-1">+1 more</span>
+                            </div>
+                        </td>
+                        <td class="fw-bold">$415.00</td>
+                        <td><span class="status-badge status-shipped">In Transit</span></td>
+                        <td class="text-end pe-4">
+                            <button class="btn btn-sm btn-primary rounded-pill px-3 py-1" style="font-size: 0.8rem;">Track</button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="ps-4 fw-bold text-primary">#ORD-48900</td>
+                        <td class="text-muted">Oct 28, 2023</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="https://placehold.co/40x40/png?text=Cable" class="product-preview-img">
+                                <span class="text-dark fw-semibold small">USB-C Cable (2m)</span>
+                            </div>
+                        </td>
+                        <td class="fw-bold">$19.99</td>
+                        <td><span class="status-badge status-processing">Processing</span></td>
+                        <td class="text-end pe-4">
+                            <button class="btn btn-sm btn-link text-decoration-none text-danger">Cancel</button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="ps-4 fw-bold text-muted text-decoration-line-through">#ORD-47550</td>
+                        <td class="text-muted">Sep 15, 2023</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="https://placehold.co/40x40/png?text=Shoe" class="product-preview-img">
+                                <span class="text-dark fw-semibold small">Nike Air Jordan...</span>
+                            </div>
+                        </td>
+                        <td class="fw-bold text-muted">$149.00</td>
+                        <td><span class="status-badge status-cancelled">Cancelled</span></td>
+                        <td class="text-end pe-4">
+                            <button class="btn btn-sm btn-link text-decoration-none">Reorder</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-end p-3 bg-white border-top">
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item disabled"><a class="page-link border-0" href="#"><i class="bi bi-chevron-left"></i></a></li>
+                    <li class="page-item active"><a class="page-link border-0 bg-primary" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link border-0 text-dark" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link border-0 text-dark" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link border-0 text-dark" href="#"><i class="bi bi-chevron-right"></i></a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div class="d-md-none">
+        <div class="order-card p-3">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="fw-bold text-primary">#ORD-49230</span>
+                <span class="text-muted small">Nov 12</span>
+            </div>
+            <div class="d-flex gap-3 mb-3">
+                <img src="https://placehold.co/60x60/png?text=XM5" class="rounded border">
+                <div>
+                    <div class="fw-bold small">Sony WH-1000XM5 Headphones</div>
+                    <div class="text-muted small">Qty: 1</div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="fw-bold">$348.00</div>
+                    <span class="status-badge status-delivered mt-1">Delivered</span>
+                </div>
+                <button class="btn btn-outline-dark btn-sm rounded-pill">View Details</button>
+            </div>
+        </div>
+
+        <div class="order-card p-3">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="fw-bold text-primary">#ORD-49112</span>
+                <span class="text-muted small">Nov 05</span>
+            </div>
+            <div class="d-flex gap-3 mb-3">
+                <div class="d-flex">
+                    <img src="https://placehold.co/60x60/png?text=Watch" class="rounded border me-1">
+                    <img src="https://placehold.co/60x60/png?text=+" class="rounded border bg-light">
+                </div>
+                <div>
+                    <div class="fw-bold small">Apple Watch Series 8...</div>
+                    <div class="text-muted small">2 Items</div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="fw-bold">$415.00</div>
+                    <span class="status-badge status-shipped mt-1">In Transit</span>
+                </div>
+                <button class="btn btn-primary btn-sm rounded-pill">Track Order</button>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,96 @@
+﻿/* --- NAVIGATION SIDEBAR --- */
+.profile-sidebar {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    overflow: hidden;
+}
+
+.user-badge {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #34495e 100%);
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+.nav-pills .nav-link {
+    color: #555;
+    font-weight: 600;
+    padding: 12px 20px;
+    border-radius: 0;
+    border-left: 4px solid transparent;
+    text-align: left;
+    transition: all 0.2s;
+}
+
+    .nav-pills .nav-link:hover {
+        background-color: #f8f9fa;
+        color: var(--accent-color);
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: rgba(52, 152, 219, 0.1);
+        color: var(--accent-color);
+        border-left-color: var(--accent-color);
+    }
+
+    .nav-pills .nav-link i {
+        width: 25px;
+        margin-right: 10px;
+        font-size: 1.1rem;
+    }
+
+/* --- CONTENT CARDS --- */
+.content-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    padding: 25px;
+    height: 100%;
+}
+
+/* Order Item */
+.order-item {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+    .order-item:hover {
+        border-color: var(--accent-color);
+    }
+
+/* Credit Card Visual */
+.credit-card-visual {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+}
+
+/* Wishlist Item */
+.wishlist-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .nav-pills .nav-link {
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        border-radius: 5px;
+        margin-bottom: 5px;
+    }
+
+        .nav-pills .nav-link.active {
+            border-left-color: transparent;
+            border-bottom-color: var(--accent-color);
+        }
+}

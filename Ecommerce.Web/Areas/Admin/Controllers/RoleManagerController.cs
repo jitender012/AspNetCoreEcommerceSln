@@ -1,12 +1,15 @@
 ﻿using eCommerce.Domain.Entities;
 using eCommerce.Domain.IdentityEntities;
 using eCommerce.Web.Areas.Admin.Models.Role;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eCommerce.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
+
     public class RoleManagerController(RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userManager) : Controller
     {
         private readonly RoleManager<ApplicationRole> _roleManager = roleManager;

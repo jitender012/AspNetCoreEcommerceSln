@@ -1,0 +1,312 @@
+﻿/* --- ORDER FILTERS --- */
+.filter-bar {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    margin-bottom: 25px;
+}
+
+.search-box {
+    position: relative;
+}
+
+    .search-box input {
+        padding-left: 35px;
+        border-radius: 50px;
+    }
+
+    .search-box i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #aaa;
+    }
+
+/* --- ORDER TABLE --- */
+.order-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    overflow: hidden;
+    margin-bottom: 15px;
+    transition: transform 0.2s;
+}
+
+    .order-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-delivered {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.status-shipped {
+    background-color: #cff4fc;
+    color: #055160;
+}
+
+.status-processing {
+    background-color: #fff3cd;
+    color: #664d03;
+}
+
+.status-cancelled {
+    background-color: #f8d7da;
+    color: #842029;
+}
+
+.product-preview-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    margin-right: 5px;
+}
+
+/* Table Styles override */
+.table > :not(caption) > * > * {
+    padding: 1rem 0.5rem;
+    vertical-align: middle;
+}
+
+.table thead th {
+    border-bottom: 2px solid #f2f2f2;
+    color: #777;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+
+
+
+
+/*----Order details style---*/
+/* --- CARDS & LAYOUT --- */
+.detail-card {
+    background: white;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.card-header-custom {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    background: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* --- TIMELINE (Vertical) --- */
+.timeline {
+    position: relative;
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 30px;
+    padding-bottom: 25px;
+    border-left: 2px solid #e9ecef;
+}
+
+    .timeline-item:last-child {
+        border-left: 2px solid transparent;
+        padding-bottom: 0;
+    }
+
+.timeline-dot {
+    position: absolute;
+    left: -6px;
+    top: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #e9ecef;
+}
+
+.timeline-item.active {
+    border-left-color: var(--success-color);
+}
+
+    .timeline-item.active .timeline-dot {
+        background: var(--success-color);
+        box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.2);
+        width: 12px;
+        height: 12px;
+        left: -7px;
+    }
+
+.timeline-date {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 2px;
+}
+
+.timeline-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--primary-color);
+}
+
+.timeline-desc {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* --- PRODUCT ITEM --- */
+.product-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+    .product-item:last-child {
+        border-bottom: none;
+    }
+
+.product-img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background: #fff;
+}
+
+
+
+
+/*checkout page styles*/
+/* --- CHECKOUT SECTIONS --- */
+.checkout-section {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.step-number {
+    background: var(--primary-color);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+
+/* Address Cards */
+.address-card {
+    border: 2px solid #eee;
+    border-radius: 10px;
+    padding: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+    position: relative;
+}
+
+    .address-card:hover {
+        border-color: #ccc;
+    }
+
+/* Radio Logic for Address styling */
+.btn-check:checked + .address-card {
+    border-color: var(--accent-color);
+    background-color: rgba(52, 152, 219, 0.05);
+}
+
+    .btn-check:checked + .address-card::after {
+        content: "\F26E"; /* Bootstrap check icon */
+        font-family: "bootstrap-icons";
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: var(--accent-color);
+        font-weight: bold;
+    }
+
+/* Payment Accordion */
+.accordion-button:not(.collapsed) {
+    background-color: rgba(52, 152, 219, 0.1);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: rgba(0,0,0,.125);
+}
+
+/* --- ORDER SUMMARY (Right) --- */
+.summary-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    padding: 25px;
+    position: sticky;
+    top: 100px;
+}
+
+.item-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.item-thumb {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border: 1px solid #eee;
+    border-radius: 6px;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    border-top: 2px dashed #eee;
+    padding-top: 15px;
+    margin-top: 15px;
+}

@@ -1,0 +1,164 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/pages/customer/cart.css" rel="stylesheet" />
+
+
+<div class="container pb-5">
+    <h3 class="fw-bold mb-4">Shopping Cart <span class="text-muted fs-5 fw-normal">(3 Items)</span></h3>
+
+    <div class="row g-4">
+
+        <div class="col-lg-8">
+
+            <div class="cart-item-card">
+                <div class="row g-0 align-items-center">
+                    <div class="col-md-3 col-4">
+                        <div class="cart-img-wrapper p-3">
+                            <img src="https://placehold.co/150x150/png?text=Sony+XM5" class="img-fluid cart-img" alt="Product">
+                        </div>
+                    </div>
+                    <div class="col-md-9 col-8">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <h6 class="card-title fw-bold m-0">Sony WH-1000XM5 Headphones</h6>
+                                <h5 class="fw-bold m-0">$348.00</h5>
+                            </div>
+                            <div class="text-muted small mb-3">Color: Black | Warranty: 1 Year</div>
+
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div class="d-flex align-items-center">
+                                    <button class="qty-btn rounded-start" onclick="this.nextElementSibling.stepDown()"><i class="bi bi-dash"></i></button>
+                                    <input type="number" class="qty-input form-control shadow-none" value="1" min="1" readonly>
+                                    <button class="qty-btn rounded-end" onclick="this.previousElementSibling.stepUp()"><i class="bi bi-plus"></i></button>
+                                </div>
+                                <div class="d-flex gap-3">
+                                    <a href="#" class="btn-remove"><i class="bi bi-heart"></i> Save for later</a>
+                                    <a href="#" class="btn-remove"><i class="bi bi-trash"></i> Remove</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cart-item-card">
+                <div class="row g-0 align-items-center">
+                    <div class="col-md-3 col-4">
+                        <div class="cart-img-wrapper p-3">
+                            <img src="https://placehold.co/150x150/png?text=Smart+Watch" class="img-fluid cart-img" alt="Product">
+                        </div>
+                    </div>
+                    <div class="col-md-9 col-8">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <h6 class="card-title fw-bold m-0">Apple Watch Series 8</h6>
+                                <h5 class="fw-bold m-0">$399.00</h5>
+                            </div>
+                            <div class="text-muted small mb-3">Size: 45mm | Color: Midnight</div>
+
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div class="d-flex align-items-center">
+                                    <button class="qty-btn rounded-start" onclick="this.nextElementSibling.stepDown()"><i class="bi bi-dash"></i></button>
+                                    <input type="number" class="qty-input form-control shadow-none" value="1" min="1" readonly>
+                                    <button class="qty-btn rounded-end" onclick="this.previousElementSibling.stepUp()"><i class="bi bi-plus"></i></button>
+                                </div>
+                                <div class="d-flex gap-3">
+                                    <a href="#" class="btn-remove"><i class="bi bi-heart"></i> Save for later</a>
+                                    <a href="#" class="btn-remove"><i class="bi bi-trash"></i> Remove</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cart-item-card">
+                <div class="row g-0 align-items-center">
+                    <div class="col-md-3 col-4">
+                        <div class="cart-img-wrapper p-3">
+                            <img src="https://placehold.co/150x150/png?text=Cable" class="img-fluid cart-img" alt="Product">
+                        </div>
+                    </div>
+                    <div class="col-md-9 col-8">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <h6 class="card-title fw-bold m-0">USB-C Fast Charging Cable</h6>
+                                <h5 class="fw-bold m-0">$19.99</h5>
+                            </div>
+                            <div class="text-muted small mb-3">Length: 2m | Braided</div>
+
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div class="d-flex align-items-center">
+                                    <button class="qty-btn rounded-start" onclick="this.nextElementSibling.stepDown()"><i class="bi bi-dash"></i></button>
+                                    <input type="number" class="qty-input form-control shadow-none" value="2" min="1" readonly>
+                                    <button class="qty-btn rounded-end" onclick="this.previousElementSibling.stepUp()"><i class="bi bi-plus"></i></button>
+                                </div>
+                                <div class="d-flex gap-3">
+                                    <a href="#" class="btn-remove"><i class="bi bi-heart"></i> Save for later</a>
+                                    <a href="#" class="btn-remove"><i class="bi bi-trash"></i> Remove</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <a href="#" class="btn btn-outline-dark rounded-pill"><i class="bi bi-arrow-left me-2"></i>Continue Shopping</a>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="summary-card p-4">
+                <h5 class="fw-bold mb-4">Order Summary</h5>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span class="fw-bold text-dark">$766.99</span>
+                </div>
+                <div class="summary-row">
+                    <span>Discount</span>
+                    <span class="text-success">-$20.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span class="text-success">Free</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tax (Estimated)</span>
+                    <span>$15.00</span>
+                </div>
+
+                <div class="mt-4 mb-3">
+                    <label class="form-label small fw-bold text-muted">Promo Code</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control coupon-input shadow-none" placeholder="Enter code">
+                        <button class="btn coupon-btn">Apply</button>
+                    </div>
+                </div>
+
+                <div class="total-row">
+                    <span>Total</span>
+                    <span>$761.99</span>
+                </div>
+
+                <button class="btn btn-primary w-100 rounded-pill py-3 mt-4 fw-bold shadow-sm">
+                    Proceed to Checkout <i class="bi bi-arrow-right ms-2"></i>
+                </button>
+
+                <div class="mt-4 text-center">
+                    <p class="small text-muted mb-2">We accept</p>
+                    <div class="d-flex justify-content-center gap-2 text-muted fs-4">
+                        <i class="bi bi-credit-card-2-back"></i>
+                        <i class="bi bi-paypal"></i>
+                        <i class="bi bi-wallet2"></i>
+                        <i class="bi bi-bank"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,112 @@
+﻿
+/* --- HERO SECTION (Bento Grid) --- */
+.hero-card {
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.3s;
+}
+
+    .hero-card:hover {
+        transform: translateY(-5px);
+    }
+
+.hero-main {
+    height: 400px;
+    background-color: #dbeafe; /* Fallback */
+    background-image: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+    display: flex;
+    align-items: center;
+    padding: 40px;
+}
+
+.hero-side {
+    height: 190px;
+    background-color: #fae8ff;
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+    .hero-side.bottom {
+        margin-bottom: 0;
+        background-color: #fee2e2;
+    }
+
+/* --- CATEGORIES --- */
+.cat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+    cursor: pointer;
+}
+
+    .cat-card:hover {
+        border-color: var(--accent-color);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        transform: translateY(-5px);
+    }
+
+.cat-icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+/* --- PRODUCT CARDS --- */
+.product-card {
+    border: none;
+    border-radius: 16px;
+    background: white;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+    }
+
+.badge-deal {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: var(--deal-color);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.product-img-wrapper {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    padding: 20px;
+}
+
+.product-img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.price-new {
+    font-weight: 800;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+.price-old {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 0.9rem;
+}

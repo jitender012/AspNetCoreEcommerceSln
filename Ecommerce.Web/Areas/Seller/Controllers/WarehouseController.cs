@@ -4,11 +4,14 @@ using eCommerce.Application.Features.WarehouseFeature.Dtos;
 using eCommerce.Application.Features.WarehouseFeature.Queries;
 using eCommerce.Web.Areas.Seller.Models.StoreModels;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eCommerce.Web.Areas.Seller.Controllers
 {
     [Area("Seller")]
+    [Authorize(Roles = "Seller")]
+
     public class WarehouseController : Controller
     {
         private readonly IMediator _mediator;
