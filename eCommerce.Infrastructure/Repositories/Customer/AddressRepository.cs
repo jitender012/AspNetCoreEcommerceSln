@@ -30,7 +30,7 @@ namespace eCommerce.Infrastructure.Repositories.Customer
         public async Task<Address?> GetByIdAsync(int addressId, Guid userId)
         {
             return await _context.Addresses
-                .FirstOrDefaultAsync(x => x.AddressId == addressId && x.UserId == userId);
+                .FirstOrDefaultAsync(x => x.Id == addressId && x.UserId == userId);
         }
 
         public async Task<Address?> GetDefaultAsync(Guid userId)
@@ -88,7 +88,7 @@ namespace eCommerce.Infrastructure.Repositories.Customer
                 .ToListAsync();
 
             foreach (var addr in addresses)
-                addr.IsDefault = addr.AddressId == addressId;
+                addr.IsDefault = addr.Id == addressId;
 
             await _context.SaveChangesAsync();
         }

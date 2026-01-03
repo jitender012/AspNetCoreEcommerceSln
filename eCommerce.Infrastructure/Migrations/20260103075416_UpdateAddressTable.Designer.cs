@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eCommerce.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using eCommerce.Infrastructure.Data;
 namespace eCommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(eCommerceDbContext))]
-    partial class eCommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260103075416_UpdateAddressTable")]
+    partial class UpdateAddressTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,7 +130,7 @@ namespace eCommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("eCommerce.Domain.Entities.Address", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("AddressId")
                         .HasColumnType("int");
 
                     b.Property<string>("AddressType")
@@ -173,7 +176,7 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                    b.HasKey("AddressId");
 
                     b.HasIndex("UserId");
 
@@ -624,9 +627,6 @@ namespace eCommerce.Infrastructure.Migrations
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
-
                     b.Property<string>("BillingAddress")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -672,6 +672,9 @@ namespace eCommerce.Infrastructure.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(500)");
 
+                    b.Property<int>("ShippingAddressId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("ShippingAmount")
                         .HasColumnType("decimal(10, 2)");
 
@@ -688,7 +691,7 @@ namespace eCommerce.Infrastructure.Migrations
 
                     b.HasKey("OrderId");
 
-                    b.HasIndex("AddressId");
+                    b.HasIndex("BillingAddressId");
 
                     b.HasIndex(new[] { "CustomerId" }, "IX_Orders_customer_id");
 
@@ -1818,11 +1821,11 @@ namespace eCommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("eCommerce.Domain.Entities.Order", b =>
                 {
-                    b.HasOne("eCommerce.Domain.Entities.Address", "Address")
+                    b.HasOne("eCommerce.Domain.Entities.Address", "BillingAddressNavigation")
                         .WithMany("Orders")
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("BillingAddressId")
+                        .IsRequired()
+                        .HasConstraintName("FK_Orders_Orders");
 
                     b.HasOne("eCommerce.Domain.IdentityEntities.ApplicationUser", "Customer")
                         .WithMany()
@@ -1830,7 +1833,7 @@ namespace eCommerce.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Address");
+                    b.Navigation("BillingAddressNavigation");
 
                     b.Navigation("Customer");
                 });

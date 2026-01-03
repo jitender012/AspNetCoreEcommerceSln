@@ -26,7 +26,7 @@ public partial class Order
 
     public decimal NetAmount { get; set; }
 
-    public int ShippingAddressId { get; set; }
+    public int AddressId { get; set; }
 
     public string ShippingAddress { get; set; } = null!;
 
@@ -37,8 +37,8 @@ public partial class Order
     public string CreatedAt { get; set; } = null!;
 
     public string? UpdatedAt { get; set; }
-
-    public virtual Address BillingAddressNavigation { get; set; } = null!;
+    
+    public virtual Address Address { get; set; } = null!;
 
     public virtual ApplicationUser Customer { get; set; } = null!;
 

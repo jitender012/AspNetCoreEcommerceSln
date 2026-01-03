@@ -106,7 +106,7 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
         {
             entity.ToTable("Address", "User");
 
-            entity.Property(e => e.AddressId).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.AddressType)
                 .HasMaxLength(10)
                 .IsUnicode(false);
@@ -377,10 +377,16 @@ public partial class eCommerceDbContext : IdentityDbContext<ApplicationUser, App
                 .HasMaxLength(10)
                 .IsFixedLength();
 
-            entity.HasOne(d => d.BillingAddressNavigation).WithMany(p => p.Orders)
-                .HasForeignKey(d => d.BillingAddressId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Orders_Orders");
+            //entity.HasOne(d => d.BillingAddressNavigation).WithMany(p => p.Orders)
+            //    .HasForeignKey(d => d.BillingAddressId)
+            //    .OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("FK_Orders_Orders");
+
+            entity.HasOne(o => o.Address)
+                .WithMany(a => a.Orders)
+                .HasForeignKey(o => o.AddressId)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
 
         });

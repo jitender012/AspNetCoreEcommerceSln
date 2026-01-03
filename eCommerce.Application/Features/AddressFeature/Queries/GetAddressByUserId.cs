@@ -29,14 +29,18 @@ namespace eCommerce.Application.Features.AddressFeature.Queries
 
             return addresses.Select(a => new AddressDto
             {
-                AddressId = a.AddressId,
+                AddressId = a.Id,
                 UserId = a.UserId,
                 AddressType = a.AddressType,
+                FullName = a.FullName,
+                Country = a.Country,
+                Landmark = a.Landmark,
+                PhoneNumber = a.PhoneNumber,
                 Street = a.Street,
                 City = a.City,
                 State = a.State,
                 PostalCode = a.PostalCode,
-                IsDefault = a.IsDefault
+                IsDefault = a.IsDefault ?? false
             }).ToList();
         }
     }

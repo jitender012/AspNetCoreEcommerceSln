@@ -31,14 +31,14 @@ namespace eCommerce.Application.Features.AddressFeature.Queries
 
             return new AddressDto
             {
-                AddressId = address.AddressId,
+                AddressId = address.Id,
                 UserId = address.UserId,
                 AddressType = address.AddressType,
                 Street = address.Street,
                 City = address.City,
                 State = address.State,
                 PostalCode = address.PostalCode,
-                IsDefault = address.IsDefault,
+                IsDefault = address.IsDefault ?? false,
             };
         }
     }

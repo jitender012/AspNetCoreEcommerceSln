@@ -49,6 +49,7 @@ namespace eCommerce.Web.StartupExtensions
             services.AddScoped<ICartRepository, CartRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IInventroyRepository, InventroyRepository>();
+            services.AddScoped<IAddressRepository, AddressRepository>();
         }
     }
 }

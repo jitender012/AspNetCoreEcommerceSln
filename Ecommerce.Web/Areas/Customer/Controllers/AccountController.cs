@@ -37,27 +37,6 @@ namespace eCommerce.Web.Areas.Customer.Controllers
         {
             return View();
         }
-        public IActionResult Addresses()
-        {
-            return View();
-        }
-
-        public IActionResult AddAddresses()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult EditAddresses(int id)
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult DeleteAddresses()
-        {
-            return View();
-        }
-
+      
     }
 }

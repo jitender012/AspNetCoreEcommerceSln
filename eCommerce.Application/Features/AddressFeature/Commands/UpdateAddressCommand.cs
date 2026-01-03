@@ -26,7 +26,7 @@ namespace eCommerce.Application.Features.AddressFeature.Commands
 
             var address = new Address
             {
-                AddressId = dto.AddressId,
+                Id = dto.AddressId,
                 UserId = dto.UserId,
                 AddressType = dto.AddressType,
                 Street = dto.Street,
